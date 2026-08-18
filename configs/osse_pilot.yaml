@@ -64,3 +64,30 @@ experiment:
     - basin_rmse
   acceptance_gate: >-
     Complete one year end to end before expanding to the full 2005-2014 pilot.
+  historical_density:
+    socat_path: data/raw/socat/SOCATv2025_tracks_gridded_monthly.csv
+    year_start: 1990
+    year_end: 2004
+    weight_column: fco2_count
+  evaluation:
+    fraction: 0.20
+    seed: 2026
+    stratify_by_month: true
+    extreme_value_sensitivity_threshold: 1000.0
+  coverage_blocks:
+    longitude_degrees: 10.0
+    latitude_degrees: 5.0
+    include_month: true
+  execution_gate:
+    budgets:
+      - 500
+      - 1000
+    seeds:
+      - 0
+      - 1
+      - 2
+    metrics_file: results/public/osse_gate_metrics.csv
+    selections_file: results/public/osse_gate_selections.csv
+    design_file: results/public/osse_gate_design.csv
+    summary_file: results/public/osse_gate_summary.csv
+    paired_effects_file: results/public/osse_gate_paired_effects.csv

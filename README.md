@@ -80,6 +80,7 @@ python scripts/plot_diagnostic_gate.py
 python scripts/download_osse_pilot.py --dry-run
 python scripts/audit_osse_inputs.py
 python scripts/prepare_osse_pilot.py
+python scripts/run_osse_gate.py
 ```
 
 ## Current status
@@ -88,6 +89,9 @@ The SOCAT coverage audit, leakage-aware minimum experiment, 20-seed benchmark,
 five-fold spatial sensitivity analysis, and spatially grouped XGBoost/SHAP
 interpretability gate are implemented. The first global OSSE pilot is specified
 for IPSL-CM6A-LR historical output (2005–2014), with input download and audit
-tools ready. Results are generated into
+tools ready. A three-seed, two-budget execution gate now compares random,
+historical-density and spatial-coverage sampling on a common 2005 evaluation
+set; it is a pipeline check rather than the final OSSE result. See
+[`docs/osse_gate_results.md`](docs/osse_gate_results.md). Results are generated into
 `results/public/`; raw observations, resumable work files, withheld exploratory
 interpretations, and heavy local outputs remain excluded from Git.

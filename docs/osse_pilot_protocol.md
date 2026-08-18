@@ -48,6 +48,31 @@ deferred until the three-variable pipeline closes.
    basin.
 8. Report marginal error reduction as budget increases.
 
+## One-year execution gate
+
+The first model comparison uses a fixed 20% evaluation sample stratified by
+month. Evaluation positions are selected once with seed 2026 and are unavailable
+to every sampling strategy. The remaining cells form the common acquisition
+pool. This gives all strategies exactly the same evaluation targets.
+
+Three target-blind acquisition rules are compared:
+
+- `random`: uniform sampling without replacement;
+- `historical_density`: weighted sampling using SOCAT observation counts from
+  1990–2004 for the same month and 1-degree cell;
+- `spatial_coverage`: one observation per 10-degree longitude by 5-degree
+  latitude by month block before any block receives a second observation.
+
+All strategies use identical budgets, seeds, predictors, model settings and
+evaluation cells. The execution gate runs budgets of 500 and 1,000 with three
+seeds before the prespecified 20-seed, four-budget experiment.
+
+Primary metrics use every evaluation value. A separately labelled sensitivity
+row recomputes metrics after excluding evaluation targets above 1,000
+micro-atmospheres, the threshold frozen during input audit before strategy
+results were inspected. This diagnostic tests whether a small extreme tail
+dominates RMSE; it is not relabelled as an open-ocean analysis.
+
 ## Interpretation boundary
 
 CMIP6 `spco2` is partial pressure, whereas SOCAT reports fugacity (`fCO2`). SOCAT
