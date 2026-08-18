@@ -90,12 +90,14 @@ of broad improvement. A stricter spatial-block holdout repeats five exhaustive
 folds in 2005, 2010 and 2014 with 20 paired seeds. The same sub-p95 deterioration
 persists, while the p99 benefit becomes directionally unstable: its mean
 difference is −3.590 µatm, but only 9/15 year–fold units favour coverage. The
-clean conclusion is that coverage can move error out of the extreme tail and
-into the more common range; that tail benefit is not stable when complete
+clean conclusion is that coverage lowers the extreme tail while raising error
+in the more common range; that tail benefit is not stable when complete
 regions are unseen. Historical-pattern sampling is the strong comparator:
 whole-block RMSE increases from 27.549 to 36.486 µatm (+8.936), and all 15/15
-units are worse than random under the present pointwise objective. Full,
-source-grounded
+units are worse than random under the present pointwise objective. Its global
+signed bias is approximately −4.85 µatm under both validation schemes, versus
+near zero for random and coverage; hidden-cell p99 nearly doubles from 66.406
+to 127.954 µatm. Full, source-grounded
 draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
 The rerunnable narrative is available in
@@ -177,10 +179,11 @@ historical-density and spatial-coverage sampling on a common 2005 evaluation
 set. The completed 20-seed, four-budget single-year benchmark identifies a
 tradeoff between typical error and severe tail error. A prespecified robustness
 phase repeats the full design in 2005, 2010 and 2014. At the largest sample
-count, spatial coverage raises median, MAE and p95 error but reduces p99 and the
+count, spatial coverage raises median, MAE and p95 error while reducing p99 and the
 tail-sensitive RMSE in the random hidden-cell test. Historical-density
-allocation is less accurate than random allocation throughout. This remains a
-single-model, not a real-ocean or cross-model, conclusion. In the confirmatory
+allocation is less accurate and introduces an approximately −4.85 µatm global
+signed bias under both validation schemes. This remains a single-model, not a
+real-ocean or cross-model, conclusion. In the confirmatory
 three-year whole-block holdout, coverage still worsens median and MAE in all 15
 units and p95 in 14/15; its p99 mean favours coverage but only 9/15 unit
 directions agree. Historical-pattern RMSE is worse than random in 15/15. A

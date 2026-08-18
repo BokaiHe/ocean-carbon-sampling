@@ -36,6 +36,15 @@ three annual-mean fields is 31.0 µatm, and the median local seasonal amplitude
 is 58.8 µatm. These are direct properties of the locked truth field, not a
 conversion to carbon flux.
 
+On this common scale, the hidden-cell coverage–random RMSE difference of 1.107
+µatm is about 2.5% of the month-cell truth standard deviation, whereas the
+whole-block historical–random difference of 8.936 µatm is about 20%. Comparing
+the random hidden-cell RMSE of 25.936 µatm with 44.9 µatm gives a rough
+variance-explained reference of `1 - (25.936 / 44.9)^2 ≈ 0.67`. This is not an
+exact pooled R² because the two quantities use different aggregations. It does
+show that reconstruction-model limitations remain material, which makes a
+cross-model check the highest-priority extension.
+
 The hidden-cell table resolves one mechanism rather than two validation
 regimes. Coverage is worse than random at the median, MAE and p95, but better at
 p99. Its lower RMSE is therefore a consequence of squared-error sensitivity to
@@ -47,10 +56,12 @@ The signed-bias percentage is intentionally omitted because the random
 denominator is close to zero and a percentage would be unstable and
 misleading.
 
-The absolute global mean signed errors are below 0.3 µatm for random and
-coverage, compared with RMSE values near 25–28 µatm. Their contrast is thus
+For coverage versus random, the absolute global mean signed errors are below
+0.3 µatm, compared with RMSE values near 25–28 µatm. That comparison is thus
 primarily about the magnitude distribution rather than a global signed offset.
-Near-zero global bias does not exclude cancelling regional biases.
+Near-zero global bias does not exclude cancelling regional biases. Historical
+sampling is qualitatively different: its bias is −4.822 µatm in hidden cells
+and −4.851 µatm in whole blocks, versus +0.065 and +0.104 µatm for random.
 
 ## Distribution across 15 year–fold units
 
@@ -73,9 +84,13 @@ nearly uniform deterioration under coverage.
 Historical-pattern-minus-random differences are also retained for all 15
 year–fold units. Whole-block RMSE is 27.549 µatm for random and 36.486 µatm for
 the historical pattern, a +8.936 µatm deterioration; all 15/15 unit differences
-are above zero. This is the strongest result under the present pointwise
-objective, but the historical baseline combines spatial clustering with its
-observed monthly allocation and is not a pure spatial control.
+are above zero. The historical-minus-random signed-bias difference is negative
+in 3/3 hidden-cell years and 15/15 whole-block units. In hidden cells,
+historical p99 absolute error rises
+from 66.406 to 127.954 µatm, nearly doubling. This is the strongest result under
+the present pointwise objective, but the historical baseline combines spatial
+clustering with its observed monthly allocation and is not a pure spatial
+control.
 
 ## Sample-count boundary
 
@@ -92,6 +107,9 @@ emergent high-count result, not a count-invariant advantage.
 Surface-ocean pCO2 enters air–sea CO2 flux through the sea–air pCO2 difference,
 but µatm cannot be converted to PgC yr−1 by a universal constant. Flux also
 depends on gas-transfer velocity, solubility, atmospheric pCO2, ice treatment
-and grid-cell area. A defensible integrated-flux evaluation requires applying a
-locked flux operator to each reconstructed field. The present claim remains a
-pointwise fCO2-reconstruction claim until that analysis is implemented.
+and grid-cell area. Unlike absolute-error magnitudes, a signed global offset is
+not removed by positive–negative cancellation within the evaluated mean and can
+propagate directionally into a downstream flux estimate. A defensible numerical
+flux effect still requires applying a locked flux operator to each reconstructed
+field. The present quantitative claim remains a pointwise pCO2-reconstruction
+claim until that analysis is implemented.
