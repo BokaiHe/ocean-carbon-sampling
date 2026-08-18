@@ -97,7 +97,12 @@ whole-block RMSE increases from 27.549 to 36.486 µatm (+8.936), and all 15/15
 units are worse than random under the present pointwise objective. Its global
 signed bias is approximately −4.85 µatm under both validation schemes, versus
 near zero for random and coverage; hidden-cell p99 nearly doubles from 66.406
-to 127.954 µatm. Full, source-grounded
+to 127.954 µatm. A factorized control preserves the historical spatial
+marginal while forcing exact uniform month quotas. Whole-block bias remains
+−3.736 µatm (difference from random −3.839; 15/15 units negative), retaining
+77.5% of the original bias magnitude. Thus space–month coupling contributes,
+but does not explain most of the model-conditioned historical penalty. Full,
+source-grounded
 draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
 The rerunnable narrative is available in
@@ -162,6 +167,7 @@ python scripts/summarize_regrid_audit.py
 python scripts/run_osse_spatial_block_gate.py
 python scripts/run_osse_spatial_block_gate.py --config configs/osse_spatial_block_confirmatory.yaml
 python scripts/audit_osse_month_balance.py
+python scripts/run_historical_month_balance_audit.py
 python scripts/summarize_osse_truth_scale.py
 python scripts/plot_osse_portfolio_figures.py
 jupyter lab notebooks/published/osse_results_walkthrough.ipynb
@@ -182,8 +188,10 @@ phase repeats the full design in 2005, 2010 and 2014. At the largest sample
 count, spatial coverage raises median, MAE and p95 error while reducing p99 and the
 tail-sensitive RMSE in the random hidden-cell test. Historical-density
 allocation is less accurate and introduces an approximately −4.85 µatm global
-signed bias under both validation schemes. This remains a single-model, not a
-real-ocean or cross-model, conclusion. In the confirmatory
+signed bias under both validation schemes. After removal of both global month
+imbalance and historical space–month coupling, 77.5% of the whole-block bias
+magnitude and 85.0% of the RMSE penalty remain. This remains a single-model,
+not a real-ocean or cross-model, conclusion. In the confirmatory
 three-year whole-block holdout, coverage still worsens median and MAE in all 15
 units and p95 in 14/15; its p99 mean favours coverage but only 9/15 unit
 directions agree. Historical-pattern RMSE is worse than random in 15/15. A

@@ -1,0 +1,2 @@
+spatial_weight,month_weight,interaction,interpretation,years,sample_count,n_seeds,hidden_units,whole_block_units
+SOCAT_1990_2004_count_summed_over_month,exact_uniform_quota,factorized_spatial_marginal_times_uniform_month,This removes both global month imbalance and the historical space-month interaction. Remaining differences from random are attributable to the retained historical spatial marginal conditional on the locked model.,2005;2010;2014,5000,20,3,15

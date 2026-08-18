@@ -133,8 +133,11 @@ def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
     configure_theme()
     random_col = "absolute_error_random"
     coverage_col = "absolute_error_spatial_coverage"
+    historical_col = "absolute_error_historical_density"
     difference_col = "absolute_error_difference_coverage_minus_random"
-    finite_error = fields[[random_col, coverage_col]].to_numpy(dtype=float)
+    finite_error = fields[
+        [random_col, coverage_col, historical_col]
+    ].to_numpy(dtype=float)
     error_limit = float(np.nanquantile(finite_error, 0.98))
     difference = fields[difference_col].to_numpy(dtype=float)
     difference_limit = float(np.nanquantile(np.abs(difference), 0.98))
@@ -142,7 +145,7 @@ def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
     fig = plt.figure(figsize=(7.2, 4.8))
     grid = fig.add_gridspec(
         2,
-        2,
+        3,
         left=0.03,
         right=0.97,
         bottom=0.12,
@@ -207,10 +210,16 @@ def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
     difference_bar.set_label("Coverage − random mean absolute error (µatm)")
 
     error_image = None
+    error_axes: list[mpl.axes.Axes] = []
     for index, (column, title) in enumerate(
-        [(random_col, "Random"), (coverage_col, "Balanced coverage")]
+        [
+            (random_col, "Random"),
+            (coverage_col, "Balanced coverage"),
+            (historical_col, "Historical pattern"),
+        ]
     ):
         ax = _world_axis(fig, grid[1, index])
+        error_axes.append(ax)
         lon, lat, values = _grid(fields, column)
         error_image = ax.pcolormesh(
             lon,
@@ -238,7 +247,7 @@ def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
         raise ValueError("field table is empty")
     error_bar = fig.colorbar(
         error_image,
-        ax=[axis for axis in fig.axes if hasattr(axis, "projection")][-2:],
+        ax=error_axes,
         orientation="horizontal",
         fraction=0.055,
         pad=0.05,
@@ -246,6 +255,132 @@ def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
     error_bar.set_label("Mean absolute error on the hidden evaluation set (µatm)")
     fig.suptitle(
         "Paired-seed spatial evidence · 2005, sample count 5,000, 20 seeds",
+        fontsize=9,
+        fontweight="bold",
+    )
+    return fig
+
+
+def plot_historical_bias_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
+    """Map historical signed error before and after factorizing month weights."""
+    configure_theme()
+    original = "signed_error_historical_density"
+    balanced = "signed_error_historical_spatial_month_balanced"
+    change = "signed_error_change_balanced_minus_historical"
+    signed_limit = float(
+        np.nanquantile(np.abs(fields[[original, balanced]].to_numpy()), 0.98)
+    )
+    change_limit = float(np.nanquantile(np.abs(fields[change].to_numpy()), 0.98))
+    fig = plt.figure(figsize=(7.2, 4.7))
+    grid = fig.add_gridspec(
+        2,
+        2,
+        left=0.03,
+        right=0.97,
+        bottom=0.10,
+        top=0.90,
+        hspace=0.31,
+        wspace=0.05,
+    )
+    signed_image = None
+    signed_axes: list[mpl.axes.Axes] = []
+    specifications = (
+        (original, "historical_negative_seed_fraction", "Historical pattern"),
+        (
+            balanced,
+            "balanced_negative_seed_fraction",
+            "Historical spatial marginal × uniform month",
+        ),
+    )
+    for index, (column, consistency, title) in enumerate(specifications):
+        ax = _world_axis(fig, grid[0, index])
+        signed_axes.append(ax)
+        lon, lat, values = _grid(fields, column)
+        signed_image = ax.pcolormesh(
+            lon,
+            lat,
+            values,
+            cmap=cmocean.cm.balance,
+            norm=TwoSlopeNorm(vmin=-signed_limit, vcenter=0.0, vmax=signed_limit),
+            shading="nearest",
+            transform=ccrs.PlateCarree(),
+            rasterized=True,
+            zorder=2,
+        )
+        stipple = fields.loc[fields[consistency] >= 0.8]
+        ax.scatter(
+            stipple["longitude"],
+            stipple["latitude"],
+            s=0.18,
+            marker=".",
+            color="#111827",
+            alpha=0.50,
+            linewidths=0,
+            transform=ccrs.PlateCarree(),
+            rasterized=True,
+            zorder=2.5,
+        )
+        ax.set_title(f"{title}\n• = negative in ≥16/20 seeds", pad=3)
+        ax.text(
+            0.01,
+            0.04,
+            chr(ord("a") + index),
+            transform=ax.transAxes,
+            fontweight="bold",
+            fontsize=8,
+            zorder=5,
+        )
+    if signed_image is None:
+        raise ValueError("historical bias map is empty")
+    signed_bar = fig.colorbar(
+        signed_image,
+        ax=signed_axes,
+        orientation="horizontal",
+        fraction=0.055,
+        pad=0.05,
+    )
+    signed_bar.set_label("Mean signed error, prediction − truth (µatm)")
+
+    difference_ax = _world_axis(fig, grid[1, :])
+    lon, lat, values = _grid(fields, change)
+    difference_image = difference_ax.pcolormesh(
+        lon,
+        lat,
+        values,
+        cmap=cmocean.cm.balance,
+        norm=TwoSlopeNorm(
+            vmin=-change_limit,
+            vcenter=0.0,
+            vmax=change_limit,
+        ),
+        shading="nearest",
+        transform=ccrs.PlateCarree(),
+        rasterized=True,
+        zorder=2,
+    )
+    difference_ax.set_title(
+        "Month-balanced − original signed error · positive = negative bias attenuated",
+        pad=3,
+    )
+    difference_ax.text(
+        0.01,
+        0.04,
+        "c",
+        transform=difference_ax.transAxes,
+        fontweight="bold",
+        fontsize=8,
+        zorder=5,
+    )
+    difference_bar = fig.colorbar(
+        difference_image,
+        ax=difference_ax,
+        orientation="horizontal",
+        fraction=0.055,
+        pad=0.04,
+    )
+    difference_bar.set_label("Change in mean signed error (µatm)")
+    fig.suptitle(
+        "Historical negative bias persists after removing space–month coupling · 2005",
         fontsize=9,
         fontweight="bold",
     )

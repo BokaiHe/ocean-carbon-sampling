@@ -6,6 +6,8 @@ import pandas as pd
 from ocean_carbon_sampling.osse_experiment import (
     fixed_budget_orders,
     historical_density_weights,
+    historical_spatial_month_balanced_order,
+    historical_spatial_weights,
     stratified_evaluation_positions,
     summarize_paired_effects,
     summarize_spatial_fold_consistency,
@@ -53,6 +55,54 @@ def test_historical_density_uses_only_requested_years():
     )
 
     assert weights.tolist() == [20.0, 0.0]
+
+
+def test_historical_spatial_weights_sum_out_month():
+    candidates = pd.DataFrame(
+        {
+            "month": [1, 2, 1, 2],
+            "latitude": [0.5, 0.5, 1.5, 1.5],
+            "longitude": [10.5, 10.5, 11.5, 11.5],
+        }
+    )
+    socat = pd.DataFrame(
+        {
+            "date": pd.to_datetime(
+                ["2004-01-16", "2004-02-16", "2004-01-16"]
+            ),
+            "latitude": [0.5, 0.5, 1.5],
+            "longitude": [10.5, 10.5, 11.5],
+            "fco2_count": [20, 30, 10],
+        }
+    )
+
+    weights = historical_spatial_weights(
+        candidates, socat, year_start=1990, year_end=2004
+    )
+
+    assert weights.tolist() == [50.0, 50.0, 10.0, 10.0]
+
+
+def test_historical_spatial_month_balanced_order_has_exact_month_quotas():
+    frame = pd.DataFrame(
+        {
+            "month": np.repeat(np.arange(1, 13), 10),
+            "latitude": np.tile(np.arange(10, dtype=float), 12),
+            "longitude": np.tile(np.arange(10, dtype=float), 12),
+        }
+    )
+    weights = np.tile(np.arange(1, 11, dtype=float), 12)
+
+    order = historical_spatial_month_balanced_order(
+        frame, weights, sample_count=61, seed=7
+    )
+
+    counts = frame.iloc[order].groupby("month").size()
+    assert len(order) == 61
+    assert len(np.unique(order)) == 61
+    assert counts.max() - counts.min() == 1
+    assert counts.sum() == 61
+    assert np.all(weights[order] > 0)
 
 
 def test_fixed_budget_orders_are_unique_nested_and_target_blind():

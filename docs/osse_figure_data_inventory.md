@@ -31,6 +31,13 @@ PNG, PDF, or SVG files.
 | `results/public/osse_claim_unit_effects.csv` | Absolute random/comparator values, differences and relative changes | validation scheme × year × optional fold × budget × comparison × metric |
 | `results/public/osse_claim_distribution_summary.csv` | Mean, median, IQR, range and direction counts across validation units | validation scheme × budget × comparison × metric |
 | `results/public/osse_truth_scale.csv` | Intrinsic pCO2 variability and seasonal-amplitude references from the locked truth fields | year plus pooled prespecified years |
+| `results/public/osse_historical_month_balance_metrics.csv` | Factorized historical-spatial × uniform-month reconstruction metrics | validation scheme × year × optional fold × seed |
+| `results/public/osse_historical_month_balance_selections.csv` | Exact month-quota and occupied-location audit for the factorized control | validation scheme × year × optional fold × seed |
+| `results/public/osse_historical_month_balance_paired_effects.csv` | Seed-paired factorized-historical minus random effects | validation scheme × year × optional fold × seed × metric |
+| `results/public/osse_historical_month_balance_unit_summary.csv` | Seed summaries for every validation unit | validation scheme × year × optional fold × metric |
+| `results/public/osse_historical_month_balance_distribution_summary.csv` | Cross-unit absolute values, differences and direction counts | validation scheme × metric |
+| `results/public/osse_historical_month_balance_design.csv` | Locked factorization definition, years, seeds and unit counts | one design record |
+| `results/public/osse_historical_bias_map_2005.parquet` | Original and factorized historical signed-error maps with seed-direction consistency | 2005 hidden-evaluation spatial cell |
 
 Regional context used by the walkthrough is retained in
 `spatial_sensitivity_overall_summary.csv` and

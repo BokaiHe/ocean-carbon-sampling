@@ -63,6 +63,31 @@ Near-zero global bias does not exclude cancelling regional biases. Historical
 sampling is qualitatively different: its bias is −4.822 µatm in hidden cells
 and −4.851 µatm in whole blocks, versus +0.065 and +0.104 µatm for random.
 
+## Factorized historical month-balance audit
+
+The defensive control is stricter than merely matching global month shares.
+SOCAT counts from 1990–2004 are first summed over month to form a historical
+spatial marginal. That same location weight is then used in every month, with
+exact quotas of 416 or 417 observations per month at sample count 5,000. This
+factorizes the design into `historical spatial marginal × uniform month`,
+removing both global month imbalance and the historical space–month interaction.
+
+| Validation | Metric | Random | Factorized historical | Difference | Direction |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Hidden cells | Bias | +0.065 | −3.798 | −3.863 | 3/3 below zero |
+| Hidden cells | RMSE | 25.936 | 34.299 | +8.363 | 3/3 above zero |
+| Hidden cells | p99 absolute error | 66.406 | 112.739 | +46.333 | 3/3 above zero |
+| Whole blocks | Bias | +0.104 | −3.736 | −3.839 | 15/15 below zero |
+| Whole blocks | RMSE | 27.549 | 35.143 | +7.594 | 15/15 above zero |
+| Whole blocks | p99 absolute error | 80.367 | 120.579 | +40.212 | 15/15 above zero |
+
+Whole-block month balancing reduces the original historical-minus-random bias
+magnitude from 4.954 to 3.839 µatm, leaving 77.5% of it. It retains 85.0% of
+the RMSE penalty and 83.9% of the p99 penalty. Space–month coupling therefore
+contributes materially, but the historical spatial marginal is sufficient to
+reproduce most of the penalty under the locked model. This resolves the main
+alternative explanation without claiming that seasonality is irrelevant.
+
 ## Distribution across 15 year–fold units
 
 Coverage-minus-random differences at sample count 5,000:
@@ -88,9 +113,9 @@ are above zero. The historical-minus-random signed-bias difference is negative
 in 3/3 hidden-cell years and 15/15 whole-block units. In hidden cells,
 historical p99 absolute error rises
 from 66.406 to 127.954 µatm, nearly doubling. This is the strongest result under
-the present pointwise objective, but the historical baseline combines spatial
-clustering with its observed monthly allocation and is not a pure spatial
-control.
+the present pointwise objective. The factorized audit above separates the
+historical spatial marginal from its monthly allocation and space–month
+interaction.
 
 ## Sample-count boundary
 

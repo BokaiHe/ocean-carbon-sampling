@@ -61,6 +61,83 @@ def historical_density_weights(
     return mapped["historical_weight"].fillna(0.0).to_numpy(dtype=float)
 
 
+def historical_spatial_weights(
+    candidates: pd.DataFrame,
+    socat: pd.DataFrame,
+    *,
+    year_start: int,
+    year_end: int,
+    weight_column: str = "fco2_count",
+) -> np.ndarray:
+    """Map the historical spatial marginal to every candidate month.
+
+    Months are summed out before mapping, so the same location receives the
+    same weight in every month. Combining these weights with exact month quotas
+    factorizes the design into the historical spatial marginal times a uniform
+    month distribution, removing both global month imbalance and space–month
+    interaction from the historical sampling mask.
+    """
+    historical = socat.loc[
+        socat["date"].dt.year.between(year_start, year_end)
+    ].copy()
+    density = (
+        historical.groupby(["latitude", "longitude"], as_index=False)[
+            weight_column
+        ]
+        .sum()
+        .rename(columns={weight_column: "historical_spatial_weight"})
+    )
+    mapped = candidates.loc[:, ["latitude", "longitude"]].merge(
+        density,
+        on=["latitude", "longitude"],
+        how="left",
+        sort=False,
+    )
+    return mapped["historical_spatial_weight"].fillna(0.0).to_numpy(dtype=float)
+
+
+def historical_spatial_month_balanced_order(
+    candidates: pd.DataFrame,
+    spatial_weights: np.ndarray,
+    *,
+    sample_count: int,
+    seed: int,
+) -> np.ndarray:
+    """Sample the historical spatial marginal with exact uniform month quotas."""
+    if sample_count <= 0 or sample_count > len(candidates):
+        raise ValueError("sample_count must be within the candidate pool")
+    weights = np.asarray(spatial_weights, dtype=float)
+    if weights.shape != (len(candidates),):
+        raise ValueError("spatial_weights must align with candidates")
+    months = np.sort(candidates["month"].unique())
+    if len(months) != 12:
+        raise ValueError("month-balanced historical sampling requires 12 months")
+
+    base, remainder = divmod(sample_count, len(months))
+    quotas = {
+        int(month): base + int(offset < remainder)
+        for offset, month in enumerate(months)
+    }
+    rng = np.random.default_rng(seed)
+    selected: list[np.ndarray] = []
+    month_values = candidates["month"].to_numpy(dtype=int)
+    for month in months:
+        positions = np.flatnonzero((month_values == month) & (weights > 0))
+        quota = quotas[int(month)]
+        if len(positions) < quota:
+            raise ValueError(
+                f"month {int(month)} has {len(positions)} positive-weight "
+                f"candidates, fewer than quota {quota}"
+            )
+        probabilities = weights[positions] / weights[positions].sum()
+        selected.append(
+            rng.choice(positions, size=quota, replace=False, p=probabilities)
+        )
+    order = np.concatenate(selected)
+    rng.shuffle(order)
+    return order.astype(int, copy=False)
+
+
 def fixed_budget_orders(
     candidates: pd.DataFrame,
     historical_weights: np.ndarray,

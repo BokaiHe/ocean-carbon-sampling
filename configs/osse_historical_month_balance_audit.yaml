@@ -1,0 +1,32 @@
+project:
+  phase: historical_spatial_month_balance_audit
+  question: >-
+    Does the historical observing pattern remain biased after preserving its
+    spatial marginal while forcing a uniform month distribution?
+
+source:
+  osse_config: configs/osse_pilot.yaml
+  spatial_block_config: configs/osse_spatial_block_confirmatory.yaml
+  years: [2005, 2010, 2014]
+
+execution:
+  sample_count: 5000
+  seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+  strategy: historical_spatial_month_balanced
+  work_directory: results/osse_historical_month_balance_work
+  metrics_file: results/public/osse_historical_month_balance_metrics.csv
+  selection_audit_file: results/public/osse_historical_month_balance_selections.csv
+  paired_effects_file: results/public/osse_historical_month_balance_paired_effects.csv
+  unit_summary_file: results/public/osse_historical_month_balance_unit_summary.csv
+  distribution_summary_file: results/public/osse_historical_month_balance_distribution_summary.csv
+  map_file: results/public/osse_historical_bias_map_2005.parquet
+  design_file: results/public/osse_historical_month_balance_design.csv
+
+identification:
+  spatial_weight: SOCAT_1990_2004_count_summed_over_month
+  month_weight: exact_uniform_quota
+  interaction: factorized_spatial_marginal_times_uniform_month
+  interpretation: >-
+    This removes both global month imbalance and the historical space-month
+    interaction. Remaining differences from random are attributable to the
+    retained historical spatial marginal conditional on the locked model.
