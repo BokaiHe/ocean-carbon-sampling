@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ocean-carbon-sampling"
+version = "0.1.0"
+description = "Leakage-aware sampling experiments for surface-ocean carbon reconstruction"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "matplotlib",
+  "numpy",
+  "pandas",
+  "pyarrow",
+  "scikit-learn",
+  "scipy",
+  "pyyaml",
+]
+
+[project.optional-dependencies]
+model = [
+  "xgboost",
+  "ngboost",
+  "shap",
+]
+app = [
+  "plotly",
+  "streamlit",
+]
+dev = [
+  "pytest",
+  "ruff",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"

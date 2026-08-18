@@ -1,0 +1,3 @@
+metric,n_folds,mean_of_fold_means,sd_across_fold_means,min_fold_mean,max_fold_mean,folds_mean_positive,folds_interval_above_zero
+cell_cv_reduction,5,0.9748491565476651,0.0205019574747666,0.9475779958418566,0.9988443293190038,5,5
+rmse_gain,5,0.29510894664746323,0.5883701688985618,-0.6613113074204413,0.793785262306125,4,3

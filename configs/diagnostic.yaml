@@ -1,0 +1,59 @@
+experiment:
+  name: strategy_error_xgboost_shap_diagnostic
+  seeds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+    - 19
+  spatial_test_folds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+
+data:
+  raw_path: data/raw/socat/SOCATv2025_tracks_gridded_monthly.csv
+  year_start: 1990
+  year_end: 2024
+  latitude_max: -35.0
+
+validation:
+  temporal_test_start: 2020
+  spatial_block_lon_degrees: 20
+  spatial_block_lat_degrees: 10
+  n_spatial_folds: 5
+
+sampling:
+  initial_fraction: 0.10
+  budget: 0.20
+  coverage_cells:
+    longitude_degrees: 10
+    latitude_degrees: 5
+
+diagnostic:
+  targets:
+    - mean_squared_error_gain
+    - mean_absolute_error_gain
+  primary_target: mean_squared_error_gain
+  group_column: spatial_block
+  group_cv_splits: 5
+  model_seed: 2026
+  minimum_oof_r2: 0.0
+  minimum_oof_spearman: 0.20

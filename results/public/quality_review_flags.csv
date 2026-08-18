@@ -1,0 +1,6 @@
+flag,rows,action
+fco2_below_100,20,review_only_not_excluded
+fco2_above_700,1,review_only_not_excluded
+sst_outside_minus3_to_35,0,review_only_not_excluded
+salinity_below_20,16,review_only_not_excluded
+salinity_above_40,0,review_only_not_excluded

@@ -1,0 +1,6 @@
+regime,split,rows
+temporal,development,49372
+temporal,test,9088
+spatial,development,40153
+spatial,test,9219
+spatial,not_used,9088

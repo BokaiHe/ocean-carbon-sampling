@@ -1,0 +1,2 @@
+target,selected_model_variant,overall_oof_r2,overall_oof_spearman,minimum_oof_r2,minimum_oof_spearman,shap_interpretation_allowed,decision
+mean_squared_error_gain,full,-0.06224810924002244,0.0751031612095281,0.0,0.2,False,withheld: insufficient spatially grouped predictive skill

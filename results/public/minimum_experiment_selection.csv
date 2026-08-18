@@ -1,0 +1,9 @@
+regime,strategy,budget_fraction,n_train,occupied_coverage_cells,available_coverage_cells,coverage_cell_count_cv,seed
+temporal,random,0.1,4938,265,273,1.6840883959557849,42
+temporal,random,0.2,9875,270,273,1.676473003974594,42
+temporal,coverage,0.1,4938,265,273,1.6840883959557849,42
+temporal,coverage,0.2,9875,273,273,0.7119458651593401,42
+spatial,random,0.1,4016,209,217,1.7222390033925579,42
+spatial,random,0.2,8031,214,217,1.730094510197476,42
+spatial,coverage,0.1,4016,209,217,1.7222390033925579,42
+spatial,coverage,0.2,8031,217,217,0.7291996880313141,42

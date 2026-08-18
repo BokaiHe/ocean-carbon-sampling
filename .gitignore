@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Environments and secrets
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Jupyter scratch work
+.ipynb_checkpoints/
+notebooks/work/
+notebooks/**/*.ipynb
+!notebooks/published/*.ipynb
+
+# Data: only a deliberately small demo may be committed
+data/**
+!data/README.md
+!data/demo/
+!data/demo/**
+
+# Experiment outputs: only curated public tables/figures may be committed
+results/**
+!results/README.md
+!results/public/
+!results/public/**
+# Keep publication TIFF locally; commit lightweight PNG/SVG/PDF previews instead.
+results/public/*.tiff
+outputs/
+artifacts/
+models/
+checkpoints/
+cache/
+logs/
+mlruns/
+wandb/
+
+# Large scientific formats outside curated public folders
+*.zarr/
+*.nc
+*.nc4
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib

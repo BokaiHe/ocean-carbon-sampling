@@ -1,0 +1,42 @@
+experiment:
+  name: southern_ocean_minimum
+  seed: 42
+
+data:
+  source: socat_v2025_monthly_1deg
+  raw_path: data/raw/socat/SOCATv2025_tracks_gridded_monthly.csv
+  target: fco2_ave_weighted
+  features:
+    - sst_ave_weighted
+    - salinity_ave_weighted
+    - latitude
+    - longitude
+    - year
+    - month
+  year_start: 1990
+  year_end: 2024
+  latitude_max: -35.0
+
+validation:
+  temporal_test_start: 2020
+  spatial_block_lon_degrees: 20
+  spatial_block_lat_degrees: 10
+  spatial_test_fold: 0
+
+sampling:
+  initial_fraction: 0.10
+  budgets:
+    - 0.10
+    - 0.20
+  strategies:
+    - random
+    - coverage
+  coverage_cells:
+    longitude_degrees: 10
+    latitude_degrees: 5
+
+metrics:
+  primary: rmse
+  secondary:
+    - mae
+    - bias
