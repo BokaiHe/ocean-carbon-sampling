@@ -41,11 +41,16 @@ processing:
   time_frequency: monthly
   subset_before_regridding: true
   regrid_method: native_cell_center_bin_mean
+  area_weighted_regrid_method: native_cell_area_weighted_bin_mean
   processed_file: data/processed/osse_pilot/IPSL-CM6A-LR_historical_2005_1deg.nc
   processed_file_template: >-
     data/processed/osse_pilot/IPSL-CM6A-LR_historical_{year}_1deg.nc
   audit_file: results/osse_work/preprocess_2005_audit.csv
   audit_file_template: results/osse_work/preprocess_{year}_audit.csv
+  area_weighted_processed_file_template: >-
+    data/processed/osse_regrid_audit/IPSL-CM6A-LR_historical_{year}_1deg_area_weighted.nc
+  area_weighted_audit_file_template: >-
+    results/osse_work/preprocess_{year}_area_weighted_audit.csv
   expected_months: 12
   minimum_ocean_bins: 40000
   spco2_output_unit: micro_atmosphere
@@ -178,3 +183,56 @@ experiment:
     paired_summary_file: results/public/osse_cross_year_paired_summary.csv
     year_consistency_file: results/public/osse_cross_year_consistency.csv
     versions_file: results/public/osse_cross_year_versions.csv
+  regrid_audit:
+    years:
+      - 2005
+      - 2010
+      - 2014
+    comparison: >-
+      Exact native-cell-area weighted bin means versus the locked native-cell
+      centre equal-weight bin means, with all downstream settings unchanged.
+    qualitative_stability_gate: >-
+      At budget 5000 in all three years: historical-density-minus-random RMSE
+      remains positive; spatial-coverage-minus-random RMSE and p99 absolute
+      error remain negative; spatial-coverage-minus-random median absolute
+      error remains positive.
+    budgets:
+      - 500
+      - 1000
+      - 2500
+      - 5000
+    seeds:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+    bootstrap_resamples: 10000
+    bootstrap_seed: 2026
+    metrics_file: results/public/osse_regrid_audit_metrics.csv
+    selections_file: results/public/osse_regrid_audit_selections.csv
+    design_file: results/public/osse_regrid_audit_design.csv
+    summary_file: results/public/osse_regrid_audit_summary.csv
+    paired_effects_file: results/public/osse_regrid_audit_paired_effects.csv
+    paired_summary_file: results/public/osse_regrid_audit_paired_summary.csv
+    year_consistency_file: results/public/osse_regrid_audit_year_consistency.csv
+    versions_file: results/public/osse_regrid_audit_versions.csv
+    field_comparison_file: results/public/osse_regrid_audit_field_comparison.csv
+    method_effects_file: results/public/osse_regrid_audit_method_effects.csv
+    method_summary_file: results/public/osse_regrid_audit_method_summary.csv
+    stability_gate_file: results/public/osse_regrid_audit_stability_gate.csv

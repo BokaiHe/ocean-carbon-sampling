@@ -27,16 +27,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", default="configs/osse_pilot.yaml")
     parser.add_argument(
         "--phase",
-        choices=("gate", "benchmark", "cross_year"),
+        choices=("gate", "benchmark", "cross_year", "regrid_audit"),
         default="gate",
     )
     return parser.parse_args()
 
 
 def _processed_path(
-    processing: dict[str, object], *, year: int, cross_year: bool
+    processing: dict[str, object], *, year: int, phase: str
 ) -> Path:
-    if cross_year:
+    if phase == "regrid_audit":
+        return Path(
+            str(processing["area_weighted_processed_file_template"]).format(year=year)
+        )
+    if phase == "cross_year":
         return Path(str(processing["processed_file_template"]).format(year=year))
     return Path(str(processing["processed_file"]))
 
@@ -92,15 +96,20 @@ def _run_year(
             evaluation_config["extreme_value_sensitivity_threshold"]
         ),
     )
-    if phase == "cross_year":
+    if phase in {"cross_year", "regrid_audit"}:
         metrics.insert(0, "year", year)
         selections.insert(0, "year", year)
     design: dict[str, object] = {
         "phase": phase,
         "pilot_year": year,
     }
-    if phase == "cross_year":
+    if phase in {"cross_year", "regrid_audit"}:
         design["processed_file"] = processed_path.as_posix()
+        design["regrid_method"] = (
+            "native_cell_area_weighted_bin_mean"
+            if phase == "regrid_audit"
+            else "native_cell_center_bin_mean"
+        )
     design.update(
         {
             "n_complete_month_cells": len(frame),
@@ -201,10 +210,10 @@ def main() -> None:
     experiment = config["experiment"]
     config_key = "execution_gate" if args.phase == "gate" else args.phase
     run_config = experiment[config_key]
-    cross_year = args.phase == "cross_year"
+    annual_phase = args.phase in {"cross_year", "regrid_audit"}
     years = (
         [int(value) for value in run_config["years"]]
-        if cross_year
+        if annual_phase
         else [int(processing["pilot_year"])]
     )
     density_config = experiment["historical_density"]
@@ -214,7 +223,7 @@ def main() -> None:
     selection_frames: list[pd.DataFrame] = []
     design_rows: list[dict[str, object]] = []
     for year in years:
-        path = _processed_path(processing, year=year, cross_year=cross_year)
+        path = _processed_path(processing, year=year, phase=args.phase)
         metrics, selections, design = _run_year(
             year=year,
             phase=args.phase,
@@ -249,7 +258,7 @@ def main() -> None:
     summary.to_csv(run_config["summary_file"], index=False)
     paired.to_csv(run_config["paired_effects_file"], index=False)
 
-    if args.phase in {"benchmark", "cross_year"}:
+    if args.phase in {"benchmark", "cross_year", "regrid_audit"}:
         paired_summary = summarize_paired_effects(
             paired,
             n_resamples=int(run_config["bootstrap_resamples"]),
@@ -257,7 +266,7 @@ def main() -> None:
         )
         paired_summary.to_csv(run_config["paired_summary_file"], index=False)
         _software_versions().to_csv(run_config["versions_file"], index=False)
-        if cross_year:
+        if annual_phase:
             summarize_year_consistency(paired_summary).to_csv(
                 run_config["year_consistency_file"], index=False
             )

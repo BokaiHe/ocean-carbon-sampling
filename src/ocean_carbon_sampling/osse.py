@@ -28,11 +28,13 @@ def aggregate_curvilinear_to_regular(
     longitude: np.ndarray,
     *,
     resolution_degrees: float = 1.0,
+    cell_weights: np.ndarray | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Average native cell-centre values within occupied regular-grid bins.
 
     ``values`` must have shape ``(time, y, x)`` and the coordinate arrays must
-    have shape ``(y, x)``. Unoccupied output bins remain NaN.
+    have shape ``(y, x)``. Optional positive ``cell_weights`` must share that
+    spatial shape. Unoccupied output bins remain NaN.
     """
     _validate_resolution(resolution_degrees)
     data = np.asarray(values, dtype=np.float64)
@@ -42,6 +44,11 @@ def aggregate_curvilinear_to_regular(
         raise ValueError("values must have shape (time, y, x)")
     if lat.shape != lon.shape or data.shape[1:] != lat.shape:
         raise ValueError("coordinate shapes must match the spatial data dimensions")
+    weights: np.ndarray | None = None
+    if cell_weights is not None:
+        weights = np.asarray(cell_weights, dtype=np.float64)
+        if weights.shape != lat.shape:
+            raise ValueError("cell_weights must match the coordinate shapes")
 
     latitudes, longitudes = regular_grid_centers(resolution_degrees)
     n_lat = latitudes.size
@@ -71,15 +78,29 @@ def aggregate_curvilinear_to_regular(
     counts = np.zeros((data.shape[0], n_bins), dtype=np.int32)
     flat_bins = bin_id.ravel()
     flat_coordinates = coordinate_valid.ravel()
+    flat_weights = weights.ravel() if weights is not None else None
     for time_index, field in enumerate(data):
         flat_values = field.ravel()
         valid = flat_coordinates & np.isfinite(flat_values)
+        if flat_weights is not None:
+            valid &= np.isfinite(flat_weights) & (flat_weights > 0)
         time_counts = np.bincount(flat_bins[valid], minlength=n_bins)
-        time_sums = np.bincount(
-            flat_bins[valid], weights=flat_values[valid], minlength=n_bins
-        )
+        if flat_weights is None:
+            time_sums = np.bincount(
+                flat_bins[valid], weights=flat_values[valid], minlength=n_bins
+            )
+            denominator = time_counts
+        else:
+            time_sums = np.bincount(
+                flat_bins[valid],
+                weights=flat_values[valid] * flat_weights[valid],
+                minlength=n_bins,
+            )
+            denominator = np.bincount(
+                flat_bins[valid], weights=flat_weights[valid], minlength=n_bins
+            )
         occupied = time_counts > 0
-        output[time_index, occupied] = time_sums[occupied] / time_counts[occupied]
+        output[time_index, occupied] = time_sums[occupied] / denominator[occupied]
         counts[time_index] = time_counts.astype(np.int32)
 
     shape = (data.shape[0], n_lat, n_lon)

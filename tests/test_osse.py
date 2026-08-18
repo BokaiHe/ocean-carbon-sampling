@@ -58,3 +58,25 @@ def test_aggregate_curvilinear_ignores_missing_coordinates():
 
     assert aggregated[0, 90, 200] == pytest.approx(1.0)
     assert counts.sum() == 1
+
+
+def test_aggregate_curvilinear_supports_native_cell_area_weights():
+    aggregated, counts = aggregate_curvilinear_to_regular(
+        np.array([[[2.0, 4.0, 100.0]]]),
+        np.array([[0.2, 0.3, 0.4]]),
+        np.array([[20.2, 20.4, 20.6]]),
+        cell_weights=np.array([[1.0, 3.0, 0.0]]),
+    )
+
+    assert aggregated[0, 90, 200] == pytest.approx(3.5)
+    assert counts[0, 90, 200] == 2
+
+
+def test_aggregate_curvilinear_rejects_weight_shape_mismatch():
+    with pytest.raises(ValueError, match="cell_weights"):
+        aggregate_curvilinear_to_regular(
+            np.ones((1, 2, 2)),
+            np.ones((2, 2)),
+            np.ones((2, 2)),
+            cell_weights=np.ones((2, 3)),
+        )

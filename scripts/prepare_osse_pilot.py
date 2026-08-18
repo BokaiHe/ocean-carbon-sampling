@@ -27,6 +27,11 @@ def parse_args() -> argparse.Namespace:
         type=int,
         help="years to prepare; defaults to processing.pilot_year",
     )
+    parser.add_argument(
+        "--regrid",
+        choices=("equal_weight", "area_weighted"),
+        default="equal_weight",
+    )
     return parser.parse_args()
 
 
@@ -43,6 +48,7 @@ def prepare_year(
     cmip: dict[str, object],
     processing: dict[str, object],
     manifest: pd.DataFrame,
+    regrid: str = "equal_weight",
 ) -> tuple[Path, pd.DataFrame]:
     """Prepare a single annual cube and return its audit table."""
     source_dir = Path(str(cmip["raw_directory"]))
@@ -70,6 +76,7 @@ def prepare_year(
             time = selected["time"].values
             latitude = source["nav_lat"].values
             longitude = source["nav_lon"].values
+            cell_area = source["area"].values if regrid == "area_weighted" else None
             if reference_time is None:
                 reference_time = time
                 reference_latitude = latitude
@@ -88,6 +95,7 @@ def prepare_year(
                 latitude,
                 longitude,
                 resolution_degrees=resolution,
+                cell_weights=cell_area,
             )
             if entry.variable == "spco2":
                 regular = pa_to_microatmosphere(regular)
@@ -106,6 +114,7 @@ def prepare_year(
             audit_rows.append(
                 {
                     "year": year,
+                    "regrid": regrid,
                     "variable": entry.variable,
                     "native_finite_cells_per_month": int(
                         np.isfinite(native[0]).sum()
@@ -156,11 +165,24 @@ def prepare_year(
             "member_id": cmip["member_id"],
             "source_grid": cmip["grid_label"],
             "source_version": cmip["version"],
-            "regrid_method": processing["regrid_method"],
-            "analysis_status": "prespecified cross-year robustness analysis",
+            "regrid_method": (
+                processing["area_weighted_regrid_method"]
+                if regrid == "area_weighted"
+                else processing["regrid_method"]
+            ),
+            "analysis_status": (
+                "prespecified regridding sensitivity audit"
+                if regrid == "area_weighted"
+                else "prespecified cross-year robustness analysis"
+            ),
         },
     )
-    output = _year_path(processing, "processed_file", year)
+    output_key = (
+        "area_weighted_processed_file"
+        if regrid == "area_weighted"
+        else "processed_file"
+    )
+    output = _year_path(processing, output_key, year)
     output.parent.mkdir(parents=True, exist_ok=True)
     encoding = {
         name: {"compression": "gzip", "compression_opts": 4}
@@ -169,7 +191,8 @@ def prepare_year(
     dataset.to_netcdf(output, engine="h5netcdf", encoding=encoding)
 
     audit = pd.DataFrame(audit_rows)
-    audit_path = _year_path(processing, "audit_file", year)
+    audit_key = "area_weighted_audit_file" if regrid == "area_weighted" else "audit_file"
+    audit_path = _year_path(processing, audit_key, year)
     audit_path.parent.mkdir(parents=True, exist_ok=True)
     audit.to_csv(audit_path, index=False)
     return output, audit
@@ -188,6 +211,7 @@ def main() -> None:
             cmip=cmip,
             processing=processing,
             manifest=manifest,
+            regrid=args.regrid,
         )
         print(audit.to_string(index=False))
         print(f"\nSaved {output} ({output.stat().st_size / 1_000_000:.1f} MB)\n")

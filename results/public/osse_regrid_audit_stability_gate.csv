@@ -1,0 +1,13 @@
+year,comparison,metric,expected_direction,mean_difference,seed_bootstrap_low,seed_bootstrap_high,direction_pass,interval_direction_consistent
+2005,historical_density_minus_random,rmse,positive,8.940758147150845,7.905075506511187,9.857476431207274,True,True
+2010,historical_density_minus_random,rmse,positive,9.83862239317028,9.13135119373878,10.573180433717104,True,True
+2014,historical_density_minus_random,rmse,positive,10.630945966564065,10.04038977980134,11.222367271104217,True,True
+2005,spatial_coverage_minus_random,rmse,negative,-1.463788591170939,-2.370445694269476,-0.6659461024075415,True,True
+2010,spatial_coverage_minus_random,rmse,negative,-1.153038081379099,-1.766634639058697,-0.5695791758023069,True,True
+2014,spatial_coverage_minus_random,rmse,negative,-0.6921011818655775,-1.1141402455358511,-0.3007839657037949,True,True
+2005,spatial_coverage_minus_random,p99_absolute_error,negative,-5.692824826237535,-9.864446570481984,-1.9053280639896348,True,True
+2010,spatial_coverage_minus_random,p99_absolute_error,negative,-5.024984592816144,-8.26533647342968,-1.9351194308048123,True,True
+2014,spatial_coverage_minus_random,p99_absolute_error,negative,-4.264472403767069,-6.737874348752123,-1.9059324955250587,True,True
+2005,spatial_coverage_minus_random,median_absolute_error,positive,0.6374968859195207,0.5451705469087778,0.7283713809658581,True,True
+2010,spatial_coverage_minus_random,median_absolute_error,positive,0.7469288717317497,0.6237008127311173,0.8694628146043708,True,True
+2014,spatial_coverage_minus_random,median_absolute_error,positive,0.5937881783074104,0.4973816924181795,0.6970602831238502,True,True

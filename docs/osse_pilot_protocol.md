@@ -99,6 +99,22 @@ confidence interval is calculated. Agreement across these years is reported as
 robustness within this model experiment, not as evidence of real-ocean
 generality.
 
+## Regridding-weight sensitivity audit
+
+The first processing-method audit repeats the full three-year experiment using
+the exact native cell area stored in each CMIP6 file as the within-bin weight.
+The original and audit transformations both assign a native cell to a
+one-degree target bin by its centre; only equal weighting versus native-area
+weighting changes. Evaluation positions, sampling seeds, budgets, model and
+historical-density definition remain locked.
+
+Before the weighted model results are inspected, qualitative stability is
+defined at budget 5,000 as preserving the expected sign in all three years for
+four effects: historical-density-minus-random RMSE, and
+spatial-coverage-minus-random RMSE, p99 absolute error and median absolute
+error. Effect sizes and paired seed-bootstrap intervals are also reported; the
+gate is not based on an arbitrary percentage-change threshold.
+
 ## Interpretation boundary
 
 CMIP6 `spco2` is partial pressure, whereas SOCAT reports fugacity (`fCO2`). SOCAT
@@ -107,11 +123,11 @@ values are not interchangeable with the model truth. A result from one Earth
 system model is a controlled proof of concept, not evidence that one strategy is
 universally optimal in the real ocean.
 
-The centre-bin mean is a pipeline-validation transformation rather than the
-final regridding claim. Before the ten-year scientific comparison, it must be
-checked against an area-weighted mapping using native cell area. Because all
-sampling strategies in the pilot use the same processed truth field, this
-provisional transformation does not advantage one strategy over another.
+The centre-bin mean began as a pipeline-validation transformation rather than a
+final regridding claim. It has now been checked against weighting by exact
+native cell area inside each target bin. This does not replace a full
+polygon-overlap conservative remapping audit: both current transformations
+assign a native cell to a target bin by its centre.
 
 No finite model values are removed post hoc. The 2005 audit identifies a small
 upper tail in `spco2` (81 processed values above 1,000 micro-atmospheres), with

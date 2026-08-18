@@ -84,6 +84,9 @@ python scripts/run_osse_gate.py
 python scripts/run_osse_gate.py --phase benchmark
 python scripts/prepare_osse_pilot.py --years 2010 2014
 python scripts/run_osse_gate.py --phase cross_year
+python scripts/prepare_osse_pilot.py --years 2005 2010 2014 --regrid area_weighted
+python scripts/run_osse_gate.py --phase regrid_audit
+python scripts/summarize_regrid_audit.py
 ```
 
 ## Current status
@@ -100,7 +103,9 @@ phase repeats the full design in 2005, 2010 and 2014. At the largest budget,
 spatial coverage reduces RMSE and p99 absolute error in every year while
 slightly increasing typical absolute error; historical-density allocation is
 less accurate than random allocation throughout. This remains a single-model,
-not a real-ocean or cross-model, conclusion. See
-[`docs/osse_cross_year_results.md`](docs/osse_cross_year_results.md). Results are generated into
+not a real-ocean or cross-model, conclusion. A native-cell-area weighting audit
+preserves all 12 prespecified cross-year direction checks, showing that the
+result is not an artefact of equal weighting within target bins. See
+[`docs/osse_regrid_audit_results.md`](docs/osse_regrid_audit_results.md). Results are generated into
 `results/public/`; raw observations, resumable work files, withheld exploratory
 interpretations, and heavy local outputs remain excluded from Git.
