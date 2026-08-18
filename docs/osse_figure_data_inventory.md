@@ -11,14 +11,14 @@ PNG, PDF, or SVG files.
 | File | Role | Granularity |
 | --- | --- | --- |
 | `results/public/osse_cross_year_metrics.csv` | Learning curves and absolute performance | year × domain × strategy × budget × seed |
-| `results/public/osse_cross_year_paired_summary.csv` | Fixed-budget paired effects and bootstrap intervals | year × domain × budget × comparison × metric |
+| `results/public/osse_cross_year_paired_summary.csv` | Fixed-sample-count paired effects and bootstrap intervals | year × domain × budget × comparison × metric |
 | `results/public/osse_regrid_audit_paired_summary.csv` | Equal-bin versus native-cell-area robustness | regrid method × year × domain × budget × comparison × metric |
 | `results/public/osse_cross_year_design.csv` | Locked cross-year design metadata | design record |
 | `results/public/osse_cross_year_versions.csv` | Runtime and package provenance | software component |
 | `results/public/osse_regrid_audit_design.csv` | Regridding-audit design metadata | design record |
 | `results/public/osse_regrid_audit_versions.csv` | Regridding-audit runtime provenance | software component |
 | `results/public/osse_visual_demo_fields.parquet` | Representative hidden-evaluation error maps | 2005 spatial grid cell |
-| `results/public/osse_visual_demo_sampling.parquet` | Fixed-budget sampling-density maps | strategy × 5° × 10° block |
+| `results/public/osse_visual_demo_sampling.parquet` | Fixed-sample-count sampling-density maps | strategy × 5° × 10° block |
 | `results/public/osse_visual_demo_metadata.csv` | Demo year, seed, budget and row-count boundary | one representative-map record |
 | `results/public/osse_spatial_block_confirmatory_blocks.csv` | Spatial-block fold assignment for the strict holdout map | year × occupied 20° × 10° block |
 | `results/public/osse_spatial_block_confirmatory_paired_summary.csv` | Year- and fold-specific paired effects and seed-bootstrap intervals | year × fold × domain × budget × comparison × metric |
@@ -30,6 +30,7 @@ PNG, PDF, or SVG files.
 | `results/public/osse_month_balance_strategy_summary.csv` | Portfolio-level month-balance audit | strategy × budget |
 | `results/public/osse_claim_unit_effects.csv` | Absolute random/comparator values, differences and relative changes | validation scheme × year × optional fold × budget × comparison × metric |
 | `results/public/osse_claim_distribution_summary.csv` | Mean, median, IQR, range and direction counts across validation units | validation scheme × budget × comparison × metric |
+| `results/public/osse_truth_scale.csv` | Intrinsic pCO2 variability and seasonal-amplitude references from the locked truth fields | year plus pooled prespecified years |
 
 Regional context used by the walkthrough is retained in
 `spatial_sensitivity_overall_summary.csv` and
@@ -57,7 +58,7 @@ declared spatial aggregation for representative seed 0, not a subsample.
   not counted as independent tests.
 - The notebook spatial-block gate map uses every occupied block in
   `osse_spatial_block_confirmatory_blocks.csv`; its forest panels use all 45
-  RMSE, p99 and median-error rows at budget 5,000 from
+  RMSE, p99 and median-error rows at sample count 5,000 from
   `osse_spatial_block_confirmatory_paired_summary.csv`.
 
 ## Statistical boundary

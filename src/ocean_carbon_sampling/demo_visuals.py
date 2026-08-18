@@ -119,7 +119,7 @@ def plot_sampling_atlas(
     colorbar = fig.colorbar(image, cax=color_ax, orientation="horizontal")
     colorbar.set_label("Selected month-grid observations per 5° × 10° block")
     fig.suptitle(
-        f"Same budget, different observing geometry · n={budget:,}, seed={seed}",
+        f"Same sample count, different observing geometry · n={budget:,}, seed={seed}",
         x=0.5,
         y=0.98,
         fontsize=9,
@@ -383,7 +383,7 @@ def plot_budget_sweep(effects: pd.DataFrame) -> mpl.figure.Figure:
         color="#4B5563",
     )
     fig.suptitle(
-        "Budget sensitivity · the error tradeoff is not unique to sample count 5,000",
+        "Sample-count sensitivity · tail suppression emerges only at higher counts",
         fontsize=9,
         fontweight="bold",
         y=1.02,
@@ -549,7 +549,7 @@ def plot_spatial_holdout_gate(
         effect_ax.grid(axis="x", color="#E5E7EB", linewidth=0.5)
         effect_ax.tick_params(axis="x", labelsize=5.8)
     fig.suptitle(
-        "Unseen-region performance is a tradeoff, not a universal coverage gain",
+        "Typical error rises; extreme-tail gains are unstable",
         fontsize=9,
         fontweight="bold",
         y=0.98,

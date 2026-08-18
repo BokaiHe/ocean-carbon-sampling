@@ -30,9 +30,27 @@ whole-spatial-block test.
 | Whole blocks | p99 absolute error | 80.367 | 76.777 | −3.590 | −3.47% |
 | Whole blocks | Mean signed error | +0.104 | +0.256 | +0.152 | not defined |
 
+For context, the pooled monthly truth field across the three prespecified years
+has a standard deviation of 44.9 µatm. The spatial standard deviation of the
+three annual-mean fields is 31.0 µatm, and the median local seasonal amplitude
+is 58.8 µatm. These are direct properties of the locked truth field, not a
+conversion to carbon flux.
+
+The hidden-cell table resolves one mechanism rather than two validation
+regimes. Coverage is worse than random at the median, MAE and p95, but better at
+p99. Its lower RMSE is therefore a consequence of squared-error sensitivity to
+the small number of very large errors; it is not evidence that most predictions
+improve. Whole-block validation preserves the same sub-p95 deterioration, while
+the p99 benefit becomes directionally unstable.
+
 The signed-bias percentage is intentionally omitted because the random
 denominator is close to zero and a percentage would be unstable and
 misleading.
+
+The absolute global mean signed errors are below 0.3 µatm for random and
+coverage, compared with RMSE values near 25–28 µatm. Their contrast is thus
+primarily about the magnitude distribution rather than a global signed offset.
+Near-zero global bias does not exclude cancelling regional biases.
 
 ## Distribution across 15 year–fold units
 
@@ -52,14 +70,22 @@ The p99 mean of −3.590 µatm is substantially more negative than its median of
 shift, not a stable directional effect. In contrast, MAE, median and p95 show
 nearly uniform deterioration under coverage.
 
+Historical-pattern-minus-random differences are also retained for all 15
+year–fold units. Whole-block RMSE is 27.549 µatm for random and 36.486 µatm for
+the historical pattern, a +8.936 µatm deterioration; all 15/15 unit differences
+are above zero. This is the strongest result under the present pointwise
+objective, but the historical baseline combines spatial clustering with its
+observed monthly allocation and is not a pure spatial control.
+
 ## Sample-count boundary
 
 The month-stratified hidden-cell comparison uses all four locked sample counts.
 At 500 observations, coverage has higher RMSE and p99 error than random in all
-three years. At 1,000 the direction is mixed. Only at 2,500 and 5,000 do all
-three years favour coverage for RMSE and p99. Median absolute error remains
-higher under coverage in every year at every tested count. The hidden-cell
-benefit is therefore an emergent high-count result, not a count-invariant law.
+three years: extreme-tail suppression has not emerged. At 1,000 the direction
+is mixed. Only at 2,500 and 5,000 do all three years favour coverage for p99 and
+the tail-sensitive RMSE. Median absolute error remains higher under coverage in
+every year at every tested count. The redistribution of error is therefore an
+emergent high-count result, not a count-invariant advantage.
 
 ## Carbon-flux stakes
 

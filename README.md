@@ -1,12 +1,12 @@
 # Ocean Carbon Sampling
 
-An independent, reproducible study of how fixed-budget sampling strategies affect out-of-sample reconstruction of Southern Ocean surface-ocean fCO2, followed by a global observing-system simulation experiment (OSSE) and an interactive web application.
+An independent, reproducible study of how fixed-sample-count strategies affect out-of-sample reconstruction of Southern Ocean surface-ocean fCO2, followed by a global observing-system simulation experiment (OSSE) and an interactive web application.
 
 This project is inspired by a collaborative course project in EESC/STAT 4243. The research question, experiment design, validation framework, implementation, and analyses in this repository are being independently redesigned.
 
 ## Research question
 
-Under the same annual observation budget, which seasonally aware spatial
+Under the same annual sample count, which seasonally aware spatial
 allocation strategy improves blocked out-of-sample fCO2 reconstruction most
 efficiently?
 
@@ -78,24 +78,24 @@ baseline, so the truth does not inherit SOCAT's sparse sampling mask.
 
 ![Cross-year OSSE learning curves](results/public/fig2_cross_year_learning_curves.png)
 
-![Fixed-budget error tradeoff and regridding robustness](results/public/fig3_error_tradeoff_and_robustness.png)
+![Fixed-sample-count error tradeoff and regridding robustness](results/public/fig3_error_tradeoff_and_robustness.png)
 
 The locked global OSSE separates sampling geometry from sample count: each
-strategy receives the same observation budget, uses the same reconstruction
-model, and is evaluated against complete model truth. Under a month-stratified
-random hidden-cell evaluation, spatial-coverage sampling lowers RMSE and severe
-tail error in 2005, 2010 and 2014 at the largest budget, while slightly
-increasing median absolute error. A stricter spatial-block holdout leaves whole
-20° × 10° regions unseen during training and repeats five exhaustive folds in
-2005, 2010 and 2014 with 20 paired seeds. At budget 5,000, coverage improves
-RMSE in 8/15 year–fold units and worsens it in 7/15 (descriptive mean +0.179
-µatm). Its mean p99 difference is −3.590 µatm, but only 9/15 units favour
-coverage, so this is not treated as a directionally stable tail benefit.
-Coverage raises median, MAE and p95 error in essentially every unit. The
-scientific result is therefore a
-context-dependent redistribution of error—not the trivial claim that more
-observations improve prediction, and not evidence that coverage is universally
-superior. Full, source-grounded
+strategy receives the same number of observations, uses the same reconstruction
+model, and is evaluated against complete model truth. At sufficiently high
+sample counts, coverage lowers p99 error but raises median, MAE and p95 error in
+the month-stratified hidden-cell test. Its lower RMSE is therefore a
+tail-sensitive consequence of a few very large errors, not independent evidence
+of broad improvement. A stricter spatial-block holdout repeats five exhaustive
+folds in 2005, 2010 and 2014 with 20 paired seeds. The same sub-p95 deterioration
+persists, while the p99 benefit becomes directionally unstable: its mean
+difference is −3.590 µatm, but only 9/15 year–fold units favour coverage. The
+clean conclusion is that coverage can move error out of the extreme tail and
+into the more common range; that tail benefit is not stable when complete
+regions are unseen. Historical-pattern sampling is the strong comparator:
+whole-block RMSE increases from 27.549 to 36.486 µatm (+8.936), and all 15/15
+units are worse than random under the present pointwise objective. Full,
+source-grounded
 draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
 The rerunnable narrative is available in
@@ -105,10 +105,11 @@ with a map-first visual demo in
 and the exact redraw inputs are listed in
 [`docs/osse_figure_data_inventory.md`](docs/osse_figure_data_inventory.md).
 
-The hidden-cell effect is sample-count dependent. At count 500, coverage is
-worse than random for RMSE and p99 in all three years; consistent RMSE and p99
-improvements appear only at 2,500 and 5,000. Median error is higher at every
-tested count. Absolute baselines, relative changes and full year–fold
+The hidden-cell redistribution is sample-count dependent. At count 500,
+coverage is worse than random for RMSE and p99 in all three years; extreme-tail
+suppression appears consistently only at 2,500 and 5,000. Median error is higher
+at every tested count. Absolute baselines, relative changes, truth-field scale
+references and full year–fold
 distributions are reported in
 [`docs/osse_claims_audit.md`](docs/osse_claims_audit.md).
 
@@ -159,6 +160,7 @@ python scripts/summarize_regrid_audit.py
 python scripts/run_osse_spatial_block_gate.py
 python scripts/run_osse_spatial_block_gate.py --config configs/osse_spatial_block_confirmatory.yaml
 python scripts/audit_osse_month_balance.py
+python scripts/summarize_osse_truth_scale.py
 python scripts/plot_osse_portfolio_figures.py
 jupyter lab notebooks/published/osse_results_walkthrough.ipynb
 jupyter lab notebooks/published/osse_visual_story_demo.ipynb
@@ -174,20 +176,17 @@ tools ready. A three-seed, two-budget execution gate now compares random,
 historical-density and spatial-coverage sampling on a common 2005 evaluation
 set. The completed 20-seed, four-budget single-year benchmark identifies a
 tradeoff between typical error and severe tail error. A prespecified robustness
-phase repeats the full design in 2005, 2010 and 2014. At the largest budget,
-spatial coverage reduces RMSE and p99 absolute error in every year while
-slightly increasing typical absolute error; historical-density allocation is
-less accurate than random allocation throughout. This remains a single-model,
-not a real-ocean or cross-model, conclusion. The confirmatory three-year
-whole-block holdout does not reproduce a universal RMSE advantage: coverage is
-better in 8/15 year–fold units and worse in 7/15, while its mean effect is near
-zero. Its mean p99 difference favours coverage, but 9/15 directional agreement
-is weak; meanwhile median and MAE worsen in all 15 units and p95 worsens in
-14/15. This identifies the earlier RMSE gain as an interpolation
-result and makes unseen-region generalisation an explicit open problem. A
-native-cell-area weighting audit
-preserves all 12 prespecified cross-year direction checks, showing that the
-result is not an artefact of equal weighting within target bins. See
+phase repeats the full design in 2005, 2010 and 2014. At the largest sample
+count, spatial coverage raises median, MAE and p95 error but reduces p99 and the
+tail-sensitive RMSE in the random hidden-cell test. Historical-density
+allocation is less accurate than random allocation throughout. This remains a
+single-model, not a real-ocean or cross-model, conclusion. In the confirmatory
+three-year whole-block holdout, coverage still worsens median and MAE in all 15
+units and p95 in 14/15; its p99 mean favours coverage but only 9/15 unit
+directions agree. Historical-pattern RMSE is worse than random in 15/15. A
+native-cell-area weighting audit at sample count 5,000 preserves the directions
+of the three displayed, correlated coverage metrics; it is one robustness
+audit rather than multiple independent tests. See
 [`docs/osse_regrid_audit_results.md`](docs/osse_regrid_audit_results.md). Results are generated into
 `results/public/`; raw observations, resumable work files, withheld exploratory
 interpretations, and heavy local outputs remain excluded from Git.
