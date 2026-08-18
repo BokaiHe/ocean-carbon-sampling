@@ -7,6 +7,7 @@ from ocean_carbon_sampling.osse_experiment import (
     fixed_budget_orders,
     historical_density_weights,
     stratified_evaluation_positions,
+    summarize_paired_effects,
 )
 
 
@@ -73,3 +74,24 @@ def test_historical_order_never_selects_zero_weight_candidates():
     orders = fixed_budget_orders(frame, weights, maximum_budget=20, seed=2)
 
     assert np.all(weights[orders["historical_density"]] > 0)
+
+
+def test_paired_summary_is_reproducible_and_uses_seed_as_unit():
+    paired = pd.DataFrame(
+        {
+            "evaluation_domain": ["all"] * 4,
+            "budget": [500] * 4,
+            "seed": [0, 1, 2, 3],
+            "comparison": ["spatial_coverage_minus_random"] * 4,
+            "metric": ["rmse"] * 4,
+            "difference": [-2.0, -1.0, 1.0, 0.0],
+        }
+    )
+
+    first = summarize_paired_effects(paired, n_resamples=1000, seed=9)
+    second = summarize_paired_effects(paired, n_resamples=1000, seed=9)
+
+    pd.testing.assert_frame_equal(first, second)
+    assert first.loc[0, "n_seeds"] == 4
+    assert first.loc[0, "mean_difference"] == -0.5
+    assert first.loc[0, "fraction_difference_below_zero"] == 0.5

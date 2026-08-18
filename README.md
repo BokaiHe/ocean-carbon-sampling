@@ -81,6 +81,7 @@ python scripts/download_osse_pilot.py --dry-run
 python scripts/audit_osse_inputs.py
 python scripts/prepare_osse_pilot.py
 python scripts/run_osse_gate.py
+python scripts/run_osse_gate.py --phase benchmark
 ```
 
 ## Current status
@@ -91,7 +92,9 @@ interpretability gate are implemented. The first global OSSE pilot is specified
 for IPSL-CM6A-LR historical output (2005–2014), with input download and audit
 tools ready. A three-seed, two-budget execution gate now compares random,
 historical-density and spatial-coverage sampling on a common 2005 evaluation
-set; it is a pipeline check rather than the final OSSE result. See
-[`docs/osse_gate_results.md`](docs/osse_gate_results.md). Results are generated into
+set. The completed 20-seed, four-budget single-year benchmark identifies a
+tradeoff between typical error and severe tail error; it is not yet a cross-year
+or cross-model conclusion. See
+[`docs/osse_benchmark_results.md`](docs/osse_benchmark_results.md). Results are generated into
 `results/public/`; raw observations, resumable work files, withheld exploratory
 interpretations, and heavy local outputs remain excluded from Git.

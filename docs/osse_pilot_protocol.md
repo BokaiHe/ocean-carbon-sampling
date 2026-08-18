@@ -73,6 +73,15 @@ micro-atmospheres, the threshold frozen during input audit before strategy
 results were inspected. This diagnostic tests whether a small extreme tail
 dominates RMSE; it is not relabelled as an open-ocean analysis.
 
+The single-year benchmark expands this design to 20 paired sampling seeds and
+budgets of 500, 1,000, 2,500 and 5,000. Strategy-minus-random differences are
+summarized across seeds with 10,000-resample percentile bootstrap intervals.
+These intervals describe sampling-randomization variability conditional on the
+fixed 2005 truth field, model and evaluation set; they do not represent
+uncertainty across years, Earth system models or the real ocean. Budget-wise
+intervals are treated as an effect-size learning curve, not as four independent
+hypothesis tests.
+
 ## Interpretation boundary
 
 CMIP6 `spco2` is partial pressure, whereas SOCAT reports fugacity (`fCO2`). SOCAT

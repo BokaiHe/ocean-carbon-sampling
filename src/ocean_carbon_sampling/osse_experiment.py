@@ -156,6 +156,7 @@ def run_osse_gate(
                     observed = y_evaluation[domain_mask]
                     predicted = prediction[domain_mask]
                     scores = regression_metrics(observed, predicted)
+                    absolute_error = np.abs(predicted - observed)
                     correlation = float(np.corrcoef(observed, predicted)[0, 1])
                     metric_rows.append(
                         {
@@ -167,6 +168,15 @@ def run_osse_gate(
                             "n_evaluation": len(evaluation),
                             "n_evaluation_domain": len(observed),
                             **scores,
+                            "median_absolute_error": float(
+                                np.median(absolute_error)
+                            ),
+                            "p95_absolute_error": float(
+                                np.quantile(absolute_error, 0.95)
+                            ),
+                            "p99_absolute_error": float(
+                                np.quantile(absolute_error, 0.99)
+                            ),
                             "r2": float(r2_score(observed, predicted)),
                             "correlation": correlation,
                         }
@@ -183,6 +193,64 @@ def run_osse_gate(
                     )
                 )
     return pd.DataFrame(metric_rows), pd.DataFrame(selection_rows)
+
+
+def summarize_paired_effects(
+    paired_effects: pd.DataFrame,
+    *,
+    n_resamples: int,
+    seed: int,
+    confidence: float = 0.95,
+) -> pd.DataFrame:
+    """Summarize paired seed differences with percentile bootstrap intervals.
+
+    The interval quantifies sampling-seed variability for this fixed year,
+    evaluation set and Earth system model. It is not a cross-year or cross-model
+    uncertainty interval.
+    """
+    if n_resamples <= 0:
+        raise ValueError("n_resamples must be positive")
+    if not 0 < confidence < 1:
+        raise ValueError("confidence must be in (0, 1)")
+    required = {
+        "evaluation_domain",
+        "budget",
+        "comparison",
+        "metric",
+        "difference",
+        "seed",
+    }
+    missing = required.difference(paired_effects.columns)
+    if missing:
+        raise ValueError(f"paired_effects is missing columns: {sorted(missing)}")
+
+    alpha = (1.0 - confidence) / 2.0
+    rows: list[dict[str, object]] = []
+    grouped = paired_effects.groupby(
+        ["evaluation_domain", "budget", "comparison", "metric"], sort=True
+    )
+    for group_index, (keys, group) in enumerate(grouped):
+        values = group.sort_values("seed")["difference"].to_numpy(dtype=float)
+        rng = np.random.default_rng(seed + group_index)
+        indices = rng.integers(0, len(values), size=(n_resamples, len(values)))
+        bootstrap_means = values[indices].mean(axis=1)
+        rows.append(
+            {
+                "evaluation_domain": keys[0],
+                "budget": keys[1],
+                "comparison": keys[2],
+                "metric": keys[3],
+                "n_seeds": len(values),
+                "mean_difference": float(values.mean()),
+                "sd_difference": float(values.std(ddof=1)),
+                "seed_bootstrap_low": float(np.quantile(bootstrap_means, alpha)),
+                "seed_bootstrap_high": float(
+                    np.quantile(bootstrap_means, 1.0 - alpha)
+                ),
+                "fraction_difference_below_zero": float(np.mean(values < 0)),
+            }
+        )
+    return pd.DataFrame(rows)
 
 
 def _coverage_order(

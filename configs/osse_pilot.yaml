@@ -91,3 +91,39 @@ experiment:
     design_file: results/public/osse_gate_design.csv
     summary_file: results/public/osse_gate_summary.csv
     paired_effects_file: results/public/osse_gate_paired_effects.csv
+  benchmark:
+    budgets:
+      - 500
+      - 1000
+      - 2500
+      - 5000
+    seeds:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+    bootstrap_resamples: 10000
+    bootstrap_seed: 2026
+    metrics_file: results/public/osse_benchmark_metrics.csv
+    selections_file: results/public/osse_benchmark_selections.csv
+    design_file: results/public/osse_benchmark_design.csv
+    summary_file: results/public/osse_benchmark_summary.csv
+    paired_effects_file: results/public/osse_benchmark_paired_effects.csv
+    paired_summary_file: results/public/osse_benchmark_paired_summary.csv
+    versions_file: results/public/osse_benchmark_versions.csv

@@ -1,2 +1,2 @@
 phase,pilot_year,n_complete_month_cells,n_evaluation,evaluation_fraction_realized,evaluation_seed,extreme_value_sensitivity_threshold,evaluation_positions_sha256,historical_year_start,historical_year_end,positive_historical_month_cells,budgets,seeds
-gate,2005,487488,97488,0.19998030720756202,2026,1000.0,d6047d4ca5736de223471bbebbccbdc138750c89e7e3ee6eff5687c3a66762db,1990,2004,55990,500;1000,0;1;2
+benchmark,2005,487488,97488,0.19998030720756202,2026,1000.0,d6047d4ca5736de223471bbebbccbdc138750c89e7e3ee6eff5687c3a66762db,1990,2004,55990,500;1000;2500;5000,0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19

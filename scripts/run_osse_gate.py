@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import sys
+from importlib.metadata import version
 from pathlib import Path
 
 import pandas as pd
@@ -15,12 +17,14 @@ from ocean_carbon_sampling.osse_experiment import (
     historical_density_weights,
     run_osse_gate,
     stratified_evaluation_positions,
+    summarize_paired_effects,
 )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", default="configs/osse_pilot.yaml")
+    parser.add_argument("--phase", choices=("gate", "benchmark"), default="gate")
     return parser.parse_args()
 
 
@@ -29,7 +33,9 @@ def main() -> None:
     config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
     processing = config["processing"]
     experiment = config["experiment"]
-    gate = experiment["execution_gate"]
+    run_config = experiment[
+        "execution_gate" if args.phase == "gate" else "benchmark"
+    ]
 
     with xr.open_dataset(
         processing["processed_file"], engine="h5netcdf", decode_times=True
@@ -64,8 +70,8 @@ def main() -> None:
         frame,
         weights,
         evaluation,
-        budgets=tuple(int(value) for value in gate["budgets"]),
-        seeds=tuple(int(value) for value in gate["seeds"]),
+        budgets=tuple(int(value) for value in run_config["budgets"]),
+        seeds=tuple(int(value) for value in run_config["seeds"]),
         longitude_degrees=float(coverage["longitude_degrees"]),
         latitude_degrees=float(coverage["latitude_degrees"]),
         extreme_value_threshold=float(
@@ -73,11 +79,11 @@ def main() -> None:
         ),
     )
 
-    metrics_path = Path(gate["metrics_file"])
-    selections_path = Path(gate["selections_file"])
-    design_path = Path(gate["design_file"])
-    summary_path = Path(gate["summary_file"])
-    paired_path = Path(gate["paired_effects_file"])
+    metrics_path = Path(run_config["metrics_file"])
+    selections_path = Path(run_config["selections_file"])
+    design_path = Path(run_config["design_file"])
+    summary_path = Path(run_config["summary_file"])
+    paired_path = Path(run_config["paired_effects_file"])
     metrics_path.parent.mkdir(parents=True, exist_ok=True)
     metrics.to_csv(metrics_path, index=False)
     selections.to_csv(selections_path, index=False)
@@ -85,6 +91,7 @@ def main() -> None:
     design = pd.DataFrame(
         [
             {
+                "phase": args.phase,
                 "pilot_year": int(processing["pilot_year"]),
                 "n_complete_month_cells": len(frame),
                 "n_evaluation": len(evaluation),
@@ -97,8 +104,10 @@ def main() -> None:
                 "historical_year_start": int(density_config["year_start"]),
                 "historical_year_end": int(density_config["year_end"]),
                 "positive_historical_month_cells": int((weights > 0).sum()),
-                "budgets": ";".join(str(value) for value in gate["budgets"]),
-                "seeds": ";".join(str(value) for value in gate["seeds"]),
+                "budgets": ";".join(
+                    str(value) for value in run_config["budgets"]
+                ),
+                "seeds": ";".join(str(value) for value in run_config["seeds"]),
             }
         ]
     )
@@ -112,6 +121,9 @@ def main() -> None:
             mean_rmse=("rmse", "mean"),
             sd_rmse=("rmse", "std"),
             mean_mae=("mae", "mean"),
+            mean_median_absolute_error=("median_absolute_error", "mean"),
+            mean_p95_absolute_error=("p95_absolute_error", "mean"),
+            mean_p99_absolute_error=("p99_absolute_error", "mean"),
             mean_r2=("r2", "mean"),
             mean_correlation=("correlation", "mean"),
             n_seeds=("seed", "nunique"),
@@ -129,7 +141,13 @@ def main() -> None:
                     "strategy"
                 )
                 for strategy in ("spatial_coverage", "historical_density"):
-                    for metric in ("rmse", "mae"):
+                    for metric in (
+                        "rmse",
+                        "mae",
+                        "median_absolute_error",
+                        "p95_absolute_error",
+                        "p99_absolute_error",
+                    ):
                         paired_rows.append(
                             {
                                 "evaluation_domain": domain,
@@ -143,7 +161,31 @@ def main() -> None:
                                 ),
                             }
                         )
-    pd.DataFrame(paired_rows).to_csv(paired_path, index=False)
+    paired = pd.DataFrame(paired_rows)
+    paired.to_csv(paired_path, index=False)
+    if args.phase == "benchmark":
+        paired_summary = summarize_paired_effects(
+            paired,
+            n_resamples=int(run_config["bootstrap_resamples"]),
+            seed=int(run_config["bootstrap_seed"]),
+        )
+        paired_summary.to_csv(run_config["paired_summary_file"], index=False)
+        versions = pd.DataFrame(
+            [
+                {"package": "python", "version": sys.version.split()[0]},
+                *(
+                    {"package": package, "version": version(package)}
+                    for package in (
+                        "numpy",
+                        "pandas",
+                        "scikit-learn",
+                        "xarray",
+                        "h5netcdf",
+                    )
+                ),
+            ]
+        )
+        versions.to_csv(run_config["versions_file"], index=False)
     print(summary.to_string(index=False))
     print(f"\nCommon evaluation cells: {len(evaluation):,}")
 
