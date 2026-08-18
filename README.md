@@ -43,6 +43,24 @@ withheld from the public interpretation rather than presented as scientific
 drivers. See [`docs/diagnostic_results.md`](docs/diagnostic_results.md) for the
 validation metrics and decision rule.
 
+## Global OSSE portfolio figures
+
+![Locked global OSSE design](results/public/fig1_osse_design.png)
+
+![Cross-year OSSE learning curves](results/public/fig2_cross_year_learning_curves.png)
+
+![Fixed-budget error tradeoff and regridding robustness](results/public/fig3_error_tradeoff_and_robustness.png)
+
+The locked global OSSE separates sampling geometry from sample count: each
+strategy receives the same observation budget, uses the same reconstruction
+model, and is evaluated against complete model truth. Across 2005, 2010 and
+2014, spatial-coverage sampling consistently lowers RMSE and severe tail error
+at the largest budget, while slightly increasing median absolute error. The
+scientific result is therefore a reproducible redistribution of error—not the
+trivial claim that more observations improve prediction. Full, source-grounded
+captions and interpretation limits are provided in
+[`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
+
 ## Project stages
 
 1. **Regional minimum experiment** — SOCAT v2025, Southern Ocean, random versus coverage sampling.
@@ -87,6 +105,7 @@ python scripts/run_osse_gate.py --phase cross_year
 python scripts/prepare_osse_pilot.py --years 2005 2010 2014 --regrid area_weighted
 python scripts/run_osse_gate.py --phase regrid_audit
 python scripts/summarize_regrid_audit.py
+python scripts/plot_osse_portfolio_figures.py
 ```
 
 ## Current status
