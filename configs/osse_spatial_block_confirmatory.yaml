@@ -68,3 +68,8 @@ execution:
   design_file: results/public/osse_spatial_block_confirmatory_design.csv
   block_map_file: results/public/osse_spatial_block_confirmatory_blocks.csv
   work_directory: results/osse_spatial_block_confirmatory_work
+
+month_balance_audit:
+  counts_file: results/public/osse_month_balance_counts.csv
+  selection_summary_file: results/public/osse_month_balance_selection_summary.csv
+  strategy_summary_file: results/public/osse_month_balance_strategy_summary.csv

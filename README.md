@@ -6,12 +6,31 @@ This project is inspired by a collaborative course project in EESC/STAT 4243. Th
 
 ## Research question
 
-Under the same observation budget, which strategy improves blocked out-of-sample fCO2 prediction most efficiently?
+Under the same annual observation budget, which seasonally aware spatial
+allocation strategy improves blocked out-of-sample fCO2 reconstruction most
+efficiently?
 
 - random sampling;
 - densifying historically sampled regions;
-- expanding spatial coverage;
+- expanding spatial coverage while representing all months;
 - uncertainty-and-diversity-guided sampling.
+
+## Temporal design boundary
+
+This is a reconstruction experiment, not a future-forecasting experiment. All
+12 months are modelled jointly with cyclic month features. The random hidden
+set is stratified by month so that seasonal composition cannot confound the
+strategy comparison; the stricter spatial holdout keeps all 12 months from a
+location in the same fold.
+
+A selection-only audit of the full three-year confirmatory design shows that
+every one of the 1,800 strategy selections covers all 12 months. At budget
+5,000, the mean absolute deviation from an equal monthly share is 0.292
+percentage points for random sampling and 0.222 for spatial coverage. Their
+comparison therefore primarily tests spatial allocation. Historical-density
+sampling has a larger deviation of 0.875 percentage points and is interpreted
+as a complete historical spatiotemporal observing-pattern baseline. See
+[`docs/osse_temporal_design.md`](docs/osse_temporal_design.md).
 
 ## Regional validation result
 
@@ -124,6 +143,7 @@ python scripts/run_osse_gate.py --phase regrid_audit
 python scripts/summarize_regrid_audit.py
 python scripts/run_osse_spatial_block_gate.py
 python scripts/run_osse_spatial_block_gate.py --config configs/osse_spatial_block_confirmatory.yaml
+python scripts/audit_osse_month_balance.py
 python scripts/plot_osse_portfolio_figures.py
 jupyter lab notebooks/published/osse_results_walkthrough.ipynb
 jupyter lab notebooks/published/osse_visual_story_demo.ipynb

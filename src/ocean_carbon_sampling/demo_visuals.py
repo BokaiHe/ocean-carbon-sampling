@@ -15,8 +15,8 @@ from matplotlib.colors import BoundaryNorm, ListedColormap, LogNorm, TwoSlopeNor
 
 METHOD_LABELS = {
     "random": "Random",
-    "historical_density": "Historical density",
-    "spatial_coverage": "Spatial coverage",
+    "historical_density": "Historical pattern",
+    "spatial_coverage": "Balanced coverage",
 }
 YEAR_COLORS = {2005: "#1D4ED8", 2010: "#0F766E", 2014: "#7C3AED"}
 FOLD_COLORS = ["#8DD3C7", "#FDB462", "#80B1D3", "#B3A2D6", "#FB8072"]

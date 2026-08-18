@@ -25,6 +25,9 @@ PNG, PDF, or SVG files.
 | `results/public/osse_spatial_block_confirmatory_consistency.csv` | Within-year cross-fold consistency | year × domain × budget × comparison × metric |
 | `results/public/osse_spatial_block_confirmatory_overall.csv` | Descriptive cross-year–fold consistency | domain × budget × comparison × metric |
 | `results/public/osse_spatial_block_confirmatory_design.csv` | Locked confirmatory design metadata | year × spatial fold |
+| `results/public/osse_month_balance_counts.csv` | Exact selected count and share for each month | year × fold × strategy × budget × seed × month |
+| `results/public/osse_month_balance_selection_summary.csv` | Per-selection month-balance diagnostics | year × fold × strategy × budget × seed |
+| `results/public/osse_month_balance_strategy_summary.csv` | Portfolio-level month-balance audit | strategy × budget |
 
 Regional context used by the walkthrough is retained in
 `spatial_sensitivity_overall_summary.csv` and
@@ -63,3 +66,5 @@ five exhaustive spatial folds in three prespecified years. Seeds are the
 within-year–fold replication unit. The 15 year–fold means are reported as a
 descriptive consistency check and must not be replaced by a cell-level
 significance test or treated as 15 fully independent ecological replicates.
+The month-balance tables are a deterministic audit of the same acquisition
+orders; they do not add model fits or a new inferential sample.
