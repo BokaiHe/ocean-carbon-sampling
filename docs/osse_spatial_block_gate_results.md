@@ -7,13 +7,14 @@ month. Training and evaluation locations can therefore be geographically close.
 That is a valid interpolation test, but it does not establish performance in a
 region with no training observations.
 
-The spatial-block holdout gate asks the stricter question: **if whole ocean
-regions are unseen during model fitting, does spatial-coverage sampling still
+The spatial-block holdout asks the stricter question: **if whole ocean regions
+are unseen during model fitting, does spatial-coverage sampling still
 outperform random sampling under the same observation budget?**
 
-## Locked minimal design
+## Locked confirmatory design
 
-- Truth field: IPSL-CM6A-LR surface-ocean fCO2 for 2005.
+- Truth field: IPSL-CM6A-LR surface-ocean fCO2 in the prespecified years 2005,
+  2010 and 2014.
 - Spatial unit: 20° longitude × 10° latitude block.
 - Fold assignment: five exhaustive checkerboard folds; all 12 months from a
   spatial location remain in the same fold.
@@ -21,54 +22,62 @@ outperform random sampling under the same observation budget?**
   candidate pool.
 - Strategies: random, historical density, and spatial coverage.
 - Budgets: 1,000 and 5,000 observations.
-- Replication: five paired sampling seeds per fold.
-- Uncertainty: 10,000-resample bootstrap intervals over paired seed effects.
+- Replication: 20 paired sampling seeds per year–fold.
+- Uncertainty: 10,000-resample bootstrap intervals over paired seed effects
+  within each year–fold.
 - Model: the same locked reconstruction model and historical weights as the
   main OSSE.
-- Buffer: none. This is a coarse unseen-block interpolation/extrapolation gate,
-  not a buffered long-range extrapolation test.
+- Buffer: none. This tests transfer into coarse unseen blocks, not buffered
+  long-range extrapolation.
 
-The five folds contain 94,032–103,476 evaluation month-grid rows each, covering
-all 282 occupied spatial blocks exactly once.
+The design contains 15 year–fold evaluation units and 1,800 strategy fits. The
+five folds cover every occupied block once in each year.
 
 ## Main result at budget 5,000
 
-Positive differences mean spatial coverage has larger error than random.
+Differences are spatial coverage minus random, so negative values favour
+coverage.
 
-| Held-out fold | RMSE difference (µatm) | 95% seed-bootstrap interval | Reading |
-| ---: | ---: | ---: | --- |
-| 0 | +4.488 | +2.470 to +6.027 | random better |
-| 1 | +2.841 | +1.230 to +4.602 | random better |
-| 2 | −0.981 | −2.122 to +0.460 | uncertain |
-| 3 | −1.853 | −2.682 to −1.024 | coverage better |
-| 4 | +3.551 | +0.998 to +6.661 | random better |
+| Metric | Mean across 15 year–fold units (µatm) | Units favouring coverage | Intervals entirely below zero | Interpretation |
+| --- | ---: | ---: | ---: | --- |
+| RMSE | +0.179 | 8/15 | 6/15 | direction depends on year and region |
+| p99 absolute error | −3.590 | 9/15 | 6/15 | severe failures are reduced more often |
+| Median absolute error | +0.663 | 0/15 | 0/15 | typical error is consistently higher |
 
-Across the five folds, the mean fold effect is **+1.609 µatm**. Coverage has a
-lower mean RMSE in two of five folds, but only fold 3 has an interval entirely
-below zero. Three folds have intervals entirely above zero. For p99 absolute
-error, the mean fold effect is +2.977 µatm and no fold has an interval entirely
-below zero. Median absolute error increases under coverage in all five folds.
+RMSE is close to neutral on average but strongly heterogeneous. The mean fold
+effect is +0.321 µatm in 2005, +0.462 µatm in 2010 and −0.247 µatm in 2014.
+Across all year–fold units, eight effects are negative and seven are positive;
+six intervals are entirely below zero and five are entirely above zero.
 
-Historical-density sampling is consistently worse than random at budget 5,000:
-its mean fold RMSE difference is +9.140 µatm and all five fold intervals are
+The p99 effect is negative on average in every year: −3.155 µatm in 2005,
+−3.733 µatm in 2010 and −3.883 µatm in 2014. This tail benefit is still not
+universal: six of the 15 year–fold mean effects are positive.
+
+Historical-density sampling is consistently worse than random on RMSE at
+budget 5,000. Its mean year–fold effect is +8.936 µatm, and all 15 intervals are
 entirely above zero.
 
 ## Scientific conclusion
 
-The random hidden-cell result and the spatial-block result answer different
-questions. Coverage sampling can reduce RMSE and severe tail error when
-predicting scattered missing cells within the sampled geographic domain. That
-advantage is **not stable when the target is an entire unseen region**.
+The random hidden-cell and whole-block experiments answer different questions.
+Coverage sampling improves reconstruction of scattered missing cells inside the
+sampled geographic domain. When complete regions are unseen, its RMSE effect is
+approximately balanced between gains and losses. The more stable pattern is a
+tradeoff: coverage raises typical error everywhere but reduces severe tail
+error more often.
 
-This is a useful negative constraint, not a failed experiment. It prevents the
-portfolio from making an unsupported universal claim and reveals the next
-scientific question: which regional properties determine whether coverage or
-random allocation transfers better across space?
+The defensible claim is therefore not that coverage is universally superior.
+It is that **sampling geometry redistributes reconstruction risk**, and the
+choice of objective—typical accuracy, aggregate RMSE, or protection against
+extreme failures—changes which strategy is preferable.
 
-## Remaining limits
+## Statistical boundary and remaining limits
 
-This is a deliberately minimal gate: one climate model, one year, five seeds,
-coarse blocks, and no spatial buffer. A confirmatory experiment should repeat
-the locked folds across multiple years and more seeds, then test sensitivity to
-block size and an explicit training–evaluation buffer. Until then, the result
-supports a boundary on the claim, not a global law about observing strategy.
+The 20 seeds are paired replicates within each year–fold. The 15 year–fold means
+are a descriptive consistency check, not 15 fully independent ecological
+replicates, and grid cells are never used as the inferential sample size.
+
+The experiment still uses one climate model, three years, coarse blocks, and no
+spatial buffer. A later sensitivity study could vary block size and add an
+explicit training–evaluation buffer. Those extensions are useful, but no longer
+required to establish the present project's central fixed-model conclusion.

@@ -1,0 +1,70 @@
+project:
+  phase: global_spatial_block_holdout_confirmatory
+  question: >-
+    Across prespecified years, does spatial-coverage sampling improve
+    reconstruction in entire geographic blocks excluded from model training?
+
+source:
+  osse_config: configs/osse_pilot.yaml
+  years:
+    - 2005
+    - 2010
+    - 2014
+  selection_rationale: >-
+    Prespecified start, midpoint and endpoint of the 2005-2014 analysis window,
+    matching the existing cross-year OSSE rather than selecting years after
+    inspecting spatial-holdout performance.
+
+validation:
+  longitude_degrees: 20.0
+  latitude_degrees: 10.0
+  n_folds: 5
+  folds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+  assignment: checkerboard_(lon_block+2*lat_block)_mod_5
+  buffer_degrees: 0.0
+  note: >-
+    Every month at a spatial location belongs to the same fold. The experiment
+    tests transfer into unseen 20-by-10-degree blocks, not buffered long-range
+    extrapolation.
+
+execution:
+  budgets:
+    - 1000
+    - 5000
+  seeds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 17
+    - 18
+    - 19
+  bootstrap_resamples: 10000
+  bootstrap_seed: 6200
+  metrics_file: results/public/osse_spatial_block_confirmatory_metrics.csv
+  selections_file: results/public/osse_spatial_block_confirmatory_selections.csv
+  paired_effects_file: results/public/osse_spatial_block_confirmatory_paired_effects.csv
+  paired_summary_file: results/public/osse_spatial_block_confirmatory_paired_summary.csv
+  fold_consistency_file: results/public/osse_spatial_block_confirmatory_consistency.csv
+  overall_consistency_file: results/public/osse_spatial_block_confirmatory_overall.csv
+  design_file: results/public/osse_spatial_block_confirmatory_design.csv
+  block_map_file: results/public/osse_spatial_block_confirmatory_blocks.csv
+  work_directory: results/osse_spatial_block_confirmatory_work

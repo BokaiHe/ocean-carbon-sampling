@@ -20,10 +20,11 @@ PNG, PDF, or SVG files.
 | `results/public/osse_visual_demo_fields.parquet` | Representative hidden-evaluation error maps | 2005 spatial grid cell |
 | `results/public/osse_visual_demo_sampling.parquet` | Fixed-budget sampling-density maps | strategy × 5° × 10° block |
 | `results/public/osse_visual_demo_metadata.csv` | Demo year, seed, budget and row-count boundary | one representative-map record |
-| `results/public/osse_spatial_block_gate_blocks.csv` | Spatial-block fold assignment for the strict holdout map | occupied 20° × 10° block |
-| `results/public/osse_spatial_block_gate_paired_summary.csv` | Fold-specific paired effects and seed-bootstrap intervals | fold × domain × budget × comparison × metric |
-| `results/public/osse_spatial_block_gate_consistency.csv` | Cross-fold direction and interval consistency | domain × budget × comparison × metric |
-| `results/public/osse_spatial_block_gate_design.csv` | Locked spatial-block gate metadata | spatial fold |
+| `results/public/osse_spatial_block_confirmatory_blocks.csv` | Spatial-block fold assignment for the strict holdout map | year × occupied 20° × 10° block |
+| `results/public/osse_spatial_block_confirmatory_paired_summary.csv` | Year- and fold-specific paired effects and seed-bootstrap intervals | year × fold × domain × budget × comparison × metric |
+| `results/public/osse_spatial_block_confirmatory_consistency.csv` | Within-year cross-fold consistency | year × domain × budget × comparison × metric |
+| `results/public/osse_spatial_block_confirmatory_overall.csv` | Descriptive cross-year–fold consistency | domain × budget × comparison × metric |
+| `results/public/osse_spatial_block_confirmatory_design.csv` | Locked confirmatory design metadata | year × spatial fold |
 
 Regional context used by the walkthrough is retained in
 `spatial_sensitivity_overall_summary.csv` and
@@ -47,8 +48,9 @@ declared spatial aggregation, not a subsample.
 - Figure 3d uses the 12 prespecified stability checks from
   `osse_regrid_audit_paired_summary.csv`.
 - The notebook spatial-block gate map uses every occupied block in
-  `osse_spatial_block_gate_blocks.csv`; its forest panel uses the five RMSE rows
-  at budget 5,000 from `osse_spatial_block_gate_paired_summary.csv`.
+  `osse_spatial_block_confirmatory_blocks.csv`; its forest panels use all 45
+  RMSE, p99 and median-error rows at budget 5,000 from
+  `osse_spatial_block_confirmatory_paired_summary.csv`.
 
 ## Statistical boundary
 
@@ -56,6 +58,8 @@ Seed-level uncertainty is based on 20 paired sampling seeds. Bootstrap
 intervals resample those paired seed effects; model grid cells are not treated
 as independent replicates. The current figures may be redesigned, but future
 plots must preserve that unit of replication and the locked comparison signs.
-The minimal spatial-block gate uses five paired seeds within each of five
-exhaustive spatial folds. Its folds are the spatial generalisation units; the
-five fold effects must not be replaced by a cell-level significance test.
+The confirmatory spatial-block experiment uses 20 paired seeds within each of
+five exhaustive spatial folds in three prespecified years. Seeds are the
+within-year–fold replication unit. The 15 year–fold means are reported as a
+descriptive consistency check and must not be replaced by a cell-level
+significance test or treated as 15 fully independent ecological replicates.

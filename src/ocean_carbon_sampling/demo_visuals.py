@@ -311,25 +311,33 @@ def plot_spatial_holdout_gate(
     blocks: pd.DataFrame,
     paired_summary: pd.DataFrame,
 ) -> mpl.figure.Figure:
-    """Map exhaustive spatial folds and show fold-specific RMSE effects."""
+    """Map exhaustive folds and show cross-year, fold-specific error effects."""
     configure_theme()
     fold_cmap = ListedColormap(FOLD_COLORS)
     fold_norm = BoundaryNorm(np.arange(-0.5, 5.5, 1.0), fold_cmap.N)
-    fig = plt.figure(figsize=(7.2, 2.55))
+    fig = plt.figure(figsize=(7.2, 4.75))
     grid = fig.add_gridspec(
         1,
         2,
-        width_ratios=(1.55, 1.0),
+        width_ratios=(1.02, 1.55),
         left=0.03,
-        right=0.97,
-        bottom=0.21,
-        top=0.84,
-        wspace=0.22,
+        right=0.98,
+        bottom=0.16,
+        top=0.88,
+        wspace=0.18,
     )
 
     map_ax = _world_axis(fig, grid[0, 0])
+    map_blocks = blocks.copy()
+    if "year" in map_blocks.columns:
+        map_blocks = map_blocks.loc[
+            map_blocks["year"] == map_blocks["year"].min()
+        ]
+    map_blocks = map_blocks.drop_duplicates(
+        ["longitude_center", "latitude_center"]
+    )
     lon, lat, folds = _grid(
-        blocks.rename(
+        map_blocks.rename(
             columns={
                 "longitude_center": "longitude",
                 "latitude_center": "latitude",
@@ -348,7 +356,7 @@ def plot_spatial_holdout_gate(
         rasterized=True,
         zorder=2,
     )
-    map_ax.set_title("Five exhaustive 20° × 10° holdout folds")
+    map_ax.set_title("Five exhaustive 20° × 10° holdout folds", pad=5)
     map_ax.text(
         0.01,
         0.04,
@@ -362,74 +370,112 @@ def plot_spatial_holdout_gate(
         fold_image,
         ax=map_ax,
         orientation="horizontal",
-        fraction=0.07,
-        pad=0.05,
+        fraction=0.055,
+        pad=0.06,
         ticks=np.arange(5),
     )
-    fold_bar.set_label("Spatial fold held out across all 12 months")
-
-    effect_ax = fig.add_subplot(grid[0, 1])
+    fold_bar.set_label("Fold held out across all 12 months")
+    metric_specs = (
+        ("rmse", "RMSE"),
+        ("p99_absolute_error", "p99 |error|"),
+        ("median_absolute_error", "Median |error|"),
+    )
     effect = paired_summary.query(
         "evaluation_domain == 'all' and budget == 5000 and "
-        "comparison == 'spatial_coverage_minus_random' and metric == 'rmse'"
-    ).sort_values("spatial_fold")
-    for row in effect.itertuples(index=False):
-        fold = int(row.spatial_fold)
-        effect_ax.errorbar(
-            row.mean_difference,
-            fold,
-            xerr=np.array(
-                [
-                    [row.mean_difference - row.seed_bootstrap_low],
-                    [row.seed_bootstrap_high - row.mean_difference],
-                ]
-            ),
-            fmt="o",
-            color=FOLD_COLORS[fold],
-            markeredgecolor="#374151",
-            markeredgewidth=0.4,
-            markersize=5,
-            capsize=2,
-            linewidth=1.1,
+        "comparison == 'spatial_coverage_minus_random' and "
+        "metric in ['rmse', 'p99_absolute_error', 'median_absolute_error']"
+    ).copy()
+    effect["unit"] = (
+        effect["year"].astype(int).astype(str)
+        + " · F"
+        + effect["spatial_fold"].astype(int).astype(str)
+    )
+    unit_order = (
+        effect[["year", "spatial_fold", "unit"]]
+        .drop_duplicates()
+        .sort_values(["year", "spatial_fold"])["unit"]
+        .tolist()
+    )
+    y_positions = {unit: index for index, unit in enumerate(unit_order)}
+    effect_grid = grid[0, 1].subgridspec(1, 3, wspace=0.20)
+    axes: list[mpl.axes.Axes] = []
+    for panel_index, (metric, title) in enumerate(metric_specs):
+        effect_ax = fig.add_subplot(
+            effect_grid[0, panel_index],
+            sharey=axes[0] if axes else None,
         )
-    mean_effect = float(effect["mean_difference"].mean())
-    effect_ax.axvline(0.0, color="#6B7280", linewidth=0.8, linestyle="--")
-    effect_ax.axvline(
-        mean_effect,
-        color="#111827",
-        linewidth=0.8,
-        linestyle=":",
-    )
-    effect_ax.set(
-        title="Coverage effect varies by unseen region",
-        xlabel="Coverage − random RMSE (µatm)",
-        ylabel="Held-out fold",
-        yticks=np.arange(5),
-    )
-    effect_ax.grid(axis="x", color="#E5E7EB", linewidth=0.6)
-    effect_ax.text(
-        0.02,
-        0.96,
-        "b",
-        transform=effect_ax.transAxes,
-        va="top",
-        fontweight="bold",
-        fontsize=8,
-    )
-    effect_ax.text(
-        0.98,
-        0.05,
-        f"fold mean = {mean_effect:+.2f}",
-        transform=effect_ax.transAxes,
-        ha="right",
-        fontsize=6.5,
-        color="#111827",
-    )
+        axes.append(effect_ax)
+        metric_effect = effect.loc[effect["metric"] == metric]
+        for row in metric_effect.itertuples(index=False):
+            fold = int(row.spatial_fold)
+            y_value = y_positions[row.unit]
+            effect_ax.errorbar(
+                row.mean_difference,
+                y_value,
+                xerr=np.array(
+                    [
+                        [row.mean_difference - row.seed_bootstrap_low],
+                        [row.seed_bootstrap_high - row.mean_difference],
+                    ]
+                ),
+                fmt="o",
+                color=FOLD_COLORS[fold],
+                markeredgecolor="#374151",
+                markeredgewidth=0.35,
+                markersize=3.7,
+                capsize=1.5,
+                linewidth=0.85,
+            )
+        mean_effect = float(metric_effect["mean_difference"].mean())
+        n_lower = int((metric_effect["mean_difference"] < 0).sum())
+        summary = f"{n_lower}/{len(metric_effect)} lower · mean {mean_effect:+.2f}"
+        effect_ax.axvline(0.0, color="#6B7280", linewidth=0.8, linestyle="--")
+        effect_ax.axvline(mean_effect, color="#111827", linewidth=0.8, linestyle=":")
+        for boundary in (4.5, 9.5):
+            effect_ax.axhline(boundary, color="#D1D5DB", linewidth=0.6)
+        effect_ax.set_title(title, fontsize=7.5, fontweight="bold", pad=18)
+        effect_ax.text(
+            0.5,
+            1.025,
+            summary,
+            transform=effect_ax.transAxes,
+            ha="center",
+            va="bottom",
+            fontsize=5.8,
+            color="#4B5563",
+        )
+        effect_ax.set_xlabel("Coverage − random (µatm)", fontsize=6.2)
+        effect_ax.set_yticks(np.arange(len(unit_order)))
+        if panel_index == 0:
+            effect_ax.set_yticklabels(unit_order, fontsize=5.8)
+            effect_ax.set_ylabel("Year · held-out fold", fontsize=6.5)
+            effect_ax.text(
+                0.02,
+                0.99,
+                "b",
+                transform=effect_ax.transAxes,
+                va="top",
+                fontweight="bold",
+                fontsize=8,
+            )
+        else:
+            effect_ax.tick_params(axis="y", labelleft=False)
+        effect_ax.invert_yaxis()
+        effect_ax.grid(axis="x", color="#E5E7EB", linewidth=0.5)
+        effect_ax.tick_params(axis="x", labelsize=5.8)
     fig.suptitle(
-        "The stricter spatial-block gate does not support universal coverage gains",
+        "Unseen-region performance is a tradeoff, not a universal coverage gain",
         fontsize=9,
         fontweight="bold",
         y=0.98,
+    )
+    fig.text(
+        0.60,
+        0.055,
+        "Negative = coverage better · points are 20-seed paired means; bars are 95% seed-bootstrap intervals",
+        ha="center",
+        fontsize=6.2,
+        color="#4B5563",
     )
     return fig
 
