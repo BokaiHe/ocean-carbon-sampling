@@ -58,7 +58,7 @@ The repository intentionally excludes raw data, working notebooks, trained model
 
 ```bash
 python -m venv .venv
-pip install -e ".[dev,model,app]"
+pip install -e ".[dev,model,osse,app]"
 pytest
 ```
 
@@ -77,12 +77,16 @@ python scripts/plot_spatial_sensitivity.py
 python scripts/build_observation_effects.py
 python scripts/run_xgb_shap_diagnostic.py
 python scripts/plot_diagnostic_gate.py
+python scripts/download_osse_pilot.py --dry-run
+python scripts/audit_osse_inputs.py
 ```
 
 ## Current status
 
 The SOCAT coverage audit, leakage-aware minimum experiment, 20-seed benchmark,
 five-fold spatial sensitivity analysis, and spatially grouped XGBoost/SHAP
-interpretability gate are implemented. Results are generated into
+interpretability gate are implemented. The first global OSSE pilot is specified
+for IPSL-CM6A-LR historical output (2005–2014), with input download and audit
+tools ready. Results are generated into
 `results/public/`; raw observations, resumable work files, withheld exploratory
 interpretations, and heavy local outputs remain excluded from Git.

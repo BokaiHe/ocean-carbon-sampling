@@ -1,0 +1,60 @@
+project:
+  phase: global_osse_pilot
+  question: >-
+    Under a fixed observation budget, which spatial allocation strategy best
+    reconstructs an unseen global surface-ocean CO2 field?
+
+cmip6:
+  project: CMIP6
+  activity_id: CMIP
+  institution_id: IPSL
+  source_id: IPSL-CM6A-LR
+  experiment_id: historical
+  member_id: r1i1p1f1
+  table_id: Omon
+  grid_label: gn
+  version: v20180803
+  source_period: 1850-01/2014-12
+  analysis_period: 2005-01/2014-12
+  raw_directory: data/raw/cmip6/IPSL-CM6A-LR/historical/r1i1p1f1/Omon/gn
+  manifest: data/cmip6_osse_pilot_manifest.csv
+  citation_doi: https://doi.org/10.22033/ESGF/CMIP6.5195
+
+variables:
+  truth: spco2
+  predictors:
+    - tos
+    - sos
+  deferred_predictors:
+    - mlotst
+    - chl
+
+processing:
+  preserve_native_raw_files: true
+  target_grid_degrees: 1.0
+  target_longitude_convention: -180_to_180
+  time_frequency: monthly
+  subset_before_regridding: true
+  spco2_output_unit: micro_atmosphere
+  note: >-
+    CMIP6 spco2 is partial pressure whereas SOCAT reports fugacity. SOCAT is
+    used to define realistic sampling masks, not as interchangeable model truth.
+
+experiment:
+  pilot_budgets:
+    - 500
+    - 1000
+    - 2500
+    - 5000
+  strategies:
+    - random
+    - historical_density
+    - spatial_coverage
+  seeds: 20
+  primary_metric: global_ocean_rmse
+  secondary_metrics:
+    - global_ocean_bias
+    - spatial_correlation
+    - basin_rmse
+  acceptance_gate: >-
+    Complete one year end to end before expanding to the full 2005-2014 pilot.

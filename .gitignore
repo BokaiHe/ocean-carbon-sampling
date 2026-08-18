@@ -30,6 +30,7 @@ notebooks/**/*.ipynb
 # Data: only a deliberately small demo may be committed
 data/**
 !data/README.md
+!data/cmip6_osse_pilot_manifest.csv
 !data/demo/
 !data/demo/**
 
