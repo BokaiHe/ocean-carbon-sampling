@@ -1,4 +1,4 @@
-"""Create the one-year, 1-degree CMIP6 cube for the OSSE execution gate."""
+"""Create one or more annual 1-degree CMIP6 cubes for the OSSE."""
 
 from __future__ import annotations
 
@@ -21,20 +21,33 @@ from ocean_carbon_sampling.osse import (
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", default="configs/osse_pilot.yaml")
+    parser.add_argument(
+        "--years",
+        nargs="+",
+        type=int,
+        help="years to prepare; defaults to processing.pilot_year",
+    )
     return parser.parse_args()
 
 
-def main() -> None:
-    args = parse_args()
-    config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
-    cmip = config["cmip6"]
-    processing = config["processing"]
-    manifest = load_manifest(cmip["manifest"])
-    source_dir = Path(cmip["raw_directory"])
-    year = int(processing["pilot_year"])
+def _year_path(processing: dict[str, object], key: str, year: int) -> Path:
+    template_key = f"{key}_template"
+    if template_key in processing:
+        return Path(str(processing[template_key]).format(year=year))
+    return Path(str(processing[key]))
+
+
+def prepare_year(
+    *,
+    year: int,
+    cmip: dict[str, object],
+    processing: dict[str, object],
+    manifest: pd.DataFrame,
+) -> tuple[Path, pd.DataFrame]:
+    """Prepare a single annual cube and return its audit table."""
+    source_dir = Path(str(cmip["raw_directory"]))
     resolution = float(processing["target_grid_degrees"])
     latitudes, longitudes = regular_grid_centers(resolution)
-
     arrays: dict[str, tuple[tuple[str, ...], np.ndarray, dict[str, str]]] = {}
     reference_time: np.ndarray | None = None
     reference_latitude: np.ndarray | None = None
@@ -48,8 +61,12 @@ def main() -> None:
             selected = source[entry.variable].sel(
                 time=slice(f"{year}-01", f"{year}-12")
             )
-            if selected.sizes.get("time") != int(processing["expected_months"]):
-                raise ValueError(f"{entry.variable} does not contain 12 pilot months")
+            expected_months = int(processing["expected_months"])
+            if selected.sizes.get("time") != expected_months:
+                raise ValueError(
+                    f"{entry.variable} does not contain {expected_months} months "
+                    f"for {year}"
+                )
             time = selected["time"].values
             latitude = source["nav_lat"].values
             longitude = source["nav_lon"].values
@@ -59,7 +76,7 @@ def main() -> None:
                 reference_longitude = longitude
             else:
                 if not np.array_equal(reference_time, time):
-                    raise ValueError("CMIP6 variables have different pilot time axes")
+                    raise ValueError("CMIP6 variables have different annual time axes")
                 if not np.allclose(reference_latitude, latitude, equal_nan=True):
                     raise ValueError("CMIP6 variables have different latitude grids")
                 if not np.allclose(reference_longitude, longitude, equal_nan=True):
@@ -88,8 +105,11 @@ def main() -> None:
             maximum_index = np.unravel_index(np.nanargmax(regular), regular.shape)
             audit_rows.append(
                 {
+                    "year": year,
                     "variable": entry.variable,
-                    "native_finite_cells_per_month": int(np.isfinite(native[0]).sum()),
+                    "native_finite_cells_per_month": int(
+                        np.isfinite(native[0]).sum()
+                    ),
                     "regular_finite_bins_min": int(finite_by_month.min()),
                     "regular_finite_bins_max": int(finite_by_month.max()),
                     "minimum": float(np.nanmin(regular)),
@@ -130,17 +150,17 @@ def main() -> None:
             "longitude": longitudes,
         },
         attrs={
-            "title": "IPSL-CM6A-LR one-year global OSSE pilot cube",
+            "title": f"IPSL-CM6A-LR {year} global OSSE cube",
             "source_id": cmip["source_id"],
             "experiment_id": cmip["experiment_id"],
             "member_id": cmip["member_id"],
             "source_grid": cmip["grid_label"],
             "source_version": cmip["version"],
             "regrid_method": processing["regrid_method"],
-            "analysis_status": "pipeline validation; not final scientific output",
+            "analysis_status": "prespecified cross-year robustness analysis",
         },
     )
-    output = Path(processing["processed_file"])
+    output = _year_path(processing, "processed_file", year)
     output.parent.mkdir(parents=True, exist_ok=True)
     encoding = {
         name: {"compression": "gzip", "compression_opts": 4}
@@ -149,11 +169,28 @@ def main() -> None:
     dataset.to_netcdf(output, engine="h5netcdf", encoding=encoding)
 
     audit = pd.DataFrame(audit_rows)
-    audit_path = Path(processing["audit_file"])
+    audit_path = _year_path(processing, "audit_file", year)
     audit_path.parent.mkdir(parents=True, exist_ok=True)
     audit.to_csv(audit_path, index=False)
-    print(audit.to_string(index=False))
-    print(f"\nSaved {output} ({output.stat().st_size / 1_000_000:.1f} MB)")
+    return output, audit
+
+
+def main() -> None:
+    args = parse_args()
+    config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
+    cmip = config["cmip6"]
+    processing = config["processing"]
+    manifest = load_manifest(cmip["manifest"])
+    years = args.years or [int(processing["pilot_year"])]
+    for year in years:
+        output, audit = prepare_year(
+            year=year,
+            cmip=cmip,
+            processing=processing,
+            manifest=manifest,
+        )
+        print(audit.to_string(index=False))
+        print(f"\nSaved {output} ({output.stat().st_size / 1_000_000:.1f} MB)\n")
 
 
 if __name__ == "__main__":

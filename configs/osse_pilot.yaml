@@ -32,13 +32,20 @@ variables:
 processing:
   preserve_native_raw_files: true
   pilot_year: 2005
+  validation_years:
+    - 2005
+    - 2010
+    - 2014
   target_grid_degrees: 1.0
   target_longitude_convention: -180_to_180
   time_frequency: monthly
   subset_before_regridding: true
   regrid_method: native_cell_center_bin_mean
   processed_file: data/processed/osse_pilot/IPSL-CM6A-LR_historical_2005_1deg.nc
+  processed_file_template: >-
+    data/processed/osse_pilot/IPSL-CM6A-LR_historical_{year}_1deg.nc
   audit_file: results/osse_work/preprocess_2005_audit.csv
+  audit_file_template: results/osse_work/preprocess_{year}_audit.csv
   expected_months: 12
   minimum_ocean_bins: 40000
   spco2_output_unit: micro_atmosphere
@@ -127,3 +134,47 @@ experiment:
     paired_effects_file: results/public/osse_benchmark_paired_effects.csv
     paired_summary_file: results/public/osse_benchmark_paired_summary.csv
     versions_file: results/public/osse_benchmark_versions.csv
+  cross_year:
+    years:
+      - 2005
+      - 2010
+      - 2014
+    selection_rationale: >-
+      Prespecified start, midpoint and endpoint of the 2005-2014 analysis
+      window; not selected after examining reconstruction performance.
+    budgets:
+      - 500
+      - 1000
+      - 2500
+      - 5000
+    seeds:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      - 17
+      - 18
+      - 19
+    bootstrap_resamples: 10000
+    bootstrap_seed: 2026
+    metrics_file: results/public/osse_cross_year_metrics.csv
+    selections_file: results/public/osse_cross_year_selections.csv
+    design_file: results/public/osse_cross_year_design.csv
+    summary_file: results/public/osse_cross_year_summary.csv
+    paired_effects_file: results/public/osse_cross_year_paired_effects.csv
+    paired_summary_file: results/public/osse_cross_year_paired_summary.csv
+    year_consistency_file: results/public/osse_cross_year_consistency.csv
+    versions_file: results/public/osse_cross_year_versions.csv

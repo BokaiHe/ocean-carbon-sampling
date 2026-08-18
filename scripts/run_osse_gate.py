@@ -1,4 +1,4 @@
-"""Run the minimal fixed-budget sampling comparison on the 2005 OSSE cube."""
+"""Run the fixed-budget OSSE gate, benchmark or cross-year robustness phase."""
 
 from __future__ import annotations
 
@@ -18,28 +18,31 @@ from ocean_carbon_sampling.osse_experiment import (
     run_osse_gate,
     stratified_evaluation_positions,
     summarize_paired_effects,
+    summarize_year_consistency,
 )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", default="configs/osse_pilot.yaml")
-    parser.add_argument("--phase", choices=("gate", "benchmark"), default="gate")
+    parser.add_argument(
+        "--phase",
+        choices=("gate", "benchmark", "cross_year"),
+        default="gate",
+    )
     return parser.parse_args()
 
 
-def main() -> None:
-    args = parse_args()
-    config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
-    processing = config["processing"]
-    experiment = config["experiment"]
-    run_config = experiment[
-        "execution_gate" if args.phase == "gate" else "benchmark"
-    ]
+def _processed_path(
+    processing: dict[str, object], *, year: int, cross_year: bool
+) -> Path:
+    if cross_year:
+        return Path(str(processing["processed_file_template"]).format(year=year))
+    return Path(str(processing["processed_file"]))
 
-    with xr.open_dataset(
-        processing["processed_file"], engine="h5netcdf", decode_times=True
-    ) as dataset:
+
+def _load_frame(path: Path) -> pd.DataFrame:
+    with xr.open_dataset(path, engine="h5netcdf", decode_times=True) as dataset:
         frame = (
             dataset[["spco2", "tos", "sos"]]
             .to_dataframe()
@@ -49,15 +52,26 @@ def main() -> None:
         )
     frame["month"] = frame["date"].dt.month
     frame["observation_id"] = range(len(frame))
+    return frame
 
+
+def _run_year(
+    *,
+    year: int,
+    phase: str,
+    processed_path: Path,
+    experiment: dict[str, object],
+    run_config: dict[str, object],
+    socat: pd.DataFrame,
+) -> tuple[pd.DataFrame, pd.DataFrame, dict[str, object]]:
+    frame = _load_frame(processed_path)
     density_config = experiment["historical_density"]
-    socat = read_socat_monthly(density_config["socat_path"])
     weights = historical_density_weights(
         frame,
         socat,
         year_start=int(density_config["year_start"]),
         year_end=int(density_config["year_end"]),
-        weight_column=density_config["weight_column"],
+        weight_column=str(density_config["weight_column"]),
     )
     evaluation_config = experiment["evaluation"]
     evaluation = stratified_evaluation_positions(
@@ -78,45 +92,45 @@ def main() -> None:
             evaluation_config["extreme_value_sensitivity_threshold"]
         ),
     )
-
-    metrics_path = Path(run_config["metrics_file"])
-    selections_path = Path(run_config["selections_file"])
-    design_path = Path(run_config["design_file"])
-    summary_path = Path(run_config["summary_file"])
-    paired_path = Path(run_config["paired_effects_file"])
-    metrics_path.parent.mkdir(parents=True, exist_ok=True)
-    metrics.to_csv(metrics_path, index=False)
-    selections.to_csv(selections_path, index=False)
-    evaluation_digest = hashlib.sha256(evaluation.tobytes()).hexdigest()
-    design = pd.DataFrame(
-        [
-            {
-                "phase": args.phase,
-                "pilot_year": int(processing["pilot_year"]),
-                "n_complete_month_cells": len(frame),
-                "n_evaluation": len(evaluation),
-                "evaluation_fraction_realized": len(evaluation) / len(frame),
-                "evaluation_seed": int(evaluation_config["seed"]),
-                "extreme_value_sensitivity_threshold": float(
-                    evaluation_config["extreme_value_sensitivity_threshold"]
-                ),
-                "evaluation_positions_sha256": evaluation_digest,
-                "historical_year_start": int(density_config["year_start"]),
-                "historical_year_end": int(density_config["year_end"]),
-                "positive_historical_month_cells": int((weights > 0).sum()),
-                "budgets": ";".join(
-                    str(value) for value in run_config["budgets"]
-                ),
-                "seeds": ";".join(str(value) for value in run_config["seeds"]),
-            }
-        ]
+    if phase == "cross_year":
+        metrics.insert(0, "year", year)
+        selections.insert(0, "year", year)
+    design: dict[str, object] = {
+        "phase": phase,
+        "pilot_year": year,
+    }
+    if phase == "cross_year":
+        design["processed_file"] = processed_path.as_posix()
+    design.update(
+        {
+            "n_complete_month_cells": len(frame),
+            "n_evaluation": len(evaluation),
+            "evaluation_fraction_realized": len(evaluation) / len(frame),
+            "evaluation_seed": int(evaluation_config["seed"]),
+            "extreme_value_sensitivity_threshold": float(
+                evaluation_config["extreme_value_sensitivity_threshold"]
+            ),
+            "evaluation_positions_sha256": hashlib.sha256(
+                evaluation.tobytes()
+            ).hexdigest(),
+            "historical_year_start": int(density_config["year_start"]),
+            "historical_year_end": int(density_config["year_end"]),
+            "positive_historical_month_cells": int((weights > 0).sum()),
+            "budgets": ";".join(str(value) for value in run_config["budgets"]),
+            "seeds": ";".join(str(value) for value in run_config["seeds"]),
+        }
     )
-    design.to_csv(design_path, index=False)
+    return metrics, selections, design
 
-    summary = (
-        metrics.groupby(
-            ["evaluation_domain", "strategy", "budget"], as_index=False
-        )
+
+def _summarize_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
+    group_columns = ["evaluation_domain", "strategy", "budget"]
+    sort_columns = ["evaluation_domain", "budget", "mean_rmse"]
+    if "year" in metrics.columns:
+        group_columns.insert(0, "year")
+        sort_columns.insert(0, "year")
+    return (
+        metrics.groupby(group_columns, as_index=False)
         .agg(
             mean_rmse=("rmse", "mean"),
             sd_rmse=("rmse", "std"),
@@ -128,66 +142,127 @@ def main() -> None:
             mean_correlation=("correlation", "mean"),
             n_seeds=("seed", "nunique"),
         )
-        .sort_values(["evaluation_domain", "budget", "mean_rmse"])
+        .sort_values(sort_columns)
     )
-    summary.to_csv(summary_path, index=False)
-    paired_rows: list[dict[str, object]] = []
-    for domain in metrics["evaluation_domain"].unique():
-        domain_metrics = metrics.loc[metrics["evaluation_domain"] == domain]
-        for budget in sorted(domain_metrics["budget"].unique()):
-            budget_metrics = domain_metrics.loc[domain_metrics["budget"] == budget]
-            for seed in sorted(budget_metrics["seed"].unique()):
-                seed_metrics = budget_metrics.loc[budget_metrics["seed"] == seed].set_index(
-                    "strategy"
+
+
+def _paired_effects(metrics: pd.DataFrame) -> pd.DataFrame:
+    group_columns = ["evaluation_domain", "budget", "seed"]
+    if "year" in metrics.columns:
+        group_columns.insert(0, "year")
+    rows: list[dict[str, object]] = []
+    for keys, group in metrics.groupby(group_columns, sort=True):
+        key_values = dict(zip(group_columns, keys, strict=True))
+        strategies = group.set_index("strategy")
+        for strategy in ("spatial_coverage", "historical_density"):
+            for metric in (
+                "rmse",
+                "mae",
+                "median_absolute_error",
+                "p95_absolute_error",
+                "p99_absolute_error",
+            ):
+                rows.append(
+                    {
+                        **key_values,
+                        "comparison": f"{strategy}_minus_random",
+                        "metric": metric,
+                        "difference": float(
+                            strategies.loc[strategy, metric]
+                            - strategies.loc["random", metric]
+                        ),
+                    }
                 )
-                for strategy in ("spatial_coverage", "historical_density"):
-                    for metric in (
-                        "rmse",
-                        "mae",
-                        "median_absolute_error",
-                        "p95_absolute_error",
-                        "p99_absolute_error",
-                    ):
-                        paired_rows.append(
-                            {
-                                "evaluation_domain": domain,
-                                "budget": budget,
-                                "seed": seed,
-                                "comparison": f"{strategy}_minus_random",
-                                "metric": metric,
-                                "difference": float(
-                                    seed_metrics.loc[strategy, metric]
-                                    - seed_metrics.loc["random", metric]
-                                ),
-                            }
-                        )
-    paired = pd.DataFrame(paired_rows)
-    paired.to_csv(paired_path, index=False)
-    if args.phase == "benchmark":
+    return pd.DataFrame(rows)
+
+
+def _software_versions() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {"package": "python", "version": sys.version.split()[0]},
+            *(
+                {"package": package, "version": version(package)}
+                for package in (
+                    "numpy",
+                    "pandas",
+                    "scikit-learn",
+                    "xarray",
+                    "h5netcdf",
+                )
+            ),
+        ]
+    )
+
+
+def main() -> None:
+    args = parse_args()
+    config = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
+    processing = config["processing"]
+    experiment = config["experiment"]
+    config_key = "execution_gate" if args.phase == "gate" else args.phase
+    run_config = experiment[config_key]
+    cross_year = args.phase == "cross_year"
+    years = (
+        [int(value) for value in run_config["years"]]
+        if cross_year
+        else [int(processing["pilot_year"])]
+    )
+    density_config = experiment["historical_density"]
+    socat = read_socat_monthly(density_config["socat_path"])
+
+    metric_frames: list[pd.DataFrame] = []
+    selection_frames: list[pd.DataFrame] = []
+    design_rows: list[dict[str, object]] = []
+    for year in years:
+        path = _processed_path(processing, year=year, cross_year=cross_year)
+        metrics, selections, design = _run_year(
+            year=year,
+            phase=args.phase,
+            processed_path=path,
+            experiment=experiment,
+            run_config=run_config,
+            socat=socat,
+        )
+        metric_frames.append(metrics)
+        selection_frames.append(selections)
+        design_rows.append(design)
+
+    metrics = pd.concat(metric_frames, ignore_index=True)
+    selections = pd.concat(selection_frames, ignore_index=True)
+    summary = _summarize_metrics(metrics)
+    paired = _paired_effects(metrics)
+    output_paths = [
+        Path(run_config[key])
+        for key in (
+            "metrics_file",
+            "selections_file",
+            "design_file",
+            "summary_file",
+            "paired_effects_file",
+        )
+    ]
+    for path in output_paths:
+        path.parent.mkdir(parents=True, exist_ok=True)
+    metrics.to_csv(run_config["metrics_file"], index=False)
+    selections.to_csv(run_config["selections_file"], index=False)
+    pd.DataFrame(design_rows).to_csv(run_config["design_file"], index=False)
+    summary.to_csv(run_config["summary_file"], index=False)
+    paired.to_csv(run_config["paired_effects_file"], index=False)
+
+    if args.phase in {"benchmark", "cross_year"}:
         paired_summary = summarize_paired_effects(
             paired,
             n_resamples=int(run_config["bootstrap_resamples"]),
             seed=int(run_config["bootstrap_seed"]),
         )
         paired_summary.to_csv(run_config["paired_summary_file"], index=False)
-        versions = pd.DataFrame(
-            [
-                {"package": "python", "version": sys.version.split()[0]},
-                *(
-                    {"package": package, "version": version(package)}
-                    for package in (
-                        "numpy",
-                        "pandas",
-                        "scikit-learn",
-                        "xarray",
-                        "h5netcdf",
-                    )
-                ),
-            ]
-        )
-        versions.to_csv(run_config["versions_file"], index=False)
+        _software_versions().to_csv(run_config["versions_file"], index=False)
+        if cross_year:
+            summarize_year_consistency(paired_summary).to_csv(
+                run_config["year_consistency_file"], index=False
+            )
     print(summary.to_string(index=False))
-    print(f"\nCommon evaluation cells: {len(evaluation):,}")
+    print(f"\nCompleted years: {', '.join(str(year) for year in years)}")
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ from ocean_carbon_sampling.osse_experiment import (
     historical_density_weights,
     stratified_evaluation_positions,
     summarize_paired_effects,
+    summarize_year_consistency,
 )
 
 
@@ -95,3 +96,46 @@ def test_paired_summary_is_reproducible_and_uses_seed_as_unit():
     assert first.loc[0, "n_seeds"] == 4
     assert first.loc[0, "mean_difference"] == -0.5
     assert first.loc[0, "fraction_difference_below_zero"] == 0.5
+
+
+def test_paired_summary_keeps_years_separate():
+    paired = pd.DataFrame(
+        {
+            "year": [2005, 2005, 2010, 2010],
+            "evaluation_domain": ["all"] * 4,
+            "budget": [500] * 4,
+            "seed": [0, 1, 0, 1],
+            "comparison": ["spatial_coverage_minus_random"] * 4,
+            "metric": ["rmse"] * 4,
+            "difference": [-2.0, -1.0, 1.0, 3.0],
+        }
+    )
+
+    summary = summarize_paired_effects(paired, n_resamples=100, seed=4)
+
+    assert summary["year"].tolist() == [2005, 2010]
+    assert summary["n_seeds"].tolist() == [2, 2]
+    assert summary["mean_difference"].tolist() == [-1.5, 2.0]
+
+
+def test_year_consistency_is_descriptive_across_years():
+    paired_summary = pd.DataFrame(
+        {
+            "year": [2005, 2010, 2014],
+            "evaluation_domain": ["all"] * 3,
+            "budget": [5000] * 3,
+            "comparison": ["spatial_coverage_minus_random"] * 3,
+            "metric": ["rmse"] * 3,
+            "mean_difference": [-2.0, -1.0, 0.5],
+            "seed_bootstrap_low": [-3.0, -2.0, -0.5],
+            "seed_bootstrap_high": [-1.0, 0.2, 1.5],
+        }
+    )
+
+    result = summarize_year_consistency(paired_summary)
+
+    assert result.loc[0, "n_years"] == 3
+    assert result.loc[0, "years"] == "2005;2010;2014"
+    assert result.loc[0, "years_effect_below_zero"] == 2
+    assert result.loc[0, "years_interval_entirely_below_zero"] == 1
+    assert result.loc[0, "mean_of_year_effects"] == -2.5 / 3

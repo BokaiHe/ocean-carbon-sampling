@@ -1,0 +1,7 @@
+package,version
+python,3.12.13
+numpy,2.4.6
+pandas,3.0.5
+scikit-learn,1.9.0
+xarray,2026.7.0
+h5netcdf,1.8.1

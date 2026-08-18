@@ -226,20 +226,19 @@ def summarize_paired_effects(
 
     alpha = (1.0 - confidence) / 2.0
     rows: list[dict[str, object]] = []
-    grouped = paired_effects.groupby(
-        ["evaluation_domain", "budget", "comparison", "metric"], sort=True
-    )
+    group_columns = ["evaluation_domain", "budget", "comparison", "metric"]
+    if "year" in paired_effects.columns:
+        group_columns.insert(0, "year")
+    grouped = paired_effects.groupby(group_columns, sort=True)
     for group_index, (keys, group) in enumerate(grouped):
+        key_values = dict(zip(group_columns, keys, strict=True))
         values = group.sort_values("seed")["difference"].to_numpy(dtype=float)
         rng = np.random.default_rng(seed + group_index)
         indices = rng.integers(0, len(values), size=(n_resamples, len(values)))
         bootstrap_means = values[indices].mean(axis=1)
         rows.append(
             {
-                "evaluation_domain": keys[0],
-                "budget": keys[1],
-                "comparison": keys[2],
-                "metric": keys[3],
+                **key_values,
                 "n_seeds": len(values),
                 "mean_difference": float(values.mean()),
                 "sd_difference": float(values.std(ddof=1)),
@@ -248,6 +247,52 @@ def summarize_paired_effects(
                     np.quantile(bootstrap_means, 1.0 - alpha)
                 ),
                 "fraction_difference_below_zero": float(np.mean(values < 0)),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def summarize_year_consistency(paired_summary: pd.DataFrame) -> pd.DataFrame:
+    """Describe effect consistency across prespecified years without inference."""
+    required = {
+        "year",
+        "evaluation_domain",
+        "budget",
+        "comparison",
+        "metric",
+        "mean_difference",
+        "seed_bootstrap_low",
+        "seed_bootstrap_high",
+    }
+    missing = required.difference(paired_summary.columns)
+    if missing:
+        raise ValueError(f"paired_summary is missing columns: {sorted(missing)}")
+    rows: list[dict[str, object]] = []
+    group_columns = ["evaluation_domain", "budget", "comparison", "metric"]
+    for keys, group in paired_summary.groupby(group_columns, sort=True):
+        effects = group["mean_difference"].to_numpy(dtype=float)
+        intervals_below_zero = (
+            group["seed_bootstrap_high"].to_numpy(dtype=float) < 0
+        )
+        intervals_above_zero = (
+            group["seed_bootstrap_low"].to_numpy(dtype=float) > 0
+        )
+        rows.append(
+            {
+                **dict(zip(group_columns, keys, strict=True)),
+                "n_years": int(group["year"].nunique()),
+                "years": ";".join(str(value) for value in sorted(group["year"])),
+                "mean_of_year_effects": float(effects.mean()),
+                "minimum_year_effect": float(effects.min()),
+                "maximum_year_effect": float(effects.max()),
+                "years_effect_below_zero": int(np.sum(effects < 0)),
+                "years_effect_above_zero": int(np.sum(effects > 0)),
+                "years_interval_entirely_below_zero": int(
+                    intervals_below_zero.sum()
+                ),
+                "years_interval_entirely_above_zero": int(
+                    intervals_above_zero.sum()
+                ),
             }
         )
     return pd.DataFrame(rows)

@@ -82,6 +82,23 @@ uncertainty across years, Earth system models or the real ocean. Budget-wise
 intervals are treated as an effect-size learning curve, not as four independent
 hypothesis tests.
 
+## Prespecified three-year robustness phase
+
+The first temporal robustness check uses 2005, 2010 and 2014, fixed before the
+additional model runs as the start, midpoint and endpoint of the 2005-2014
+analysis window. It repeats the complete 20-seed, four-budget design separately
+within each year. All sampling strategies retain the SOCAT 1990-2004 density
+window, so the historical allocation rule is defined only from observations
+before every simulated target year.
+
+Seed-level paired differences and bootstrap intervals are calculated within
+each year. The three annual mean effects are then summarized by their range and
+directional consistency. Because three selected model years are not an adequate
+sample for population-level temporal inference, no across-year p value or
+confidence interval is calculated. Agreement across these years is reported as
+robustness within this model experiment, not as evidence of real-ocean
+generality.
+
 ## Interpretation boundary
 
 CMIP6 `spco2` is partial pressure, whereas SOCAT reports fugacity (`fCO2`). SOCAT
