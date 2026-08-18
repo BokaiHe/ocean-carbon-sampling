@@ -13,8 +13,10 @@ outperform random sampling under the same observation budget?**
 
 ## Locked confirmatory design
 
-- Truth field: IPSL-CM6A-LR surface-ocean fCO2 in the prespecified years 2005,
-  2010 and 2014.
+- Truth field: monthly surface-ocean `spco2` from the CMIP6 IPSL-CM6A-LR
+  historical simulation, member `r1i1p1f1`, in the prespecified years 2005,
+  2010 and 2014. It is Earth-system-model output, not a SOCAT-derived
+  reconstruction product. SOCAT affects only the historical sampling weights.
 - Spatial unit: 20° longitude × 10° latitude block.
 - Fold assignment: five exhaustive checkerboard folds; all 12 months from a
   spatial location remain in the same fold.
@@ -41,7 +43,7 @@ coverage.
 | Metric | Mean across 15 year–fold units (µatm) | Units favouring coverage | Intervals entirely below zero | Interpretation |
 | --- | ---: | ---: | ---: | --- |
 | RMSE | +0.179 | 8/15 | 6/15 | direction depends on year and region |
-| p99 absolute error | −3.590 | 9/15 | 6/15 | severe failures are reduced more often |
+| p99 absolute error | −3.590 | 9/15 | 6/15 | mean favours coverage; direction consistency is weak |
 | Median absolute error | +0.663 | 0/15 | 0/15 | typical error is consistently higher |
 
 RMSE is close to neutral on average but strongly heterogeneous. The mean fold
@@ -50,21 +52,35 @@ Across all year–fold units, eight effects are negative and seven are positive;
 six intervals are entirely below zero and five are entirely above zero.
 
 The p99 effect is negative on average in every year: −3.155 µatm in 2005,
-−3.733 µatm in 2010 and −3.883 µatm in 2014. This tail benefit is still not
-universal: six of the 15 year–fold mean effects are positive.
+−3.733 µatm in 2010 and −3.883 µatm in 2014. Across year–fold units, however,
+the median is only −1.002 µatm, the IQR is −11.106 to +2.207 µatm and the range
+is −16.788 to +6.294 µatm. Six of 15 effects are positive. The negative mean is
+therefore influenced by a subset of large improvements and is not treated as a
+stable cross-region tail benefit.
+
+The distribution below the 99th percentile is less favourable to coverage.
+MAE increases in 15/15 units (mean +0.632 µatm), median absolute error increases
+in 15/15 (+0.663 µatm), and p95 absolute error increases in 14/15 (+1.257
+µatm). This explains why p99 can improve while RMSE is nearly neutral: coverage
+loses across most of the error distribution and gains only in part of the most
+extreme tail.
 
 Historical-density sampling is consistently worse than random on RMSE at
 budget 5,000. Its mean year–fold effect is +8.936 µatm, and all 15 intervals are
-entirely above zero.
+entirely above zero. This comparison is against the complete historical
+spatiotemporal observing pattern. Because its monthly allocation is less
+balanced than random, the effect cannot be attributed cleanly to spatial
+clustering alone.
 
 ## Scientific conclusion
 
 The random hidden-cell and whole-block experiments answer different questions.
 Coverage sampling improves reconstruction of scattered missing cells inside the
 sampled geographic domain. When complete regions are unseen, its RMSE effect is
-approximately balanced between gains and losses. The more stable pattern is a
-tradeoff: coverage raises typical error everywhere but reduces severe tail
-error more often.
+approximately balanced between gains and losses. Coverage raises typical and
+mid-upper-quantile error nearly everywhere. Its mean p99 difference favours
+coverage, but the 9/15 directional split is too weak to call a stable tail
+benefit.
 
 The defensible claim is therefore not that coverage is universally superior.
 It is that **sampling geometry redistributes reconstruction risk**, and the
@@ -75,7 +91,17 @@ extreme failures—changes which strategy is preferable.
 
 The 20 seeds are paired replicates within each year–fold. The 15 year–fold means
 are a descriptive consistency check, not 15 fully independent ecological
-replicates, and grid cells are never used as the inferential sample size.
+replicates, and grid cells are never used as the inferential sample size. The
+three years come from the same model run and share persistent spatial error
+structure, so they are not independent climate realizations.
+
+Signed mean error is retained as `bias`. At budget 5,000 under whole-block
+validation, the mean bias is +0.104 µatm for random and +0.256 µatm for
+coverage; the year–fold mean difference is +0.152 µatm, with effects of both
+signs. A pointwise µatm error is not converted directly to PgC yr−1 because
+air–sea flux also requires gas-transfer velocity, solubility, atmospheric pCO2
+and cell area. An integrated-flux diagnostic would be a separate decision
+metric, not a unit conversion.
 
 The experiment still uses one climate model, three years, coarse blocks, and no
 spatial buffer. A later sensitivity study could vary block size and add an

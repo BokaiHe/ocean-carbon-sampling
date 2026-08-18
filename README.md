@@ -64,6 +64,12 @@ validation metrics and decision rule.
 
 ## Global OSSE figure drafts
 
+The OSSE truth is the monthly surface-ocean `spco2` field from the CMIP6
+IPSL-CM6A-LR historical simulation, member `r1i1p1f1`—not a SOCAT-derived
+reconstruction product. SST and salinity from the same simulation are model
+predictors. SOCAT is used only to construct the historical observing-pattern
+baseline, so the truth does not inherit SOCAT's sparse sampling mask.
+
 > **Draft visual layer.** These figures preserve the verified analysis and
 > panel content, but their layout, typography, and legends are not final
 > portfolio graphics. All source tables are retained for a later redesign.
@@ -83,8 +89,10 @@ increasing median absolute error. A stricter spatial-block holdout leaves whole
 20° × 10° regions unseen during training and repeats five exhaustive folds in
 2005, 2010 and 2014 with 20 paired seeds. At budget 5,000, coverage improves
 RMSE in 8/15 year–fold units and worsens it in 7/15 (descriptive mean +0.179
-µatm). It lowers p99 absolute error in 9/15 units (mean −3.590 µatm), while
-raising median absolute error in all 15. The scientific result is therefore a
+µatm). Its mean p99 difference is −3.590 µatm, but only 9/15 units favour
+coverage, so this is not treated as a directionally stable tail benefit.
+Coverage raises median, MAE and p95 error in essentially every unit. The
+scientific result is therefore a
 context-dependent redistribution of error—not the trivial claim that more
 observations improve prediction, and not evidence that coverage is universally
 superior. Full, source-grounded
@@ -96,6 +104,13 @@ with a map-first visual demo in
 [`notebooks/published/osse_visual_story_demo.ipynb`](notebooks/published/osse_visual_story_demo.ipynb),
 and the exact redraw inputs are listed in
 [`docs/osse_figure_data_inventory.md`](docs/osse_figure_data_inventory.md).
+
+The hidden-cell effect is sample-count dependent. At count 500, coverage is
+worse than random for RMSE and p99 in all three years; consistent RMSE and p99
+improvements appear only at 2,500 and 5,000. Median error is higher at every
+tested count. Absolute baselines, relative changes and full year–fold
+distributions are reported in
+[`docs/osse_claims_audit.md`](docs/osse_claims_audit.md).
 
 ## Project stages
 
@@ -166,8 +181,9 @@ less accurate than random allocation throughout. This remains a single-model,
 not a real-ocean or cross-model, conclusion. The confirmatory three-year
 whole-block holdout does not reproduce a universal RMSE advantage: coverage is
 better in 8/15 year–fold units and worse in 7/15, while its mean effect is near
-zero. It nevertheless lowers the severe p99 error more often and consistently
-raises median error. This identifies the earlier RMSE gain as an interpolation
+zero. Its mean p99 difference favours coverage, but 9/15 directional agreement
+is weak; meanwhile median and MAE worsen in all 15 units and p95 worsens in
+14/15. This identifies the earlier RMSE gain as an interpolation
 result and makes unseen-region generalisation an explicit open problem. A
 native-cell-area weighting audit
 preserves all 12 prespecified cross-year direction checks, showing that the

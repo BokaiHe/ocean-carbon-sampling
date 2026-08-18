@@ -129,7 +129,7 @@ def plot_sampling_atlas(
 
 
 def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
-    """Contrast representative hidden-evaluation errors without downsampling."""
+    """Contrast paired-seed mean hidden-evaluation errors without downsampling."""
     configure_theme()
     random_col = "absolute_error_random"
     coverage_col = "absolute_error_spatial_coverage"
@@ -167,8 +167,25 @@ def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
         rasterized=True,
         zorder=2,
     )
+    if "sign_consistent_80pct" in fields.columns:
+        stipple = fields.loc[
+            fields["sign_consistent_80pct"].fillna(False)
+            & fields[difference_col].notna()
+        ]
+        hero.scatter(
+            stipple["longitude"],
+            stipple["latitude"],
+            s=0.22,
+            marker=".",
+            color="#111827",
+            alpha=0.55,
+            linewidths=0,
+            transform=ccrs.PlateCarree(),
+            rasterized=True,
+            zorder=2.5,
+        )
     hero.set_title(
-        "Where coverage changes error · blue = coverage better, red = random better",
+        "Mean ΔMAE · stippling = same sign in at least 16/20 paired seeds",
         pad=3,
     )
     hero.text(
@@ -191,7 +208,7 @@ def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
 
     error_image = None
     for index, (column, title) in enumerate(
-        [(random_col, "Random"), (coverage_col, "Spatial coverage")]
+        [(random_col, "Random"), (coverage_col, "Balanced coverage")]
     ):
         ax = _world_axis(fig, grid[1, index])
         lon, lat, values = _grid(fields, column)
@@ -228,7 +245,7 @@ def plot_error_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
     )
     error_bar.set_label("Mean absolute error on the hidden evaluation set (µatm)")
     fig.suptitle(
-        "Representative spatial error pattern · 2005, budget 5,000, seed 0",
+        "Paired-seed spatial evidence · 2005, sample count 5,000, 20 seeds",
         fontsize=9,
         fontweight="bold",
     )
@@ -304,6 +321,74 @@ def plot_tradeoff_summary(effects: pd.DataFrame) -> mpl.figure.Figure:
         y=1.03,
     )
     fig.tight_layout(rect=(0, 0.11, 1, 1))
+    return fig
+
+
+def plot_budget_sweep(effects: pd.DataFrame) -> mpl.figure.Figure:
+    """Show coverage-minus-random effects across every locked sample count."""
+    configure_theme()
+    metric_order = ["rmse", "p99_absolute_error", "median_absolute_error"]
+    titles = ["RMSE", "Severe error (p99)", "Typical error (median)"]
+    budgets = sorted(int(value) for value in effects["budget"].unique())
+    x_positions = np.arange(len(budgets))
+    fig, axes = plt.subplots(1, 3, figsize=(7.2, 2.55))
+    for panel, (ax, metric, title) in enumerate(zip(axes, metric_order, titles)):
+        metric_effect = effects.loc[effects["metric"] == metric]
+        for year in sorted(int(value) for value in metric_effect["year"].unique()):
+            subset = metric_effect.loc[metric_effect["year"] == year].sort_values(
+                "budget"
+            )
+            means = subset["mean_difference"].to_numpy(dtype=float)
+            lower = means - subset["seed_bootstrap_low"].to_numpy(dtype=float)
+            upper = subset["seed_bootstrap_high"].to_numpy(dtype=float) - means
+            ax.errorbar(
+                x_positions,
+                means,
+                yerr=np.vstack([lower, upper]),
+                color=YEAR_COLORS[year],
+                marker="o",
+                markersize=3.6,
+                capsize=1.8,
+                linewidth=1.0,
+                label=str(year),
+            )
+        ax.axhline(0.0, color="#6B7280", linewidth=0.8, linestyle="--")
+        ax.set_title(title, fontweight="bold")
+        ax.set_xticks(x_positions, [f"{value:,}" for value in budgets])
+        ax.set_xlabel("Annual sample count")
+        ax.set_ylabel("Coverage − random (µatm)")
+        ax.grid(axis="y", color="#E5E7EB", linewidth=0.55)
+        ax.text(
+            0.02,
+            0.96,
+            chr(ord("a") + panel),
+            transform=ax.transAxes,
+            va="top",
+            fontweight="bold",
+            fontsize=8,
+        )
+    axes[0].legend(
+        title="Year",
+        loc="best",
+        fontsize=6,
+        title_fontsize=6,
+        handlelength=1.4,
+    )
+    fig.text(
+        0.50,
+        0.02,
+        "Negative = coverage better · points are paired-seed means; bars are 95% seed-bootstrap intervals",
+        ha="center",
+        fontsize=6.3,
+        color="#4B5563",
+    )
+    fig.suptitle(
+        "Budget sensitivity · the error tradeoff is not unique to sample count 5,000",
+        fontsize=9,
+        fontweight="bold",
+        y=1.02,
+    )
+    fig.tight_layout(rect=(0, 0.10, 1, 1))
     return fig
 
 

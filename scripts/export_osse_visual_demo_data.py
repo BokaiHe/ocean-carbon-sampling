@@ -25,6 +25,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--config", default="configs/osse_pilot.yaml")
     parser.add_argument("--year", type=int, default=2005)
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument(
+        "--error-seeds",
+        type=int,
+        nargs="+",
+        default=list(range(20)),
+        help="Paired seeds averaged in the error maps.",
+    )
     parser.add_argument("--budget", type=int, default=5000)
     parser.add_argument(
         "--field-output",
@@ -113,7 +120,26 @@ def main() -> None:
     coverage = experiment["coverage_blocks"]
     longitude_degrees = float(coverage["longitude_degrees"])
     latitude_degrees = float(coverage["latitude_degrees"])
-    orders = fixed_budget_orders(
+    x_candidates = build_features(candidates)
+    x_evaluation = build_features(evaluation)
+    y_candidates = candidates["spco2"].to_numpy()
+    y_evaluation = evaluation["spco2"].to_numpy()
+    strategies = ("random", "historical_density", "spatial_coverage")
+    error_seeds = tuple(dict.fromkeys(int(seed) for seed in args.error_seeds))
+    if not error_seeds:
+        raise ValueError("error-seeds must contain at least one seed")
+    absolute_error_sums = {
+        strategy: np.zeros(len(evaluation), dtype=float) for strategy in strategies
+    }
+    location_index = pd.MultiIndex.from_frame(
+        evaluation[["latitude", "longitude"]]
+    )
+    location_codes, unique_locations = pd.factorize(location_index, sort=True)
+    location_counts = np.bincount(location_codes)
+    positive_seed_counts = np.zeros(len(unique_locations), dtype=int)
+    negative_seed_counts = np.zeros(len(unique_locations), dtype=int)
+    sampling_frames: list[pd.DataFrame] = []
+    sampling_orders = fixed_budget_orders(
         candidates,
         candidate_weights,
         maximum_budget=args.budget,
@@ -121,22 +147,10 @@ def main() -> None:
         longitude_degrees=longitude_degrees,
         latitude_degrees=latitude_degrees,
     )
-
-    x_candidates = build_features(candidates)
-    x_evaluation = build_features(evaluation)
-    y_candidates = candidates["spco2"].to_numpy()
-    y_evaluation = evaluation["spco2"].to_numpy()
-    evaluation_predictions: dict[str, np.ndarray] = {}
-    sampling_frames: list[pd.DataFrame] = []
-
-    for strategy, order in orders.items():
-        selected = order[: args.budget]
-        model = make_model(args.seed + 10_000)
-        model.fit(x_candidates.iloc[selected], y_candidates[selected])
-        evaluation_predictions[strategy] = model.predict(x_evaluation)
+    for strategy, order in sampling_orders.items():
         sampling_frames.append(
             spatial_block_summary(
-                candidates.iloc[selected],
+                candidates.iloc[order[: args.budget]],
                 strategy=strategy,
                 longitude_degrees=longitude_degrees,
                 latitude_degrees=latitude_degrees,
@@ -144,14 +158,47 @@ def main() -> None:
         )
 
     published = pd.read_csv("results/public/osse_cross_year_metrics.csv")
-    expected = published.query(
-        "year == @args.year and evaluation_domain == 'all' "
-        "and budget == @args.budget and seed == @args.seed"
-    ).set_index("strategy")["rmse"]
-    for strategy, prediction in evaluation_predictions.items():
-        observed_rmse = float(np.sqrt(np.mean((prediction - y_evaluation) ** 2)))
-        if not np.isclose(observed_rmse, expected.loc[strategy], rtol=0, atol=1e-10):
-            raise RuntimeError(f"{strategy} RMSE does not match the published run")
+    for seed in error_seeds:
+        orders = fixed_budget_orders(
+            candidates,
+            candidate_weights,
+            maximum_budget=args.budget,
+            seed=seed,
+            longitude_degrees=longitude_degrees,
+            latitude_degrees=latitude_degrees,
+        )
+        seed_errors: dict[str, np.ndarray] = {}
+        expected = published.query(
+            "year == @args.year and evaluation_domain == 'all' "
+            "and budget == @args.budget and seed == @seed"
+        ).set_index("strategy")["rmse"]
+        for strategy, order in orders.items():
+            selected = order[: args.budget]
+            model = make_model(seed + 10_000)
+            model.fit(x_candidates.iloc[selected], y_candidates[selected])
+            prediction = model.predict(x_evaluation)
+            absolute_error = np.abs(prediction - y_evaluation)
+            seed_errors[strategy] = absolute_error
+            absolute_error_sums[strategy] += absolute_error
+            observed_rmse = float(np.sqrt(np.mean((prediction - y_evaluation) ** 2)))
+            if not np.isclose(
+                observed_rmse,
+                expected.loc[strategy],
+                rtol=0,
+                atol=1e-10,
+            ):
+                raise RuntimeError(
+                    f"{strategy} seed {seed} RMSE does not match the published run"
+                )
+        difference = (
+            seed_errors["spatial_coverage"] - seed_errors["random"]
+        )
+        cell_difference = (
+            np.bincount(location_codes, weights=difference) / location_counts
+        )
+        positive_seed_counts += cell_difference > 0
+        negative_seed_counts += cell_difference < 0
+        print(f"completed error-map seed {seed}", flush=True)
 
     truth = (
         frame.groupby(["latitude", "longitude"], as_index=False)
@@ -159,8 +206,10 @@ def main() -> None:
         .sort_values(["latitude", "longitude"])
     )
     errors = evaluation.loc[:, ["latitude", "longitude"]].copy()
-    for strategy, prediction in evaluation_predictions.items():
-        errors[f"absolute_error_{strategy}"] = np.abs(prediction - y_evaluation)
+    for strategy in strategies:
+        errors[f"absolute_error_{strategy}"] = (
+            absolute_error_sums[strategy] / len(error_seeds)
+        )
     errors["absolute_error_difference_coverage_minus_random"] = (
         errors["absolute_error_spatial_coverage"]
         - errors["absolute_error_random"]
@@ -168,6 +217,24 @@ def main() -> None:
     error_fields = errors.groupby(
         ["latitude", "longitude"], as_index=False
     ).mean(numeric_only=True)
+    consistency = unique_locations.to_frame(index=False)
+    consistency.columns = ["latitude", "longitude"]
+    consistency["coverage_better_seed_fraction"] = (
+        negative_seed_counts / len(error_seeds)
+    )
+    consistency["random_better_seed_fraction"] = (
+        positive_seed_counts / len(error_seeds)
+    )
+    consistency["sign_consistent_80pct"] = (
+        np.maximum(negative_seed_counts, positive_seed_counts)
+        >= np.ceil(0.8 * len(error_seeds))
+    )
+    error_fields = error_fields.merge(
+        consistency,
+        on=["latitude", "longitude"],
+        how="left",
+        validate="one_to_one",
+    )
     fields = truth.merge(
         error_fields,
         on=["latitude", "longitude"],
@@ -190,6 +257,8 @@ def main() -> None:
             {
                 "year": args.year,
                 "seed": args.seed,
+                "error_map_seeds": ";".join(str(seed) for seed in error_seeds),
+                "n_error_map_seeds": len(error_seeds),
                 "budget": args.budget,
                 "complete_month_cells": len(frame),
                 "candidate_month_cells": len(candidates),
@@ -197,7 +266,10 @@ def main() -> None:
                 "map_grid_cells": len(fields),
                 "sampling_longitude_degrees": longitude_degrees,
                 "sampling_latitude_degrees": latitude_degrees,
-                "map_role": "representative spatial pattern; not inferential replicate",
+                "map_role": (
+                    "error fields are paired-seed means; sampling geometry uses "
+                    "the representative seed"
+                ),
             }
         ]
     ).to_csv(metadata_output, index=False)
