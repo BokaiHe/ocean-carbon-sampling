@@ -11,7 +11,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.colors import LogNorm, TwoSlopeNorm
+from matplotlib.colors import BoundaryNorm, ListedColormap, LogNorm, TwoSlopeNorm
 
 METHOD_LABELS = {
     "random": "Random",
@@ -19,6 +19,7 @@ METHOD_LABELS = {
     "spatial_coverage": "Spatial coverage",
 }
 YEAR_COLORS = {2005: "#1D4ED8", 2010: "#0F766E", 2014: "#7C3AED"}
+FOLD_COLORS = ["#8DD3C7", "#FDB462", "#80B1D3", "#B3A2D6", "#FB8072"]
 
 
 def configure_theme() -> None:
@@ -303,6 +304,133 @@ def plot_tradeoff_summary(effects: pd.DataFrame) -> mpl.figure.Figure:
         y=1.03,
     )
     fig.tight_layout(rect=(0, 0.11, 1, 1))
+    return fig
+
+
+def plot_spatial_holdout_gate(
+    blocks: pd.DataFrame,
+    paired_summary: pd.DataFrame,
+) -> mpl.figure.Figure:
+    """Map exhaustive spatial folds and show fold-specific RMSE effects."""
+    configure_theme()
+    fold_cmap = ListedColormap(FOLD_COLORS)
+    fold_norm = BoundaryNorm(np.arange(-0.5, 5.5, 1.0), fold_cmap.N)
+    fig = plt.figure(figsize=(7.2, 2.55))
+    grid = fig.add_gridspec(
+        1,
+        2,
+        width_ratios=(1.55, 1.0),
+        left=0.03,
+        right=0.97,
+        bottom=0.21,
+        top=0.84,
+        wspace=0.22,
+    )
+
+    map_ax = _world_axis(fig, grid[0, 0])
+    lon, lat, folds = _grid(
+        blocks.rename(
+            columns={
+                "longitude_center": "longitude",
+                "latitude_center": "latitude",
+            }
+        ),
+        "spatial_fold",
+    )
+    fold_image = map_ax.pcolormesh(
+        lon,
+        lat,
+        folds,
+        cmap=fold_cmap,
+        norm=fold_norm,
+        shading="nearest",
+        transform=ccrs.PlateCarree(),
+        rasterized=True,
+        zorder=2,
+    )
+    map_ax.set_title("Five exhaustive 20° × 10° holdout folds")
+    map_ax.text(
+        0.01,
+        0.04,
+        "a",
+        transform=map_ax.transAxes,
+        fontweight="bold",
+        fontsize=8,
+        zorder=5,
+    )
+    fold_bar = fig.colorbar(
+        fold_image,
+        ax=map_ax,
+        orientation="horizontal",
+        fraction=0.07,
+        pad=0.05,
+        ticks=np.arange(5),
+    )
+    fold_bar.set_label("Spatial fold held out across all 12 months")
+
+    effect_ax = fig.add_subplot(grid[0, 1])
+    effect = paired_summary.query(
+        "evaluation_domain == 'all' and budget == 5000 and "
+        "comparison == 'spatial_coverage_minus_random' and metric == 'rmse'"
+    ).sort_values("spatial_fold")
+    for row in effect.itertuples(index=False):
+        fold = int(row.spatial_fold)
+        effect_ax.errorbar(
+            row.mean_difference,
+            fold,
+            xerr=np.array(
+                [
+                    [row.mean_difference - row.seed_bootstrap_low],
+                    [row.seed_bootstrap_high - row.mean_difference],
+                ]
+            ),
+            fmt="o",
+            color=FOLD_COLORS[fold],
+            markeredgecolor="#374151",
+            markeredgewidth=0.4,
+            markersize=5,
+            capsize=2,
+            linewidth=1.1,
+        )
+    mean_effect = float(effect["mean_difference"].mean())
+    effect_ax.axvline(0.0, color="#6B7280", linewidth=0.8, linestyle="--")
+    effect_ax.axvline(
+        mean_effect,
+        color="#111827",
+        linewidth=0.8,
+        linestyle=":",
+    )
+    effect_ax.set(
+        title="Coverage effect varies by unseen region",
+        xlabel="Coverage − random RMSE (µatm)",
+        ylabel="Held-out fold",
+        yticks=np.arange(5),
+    )
+    effect_ax.grid(axis="x", color="#E5E7EB", linewidth=0.6)
+    effect_ax.text(
+        0.02,
+        0.96,
+        "b",
+        transform=effect_ax.transAxes,
+        va="top",
+        fontweight="bold",
+        fontsize=8,
+    )
+    effect_ax.text(
+        0.98,
+        0.05,
+        f"fold mean = {mean_effect:+.2f}",
+        transform=effect_ax.transAxes,
+        ha="right",
+        fontsize=6.5,
+        color="#111827",
+    )
+    fig.suptitle(
+        "The stricter spatial-block gate does not support universal coverage gains",
+        fontsize=9,
+        fontweight="bold",
+        y=0.98,
+    )
     return fig
 
 

@@ -226,9 +226,17 @@ def summarize_paired_effects(
 
     alpha = (1.0 - confidence) / 2.0
     rows: list[dict[str, object]] = []
-    group_columns = ["evaluation_domain", "budget", "comparison", "metric"]
-    if "year" in paired_effects.columns:
-        group_columns.insert(0, "year")
+    group_columns = [
+        *(
+            column
+            for column in ("year", "spatial_fold")
+            if column in paired_effects.columns
+        ),
+        "evaluation_domain",
+        "budget",
+        "comparison",
+        "metric",
+    ]
     grouped = paired_effects.groupby(group_columns, sort=True)
     for group_index, (keys, group) in enumerate(grouped):
         key_values = dict(zip(group_columns, keys, strict=True))
@@ -291,6 +299,58 @@ def summarize_year_consistency(paired_summary: pd.DataFrame) -> pd.DataFrame:
                     intervals_below_zero.sum()
                 ),
                 "years_interval_entirely_above_zero": int(
+                    intervals_above_zero.sum()
+                ),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def summarize_spatial_fold_consistency(
+    paired_summary: pd.DataFrame,
+) -> pd.DataFrame:
+    """Describe effect consistency across exhaustive spatial holdout folds."""
+    required = {
+        "spatial_fold",
+        "evaluation_domain",
+        "budget",
+        "comparison",
+        "metric",
+        "mean_difference",
+        "seed_bootstrap_low",
+        "seed_bootstrap_high",
+    }
+    missing = required.difference(paired_summary.columns)
+    if missing:
+        raise ValueError(f"paired_summary is missing columns: {sorted(missing)}")
+    rows: list[dict[str, object]] = []
+    group_columns = ["evaluation_domain", "budget", "comparison", "metric"]
+    if "year" in paired_summary.columns:
+        group_columns.insert(0, "year")
+    for keys, group in paired_summary.groupby(group_columns, sort=True):
+        effects = group["mean_difference"].to_numpy(dtype=float)
+        intervals_below_zero = (
+            group["seed_bootstrap_high"].to_numpy(dtype=float) < 0
+        )
+        intervals_above_zero = (
+            group["seed_bootstrap_low"].to_numpy(dtype=float) > 0
+        )
+        rows.append(
+            {
+                **dict(zip(group_columns, keys, strict=True)),
+                "n_folds": int(group["spatial_fold"].nunique()),
+                "folds": ";".join(
+                    str(value) for value in sorted(group["spatial_fold"].unique())
+                ),
+                "mean_of_fold_effects": float(effects.mean()),
+                "minimum_fold_effect": float(effects.min()),
+                "maximum_fold_effect": float(effects.max()),
+                "folds_effect_below_zero": int(np.sum(effects < 0)),
+                "folds_effect_above_zero": int(np.sum(effects > 0)),
+                "folds_interval_entirely_below_zero": int(
+                    intervals_below_zero.sum()
+                ),
+                "folds_interval_entirely_above_zero": int(
                     intervals_above_zero.sum()
                 ),
             }

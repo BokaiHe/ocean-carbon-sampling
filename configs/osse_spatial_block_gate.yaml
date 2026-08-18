@@ -1,0 +1,47 @@
+project:
+  phase: global_spatial_block_holdout_gate
+  question: >-
+    Under a fixed observation budget, does spatial-coverage sampling improve
+    reconstruction in entire geographic blocks excluded from model training?
+
+source:
+  osse_config: configs/osse_pilot.yaml
+  year: 2005
+
+validation:
+  longitude_degrees: 20.0
+  latitude_degrees: 10.0
+  n_folds: 5
+  folds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+  assignment: checkerboard_(lon_block+2*lat_block)_mod_5
+  buffer_degrees: 0.0
+  note: >-
+    Every month at a spatial location belongs to the same fold. The gate tests
+    interpolation into unseen 20-by-10-degree blocks, not buffered long-range
+    extrapolation.
+
+execution:
+  budgets:
+    - 1000
+    - 5000
+  seeds:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+  bootstrap_resamples: 10000
+  bootstrap_seed: 6200
+  metrics_file: results/public/osse_spatial_block_gate_metrics.csv
+  selections_file: results/public/osse_spatial_block_gate_selections.csv
+  paired_effects_file: results/public/osse_spatial_block_gate_paired_effects.csv
+  paired_summary_file: results/public/osse_spatial_block_gate_paired_summary.csv
+  fold_consistency_file: results/public/osse_spatial_block_gate_consistency.csv
+  design_file: results/public/osse_spatial_block_gate_design.csv
+  block_map_file: results/public/osse_spatial_block_gate_blocks.csv
+  work_directory: results/osse_spatial_block_gate_work

@@ -57,11 +57,16 @@ validation metrics and decision rule.
 
 The locked global OSSE separates sampling geometry from sample count: each
 strategy receives the same observation budget, uses the same reconstruction
-model, and is evaluated against complete model truth. Across 2005, 2010 and
-2014, spatial-coverage sampling consistently lowers RMSE and severe tail error
-at the largest budget, while slightly increasing median absolute error. The
-scientific result is therefore a reproducible redistribution of error—not the
-trivial claim that more observations improve prediction. Full, source-grounded
+model, and is evaluated against complete model truth. Under a month-stratified
+random hidden-cell evaluation, spatial-coverage sampling lowers RMSE and severe
+tail error in 2005, 2010 and 2014 at the largest budget, while slightly
+increasing median absolute error. A stricter 2005 spatial-block holdout gate
+leaves whole 20° × 10° regions unseen during training. There, coverage improves
+RMSE in only two of five folds and has a fold-average effect of +1.609 µatm
+(positive means worse than random). The scientific result is therefore a
+context-dependent redistribution of error—not the trivial claim that more
+observations improve prediction, and not evidence that coverage is universally
+superior. Full, source-grounded
 draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
 The rerunnable narrative is available in
@@ -115,6 +120,7 @@ python scripts/run_osse_gate.py --phase cross_year
 python scripts/prepare_osse_pilot.py --years 2005 2010 2014 --regrid area_weighted
 python scripts/run_osse_gate.py --phase regrid_audit
 python scripts/summarize_regrid_audit.py
+python scripts/run_osse_spatial_block_gate.py
 python scripts/plot_osse_portfolio_figures.py
 jupyter lab notebooks/published/osse_results_walkthrough.ipynb
 jupyter lab notebooks/published/osse_visual_story_demo.ipynb
@@ -134,7 +140,11 @@ phase repeats the full design in 2005, 2010 and 2014. At the largest budget,
 spatial coverage reduces RMSE and p99 absolute error in every year while
 slightly increasing typical absolute error; historical-density allocation is
 less accurate than random allocation throughout. This remains a single-model,
-not a real-ocean or cross-model, conclusion. A native-cell-area weighting audit
+not a real-ocean or cross-model, conclusion. The stricter 2005 whole-block
+holdout does not reproduce a universal coverage advantage: coverage improves
+RMSE in two of five folds, while the fold-average RMSE difference is +1.609
+µatm. This identifies the earlier gain as an interpolation result and makes
+unseen-region generalisation an explicit open problem. A native-cell-area weighting audit
 preserves all 12 prespecified cross-year direction checks, showing that the
 result is not an artefact of equal weighting within target bins. See
 [`docs/osse_regrid_audit_results.md`](docs/osse_regrid_audit_results.md). Results are generated into

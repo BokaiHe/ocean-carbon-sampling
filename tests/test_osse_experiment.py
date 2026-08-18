@@ -8,6 +8,7 @@ from ocean_carbon_sampling.osse_experiment import (
     historical_density_weights,
     stratified_evaluation_positions,
     summarize_paired_effects,
+    summarize_spatial_fold_consistency,
     summarize_year_consistency,
 )
 
@@ -118,6 +119,26 @@ def test_paired_summary_keeps_years_separate():
     assert summary["mean_difference"].tolist() == [-1.5, 2.0]
 
 
+def test_paired_summary_keeps_spatial_folds_separate():
+    paired = pd.DataFrame(
+        {
+            "spatial_fold": [0, 0, 1, 1],
+            "evaluation_domain": ["all"] * 4,
+            "budget": [5000] * 4,
+            "seed": [0, 1, 0, 1],
+            "comparison": ["spatial_coverage_minus_random"] * 4,
+            "metric": ["rmse"] * 4,
+            "difference": [-2.0, -1.0, 1.0, 3.0],
+        }
+    )
+
+    summary = summarize_paired_effects(paired, n_resamples=100, seed=4)
+
+    assert summary["spatial_fold"].tolist() == [0, 1]
+    assert summary["n_seeds"].tolist() == [2, 2]
+    assert summary["mean_difference"].tolist() == [-1.5, 2.0]
+
+
 def test_year_consistency_is_descriptive_across_years():
     paired_summary = pd.DataFrame(
         {
@@ -139,3 +160,26 @@ def test_year_consistency_is_descriptive_across_years():
     assert result.loc[0, "years_effect_below_zero"] == 2
     assert result.loc[0, "years_interval_entirely_below_zero"] == 1
     assert result.loc[0, "mean_of_year_effects"] == -2.5 / 3
+
+
+def test_spatial_fold_consistency_is_descriptive_across_exhaustive_folds():
+    summary = pd.DataFrame(
+        {
+            "spatial_fold": [0, 1, 2],
+            "evaluation_domain": ["all"] * 3,
+            "budget": [5000] * 3,
+            "comparison": ["spatial_coverage_minus_random"] * 3,
+            "metric": ["rmse"] * 3,
+            "mean_difference": [-2.0, -1.0, 0.5],
+            "seed_bootstrap_low": [-3.0, -2.0, -0.5],
+            "seed_bootstrap_high": [-1.0, 0.2, 1.5],
+        }
+    )
+
+    result = summarize_spatial_fold_consistency(summary)
+
+    assert result.loc[0, "n_folds"] == 3
+    assert result.loc[0, "folds"] == "0;1;2"
+    assert result.loc[0, "folds_effect_below_zero"] == 2
+    assert result.loc[0, "folds_interval_entirely_below_zero"] == 1
+    assert result.loc[0, "mean_of_fold_effects"] == -2.5 / 3
