@@ -66,6 +66,8 @@ draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
 The rerunnable narrative is available in
 [`notebooks/published/osse_results_walkthrough.ipynb`](notebooks/published/osse_results_walkthrough.ipynb),
+with a map-first visual demo in
+[`notebooks/published/osse_visual_story_demo.ipynb`](notebooks/published/osse_visual_story_demo.ipynb),
 and the exact redraw inputs are listed in
 [`docs/osse_figure_data_inventory.md`](docs/osse_figure_data_inventory.md).
 
@@ -115,6 +117,7 @@ python scripts/run_osse_gate.py --phase regrid_audit
 python scripts/summarize_regrid_audit.py
 python scripts/plot_osse_portfolio_figures.py
 jupyter lab notebooks/published/osse_results_walkthrough.ipynb
+jupyter lab notebooks/published/osse_visual_story_demo.ipynb
 ```
 
 ## Current status

@@ -39,6 +39,8 @@ dev = [
   "ruff",
 ]
 notebook = [
+  "cartopy",
+  "cmocean",
   "ipykernel",
   "jupyterlab",
 ]
