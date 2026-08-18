@@ -38,6 +38,10 @@ dev = [
   "pytest",
   "ruff",
 ]
+notebook = [
+  "ipykernel",
+  "jupyterlab",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

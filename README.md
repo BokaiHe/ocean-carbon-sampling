@@ -43,7 +43,11 @@ withheld from the public interpretation rather than presented as scientific
 drivers. See [`docs/diagnostic_results.md`](docs/diagnostic_results.md) for the
 validation metrics and decision rule.
 
-## Global OSSE portfolio figures
+## Global OSSE figure drafts
+
+> **Draft visual layer.** These figures preserve the verified analysis and
+> panel content, but their layout, typography, and legends are not final
+> portfolio graphics. All source tables are retained for a later redesign.
 
 ![Locked global OSSE design](results/public/fig1_osse_design.png)
 
@@ -58,8 +62,12 @@ model, and is evaluated against complete model truth. Across 2005, 2010 and
 at the largest budget, while slightly increasing median absolute error. The
 scientific result is therefore a reproducible redistribution of error—not the
 trivial claim that more observations improve prediction. Full, source-grounded
-captions and interpretation limits are provided in
+draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
+The rerunnable narrative is available in
+[`notebooks/published/osse_results_walkthrough.ipynb`](notebooks/published/osse_results_walkthrough.ipynb),
+and the exact redraw inputs are listed in
+[`docs/osse_figure_data_inventory.md`](docs/osse_figure_data_inventory.md).
 
 ## Project stages
 
@@ -76,7 +84,7 @@ The repository intentionally excludes raw data, working notebooks, trained model
 
 ```bash
 python -m venv .venv
-pip install -e ".[dev,model,osse,app]"
+pip install -e ".[dev,model,osse,app,notebook]"
 pytest
 ```
 
@@ -106,6 +114,7 @@ python scripts/prepare_osse_pilot.py --years 2005 2010 2014 --regrid area_weight
 python scripts/run_osse_gate.py --phase regrid_audit
 python scripts/summarize_regrid_audit.py
 python scripts/plot_osse_portfolio_figures.py
+jupyter lab notebooks/published/osse_results_walkthrough.ipynb
 ```
 
 ## Current status

@@ -1,4 +1,8 @@
-# Portfolio figure legends
+# Draft portfolio figure legends
+
+> Status: **draft visual layer**. The underlying result tables, statistical
+> definitions, and panel-to-data mapping are retained and verified. Layout,
+> typography, and legend design will be replaced before portfolio publication.
 
 ## Fig. 1 | Locked global observing-system simulation experiment
 
