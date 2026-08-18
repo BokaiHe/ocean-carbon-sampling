@@ -37,7 +37,10 @@ deferred until the three-variable pipeline closes.
 2. Select the locked analysis period before regridding.
 3. Convert coordinates, calendars and units explicitly; never infer them from
    filename conventions alone.
-4. Regrid truth and predictors to a common 1-degree grid with an ocean mask.
+4. For the one-year execution gate, assign native ocean-cell centres to regular
+   1-degree bins and average values within each occupied bin. This creates no
+   values over unoccupied land bins and uses one identical transformation for
+   truth and predictors.
 5. Construct observation masks at each fixed budget.
 6. Compare random, historical-density and spatial-coverage allocation using the
    same reconstruction model and evaluation cells.
@@ -52,6 +55,18 @@ will define realistic observation locations and sampling density; its carbon
 values are not interchangeable with the model truth. A result from one Earth
 system model is a controlled proof of concept, not evidence that one strategy is
 universally optimal in the real ocean.
+
+The centre-bin mean is a pipeline-validation transformation rather than the
+final regridding claim. Before the ten-year scientific comparison, it must be
+checked against an area-weighted mapping using native cell area. Because all
+sampling strategies in the pilot use the same processed truth field, this
+provisional transformation does not advantage one strategy over another.
+
+No finite model values are removed post hoc. The 2005 audit identifies a small
+upper tail in `spco2` (81 processed values above 1,000 micro-atmospheres), with
+the maximum in the Hudson Bay region. These values are retained for the pipeline
+gate and must later be accompanied by a prespecified open-ocean/coastal
+sensitivity analysis rather than silently clipped.
 
 ## Primary decision
 

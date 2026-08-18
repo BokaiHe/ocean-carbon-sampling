@@ -31,10 +31,16 @@ variables:
 
 processing:
   preserve_native_raw_files: true
+  pilot_year: 2005
   target_grid_degrees: 1.0
   target_longitude_convention: -180_to_180
   time_frequency: monthly
   subset_before_regridding: true
+  regrid_method: native_cell_center_bin_mean
+  processed_file: data/processed/osse_pilot/IPSL-CM6A-LR_historical_2005_1deg.nc
+  audit_file: results/osse_work/preprocess_2005_audit.csv
+  expected_months: 12
+  minimum_ocean_bins: 40000
   spco2_output_unit: micro_atmosphere
   note: >-
     CMIP6 spco2 is partial pressure whereas SOCAT reports fugacity. SOCAT is

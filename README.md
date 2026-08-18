@@ -79,6 +79,7 @@ python scripts/run_xgb_shap_diagnostic.py
 python scripts/plot_diagnostic_gate.py
 python scripts/download_osse_pilot.py --dry-run
 python scripts/audit_osse_inputs.py
+python scripts/prepare_osse_pilot.py
 ```
 
 ## Current status
