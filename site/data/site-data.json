@@ -1,0 +1,587 @@
+{
+  "metadata": {
+    "title": "Ocean Carbon Sampling",
+    "generated_from": "Frozen results/public tables",
+    "map_year": 2005,
+    "sample_count": 5000,
+    "default_estimand": "area|both60|block",
+    "default_comparison": "historical density minus random"
+  },
+  "maps": {
+    "images": {
+      "random": {
+        "base": "assets/maps/sampling_random_base.png",
+        "zero": "assets/maps/sampling_random_zero.png"
+      },
+      "historical": {
+        "base": "assets/maps/sampling_historical_base.png",
+        "zero": "assets/maps/sampling_historical_zero.png"
+      },
+      "coverage": {
+        "base": "assets/maps/sampling_coverage_base.png",
+        "zero": "assets/maps/sampling_coverage_zero.png"
+      }
+    },
+    "zero_coverage_cell_pct": 53.1,
+    "zero_coverage_area_pct": 49.2,
+    "zero_coverage_cells": 21580,
+    "definition": "SOCAT 1990–2004 historical spatial-marginal weight equals zero on the complete 2005 mapped model domain."
+  },
+  "estimands": {
+    "equal|global|hidden": {
+      "n_units": 3,
+      "metrics": {
+        "bias": {
+          "random": 0.065,
+          "comparator": -4.822,
+          "difference": -4.887,
+          "relative_pct": null,
+          "direction": "3/3 negative",
+          "n_units": 3
+        },
+        "mae": {
+          "random": 10.936,
+          "comparator": 16.366,
+          "difference": 5.43,
+          "relative_pct": 49.65,
+          "direction": "3/3 worse",
+          "n_units": 3
+        },
+        "rmse": {
+          "random": 25.936,
+          "comparator": 35.801,
+          "difference": 9.865,
+          "relative_pct": 38.04,
+          "direction": "3/3 worse",
+          "n_units": 3
+        }
+      },
+      "weight": "equal",
+      "domain": "global",
+      "scheme": "hidden",
+      "label": "Equal-cell weighting · Full model domain · Month-stratified hidden cells",
+      "status": "supporting"
+    },
+    "equal|eval60|hidden": {
+      "n_units": 3,
+      "metrics": {
+        "bias": {
+          "random": 0.087,
+          "comparator": -1.005,
+          "difference": -1.093,
+          "relative_pct": null,
+          "direction": "3/3 negative",
+          "n_units": 3
+        },
+        "mae": {
+          "random": 10.154,
+          "comparator": 12.422,
+          "difference": 2.267,
+          "relative_pct": 22.33,
+          "direction": "3/3 worse",
+          "n_units": 3
+        },
+        "rmse": {
+          "random": 22.999,
+          "comparator": 26.894,
+          "difference": 3.895,
+          "relative_pct": 16.94,
+          "direction": "3/3 worse",
+          "n_units": 3
+        }
+      },
+      "weight": "equal",
+      "domain": "eval60",
+      "scheme": "hidden",
+      "label": "Equal-cell weighting · Evaluation restricted to <60°N · Month-stratified hidden cells",
+      "status": "supporting"
+    },
+    "equal|both60|hidden": {
+      "n_units": 3,
+      "metrics": {
+        "bias": {
+          "random": 0.028,
+          "comparator": -1.153,
+          "difference": -1.181,
+          "relative_pct": null,
+          "direction": "3/3 negative",
+          "n_units": 3
+        },
+        "mae": {
+          "random": 9.755,
+          "comparator": 12.321,
+          "difference": 2.566,
+          "relative_pct": 26.3,
+          "direction": "3/3 worse",
+          "n_units": 3
+        },
+        "rmse": {
+          "random": 21.404,
+          "comparator": 25.924,
+          "difference": 4.519,
+          "relative_pct": 21.11,
+          "direction": "3/3 worse",
+          "n_units": 3
+        }
+      },
+      "weight": "equal",
+      "domain": "both60",
+      "scheme": "hidden",
+      "label": "Equal-cell weighting · Candidates and evaluation restricted to <60°N · Month-stratified hidden cells",
+      "status": "supporting"
+    },
+    "area|global|hidden": {
+      "n_units": 3,
+      "metrics": {
+        "bias": {
+          "random": 0.059,
+          "comparator": -1.99,
+          "difference": -2.049,
+          "relative_pct": null,
+          "direction": "3/3 negative",
+          "n_units": 3
+        },
+        "mae": {
+          "random": 10.301,
+          "comparator": 13.404,
+          "difference": 3.103,
+          "relative_pct": 30.12,
+          "direction": "3/3 worse",
+          "n_units": 3
+        },
+        "rmse": {
+          "random": 23.963,
+          "comparator": 29.931,
+          "difference": 5.969,
+          "relative_pct": 24.91,
+          "direction": "3/3 worse",
+          "n_units": 3
+        }
+      },
+      "weight": "area",
+      "domain": "global",
+      "scheme": "hidden",
+      "label": "Spherical cell-area weighting · Full model domain · Month-stratified hidden cells",
+      "status": "supporting"
+    },
+    "area|eval60|hidden": {
+      "n_units": 3,
+      "metrics": {
+        "bias": {
+          "random": 0.059,
+          "comparator": -0.753,
+          "difference": -0.813,
+          "relative_pct": null,
+          "direction": "3/3 negative",
+          "n_units": 3
+        },
+        "mae": {
+          "random": 9.935,
+          "comparator": 12.109,
+          "difference": 2.174,
+          "relative_pct": 21.88,
+          "direction": "3/3 worse",
+          "n_units": 3
+        },
+        "rmse": {
+          "random": 22.511,
+          "comparator": 26.214,
+          "difference": 3.703,
+          "relative_pct": 16.45,
+          "direction": "3/3 worse",
+          "n_units": 3
+        }
+      },
+      "weight": "area",
+      "domain": "eval60",
+      "scheme": "hidden",
+      "label": "Spherical cell-area weighting · Evaluation restricted to <60°N · Month-stratified hidden cells",
+      "status": "supporting"
+    },
+    "area|both60|hidden": {
+      "n_units": 3,
+      "metrics": {
+        "bias": {
+          "random": 0.031,
+          "comparator": -0.804,
+          "difference": -0.835,
+          "relative_pct": null,
+          "direction": "3/3 negative",
+          "n_units": 3
+        },
+        "mae": {
+          "random": 9.508,
+          "comparator": 11.975,
+          "difference": 2.466,
+          "relative_pct": 25.94,
+          "direction": "3/3 worse",
+          "n_units": 3
+        },
+        "rmse": {
+          "random": 20.766,
+          "comparator": 24.99,
+          "difference": 4.224,
+          "relative_pct": 20.34,
+          "direction": "3/3 worse",
+          "n_units": 3
+        }
+      },
+      "weight": "area",
+      "domain": "both60",
+      "scheme": "hidden",
+      "label": "Spherical cell-area weighting · Candidates and evaluation restricted to <60°N · Month-stratified hidden cells",
+      "status": "supporting"
+    },
+    "equal|global|block": {
+      "n_units": 15,
+      "metrics": {
+        "bias": {
+          "random": 0.104,
+          "comparator": -4.851,
+          "difference": -4.954,
+          "relative_pct": null,
+          "direction": "15/15 negative",
+          "n_units": 15
+        },
+        "mae": {
+          "random": 12.828,
+          "comparator": 17.809,
+          "difference": 4.981,
+          "relative_pct": 38.83,
+          "direction": "15/15 worse",
+          "n_units": 15
+        },
+        "rmse": {
+          "random": 27.549,
+          "comparator": 36.486,
+          "difference": 8.936,
+          "relative_pct": 32.44,
+          "direction": "15/15 worse",
+          "n_units": 15
+        }
+      },
+      "weight": "equal",
+      "domain": "global",
+      "scheme": "block",
+      "label": "Equal-cell weighting · Full model domain · Whole-spatial-block holdout",
+      "status": "supporting"
+    },
+    "equal|eval60|block": {
+      "n_units": 15,
+      "metrics": {
+        "bias": {
+          "random": 0.149,
+          "comparator": -0.84,
+          "difference": -0.988,
+          "relative_pct": null,
+          "direction": "14/15 negative",
+          "n_units": 15
+        },
+        "mae": {
+          "random": 12.06,
+          "comparator": 13.882,
+          "difference": 1.822,
+          "relative_pct": 15.11,
+          "direction": "15/15 worse",
+          "n_units": 15
+        },
+        "rmse": {
+          "random": 24.685,
+          "comparator": 27.077,
+          "difference": 2.393,
+          "relative_pct": 9.69,
+          "direction": "15/15 worse",
+          "n_units": 15
+        }
+      },
+      "weight": "equal",
+      "domain": "eval60",
+      "scheme": "block",
+      "label": "Equal-cell weighting · Evaluation restricted to <60°N · Whole-spatial-block holdout",
+      "status": "supporting"
+    },
+    "equal|both60|block": {
+      "n_units": 15,
+      "metrics": {
+        "bias": {
+          "random": -0.023,
+          "comparator": -0.89,
+          "difference": -0.867,
+          "relative_pct": null,
+          "direction": "12/15 negative",
+          "n_units": 15
+        },
+        "mae": {
+          "random": 12.117,
+          "comparator": 14.067,
+          "difference": 1.95,
+          "relative_pct": 16.09,
+          "direction": "15/15 worse",
+          "n_units": 15
+        },
+        "rmse": {
+          "random": 26.41,
+          "comparator": 27.787,
+          "difference": 1.377,
+          "relative_pct": 5.21,
+          "direction": "12/15 worse",
+          "n_units": 15
+        }
+      },
+      "weight": "equal",
+      "domain": "both60",
+      "scheme": "block",
+      "label": "Equal-cell weighting · Candidates and evaluation restricted to <60°N · Whole-spatial-block holdout",
+      "status": "supporting"
+    },
+    "area|global|block": {
+      "n_units": 15,
+      "metrics": {
+        "bias": {
+          "random": 0.14,
+          "comparator": -1.744,
+          "difference": -1.884,
+          "relative_pct": null,
+          "direction": "15/15 negative",
+          "n_units": 15
+        },
+        "mae": {
+          "random": 12.225,
+          "comparator": 14.827,
+          "difference": 2.602,
+          "relative_pct": 21.29,
+          "direction": "15/15 worse",
+          "n_units": 15
+        },
+        "rmse": {
+          "random": 25.422,
+          "comparator": 30.165,
+          "difference": 4.743,
+          "relative_pct": 18.66,
+          "direction": "15/15 worse",
+          "n_units": 15
+        }
+      },
+      "weight": "area",
+      "domain": "global",
+      "scheme": "block",
+      "label": "Spherical cell-area weighting · Full model domain · Whole-spatial-block holdout",
+      "status": "supporting"
+    },
+    "area|eval60|block": {
+      "n_units": 15,
+      "metrics": {
+        "bias": {
+          "random": 0.162,
+          "comparator": -0.468,
+          "difference": -0.631,
+          "relative_pct": null,
+          "direction": "15/15 negative",
+          "n_units": 15
+        },
+        "mae": {
+          "random": 11.862,
+          "comparator": 13.559,
+          "difference": 1.697,
+          "relative_pct": 14.31,
+          "direction": "15/15 worse",
+          "n_units": 15
+        },
+        "rmse": {
+          "random": 23.969,
+          "comparator": 26.184,
+          "difference": 2.214,
+          "relative_pct": 9.24,
+          "direction": "15/15 worse",
+          "n_units": 15
+        }
+      },
+      "weight": "area",
+      "domain": "eval60",
+      "scheme": "block",
+      "label": "Spherical cell-area weighting · Evaluation restricted to <60°N · Whole-spatial-block holdout",
+      "status": "supporting"
+    },
+    "area|both60|block": {
+      "n_units": 15,
+      "metrics": {
+        "bias": {
+          "random": -0.009,
+          "comparator": -0.482,
+          "difference": -0.473,
+          "relative_pct": null,
+          "direction": "12/15 negative",
+          "n_units": 15
+        },
+        "mae": {
+          "random": 11.836,
+          "comparator": 13.691,
+          "difference": 1.855,
+          "relative_pct": 15.67,
+          "direction": "15/15 worse",
+          "n_units": 15
+        },
+        "rmse": {
+          "random": 25.422,
+          "comparator": 26.732,
+          "difference": 1.31,
+          "relative_pct": 5.15,
+          "direction": "12/15 worse",
+          "n_units": 15
+        }
+      },
+      "weight": "area",
+      "domain": "both60",
+      "scheme": "block",
+      "label": "Spherical cell-area weighting · Candidates and evaluation restricted to <60°N · Whole-spatial-block holdout",
+      "status": "default"
+    }
+  },
+  "estimand_journey": [
+    "equal|global|block",
+    "area|global|block",
+    "area|eval60|block",
+    "area|both60|block"
+  ],
+  "sample_sweep": {
+    "500": {
+      "budget": 500,
+      "metrics": {
+        "median_absolute_error": {
+          "random": 11.228,
+          "coverage": 12.125,
+          "difference": 0.898,
+          "relative_pct": 8.0,
+          "direction": "0/3 years below zero"
+        },
+        "p99_absolute_error": {
+          "random": 98.405,
+          "coverage": 100.415,
+          "difference": 2.01,
+          "relative_pct": 2.08,
+          "direction": "0/3 years below zero"
+        },
+        "rmse": {
+          "random": 32.587,
+          "coverage": 33.362,
+          "difference": 0.774,
+          "relative_pct": 2.36,
+          "direction": "0/3 years below zero"
+        }
+      }
+    },
+    "1000": {
+      "budget": 1000,
+      "metrics": {
+        "median_absolute_error": {
+          "random": 9.072,
+          "coverage": 9.725,
+          "difference": 0.653,
+          "relative_pct": 7.21,
+          "direction": "0/3 years below zero"
+        },
+        "p99_absolute_error": {
+          "random": 89.943,
+          "coverage": 89.837,
+          "difference": -0.106,
+          "relative_pct": -0.1,
+          "direction": "1/3 years below zero"
+        },
+        "rmse": {
+          "random": 30.4,
+          "coverage": 30.355,
+          "difference": -0.045,
+          "relative_pct": -0.19,
+          "direction": "1/3 years below zero"
+        }
+      }
+    },
+    "2500": {
+      "budget": 2500,
+      "metrics": {
+        "median_absolute_error": {
+          "random": 7.652,
+          "coverage": 8.278,
+          "difference": 0.626,
+          "relative_pct": 8.18,
+          "direction": "0/3 years below zero"
+        },
+        "p99_absolute_error": {
+          "random": 77.763,
+          "coverage": 70.609,
+          "difference": -7.154,
+          "relative_pct": -9.17,
+          "direction": "3/3 years below zero"
+        },
+        "rmse": {
+          "random": 27.914,
+          "coverage": 26.791,
+          "difference": -1.123,
+          "relative_pct": -4.01,
+          "direction": "3/3 years below zero"
+        }
+      }
+    },
+    "5000": {
+      "budget": 5000,
+      "metrics": {
+        "median_absolute_error": {
+          "random": 7.083,
+          "coverage": 7.754,
+          "difference": 0.67,
+          "relative_pct": 9.47,
+          "direction": "0/3 years below zero"
+        },
+        "p99_absolute_error": {
+          "random": 66.406,
+          "coverage": 61.686,
+          "difference": -4.72,
+          "relative_pct": -7.1,
+          "direction": "3/3 years below zero"
+        },
+        "rmse": {
+          "random": 25.936,
+          "coverage": 24.829,
+          "difference": -1.107,
+          "relative_pct": -4.23,
+          "direction": "3/3 years below zero"
+        }
+      }
+    }
+  },
+  "audits": {
+    "month_balance": {
+      "historical_density": {
+        "selections": 300,
+        "minimum_months_covered": 12,
+        "mean_abs_equal_deviation_pp": 0.875
+      },
+      "random": {
+        "selections": 300,
+        "minimum_months_covered": 12,
+        "mean_abs_equal_deviation_pp": 0.292
+      },
+      "spatial_coverage": {
+        "selections": 300,
+        "minimum_months_covered": 12,
+        "mean_abs_equal_deviation_pp": 0.222
+      }
+    },
+    "regridding": {
+      "direction_checks": 12,
+      "direction_checks_passed": 12,
+      "note": "Correlated metrics are not independent tests."
+    },
+    "replication": {
+      "years": [
+        2005,
+        2010,
+        2014
+      ],
+      "spatial_folds": 5,
+      "year_fold_units": 15,
+      "paired_seeds_per_unit": 20,
+      "interpretation": "Descriptive consistency units; no formal whole-block significance test."
+    }
+  }
+}

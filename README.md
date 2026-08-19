@@ -136,6 +136,21 @@ OSSE extends that idea with month-aware coverage cells so that the strategy is
 also seasonally balanced; the two stages therefore share a spatial principle
 but do not use an identical acquisition rule.
 
+## Static interactive brief
+
+The four-interaction portfolio site lives in [`site/`](site/). It reads a
+small frozen JSON contract and swaps pre-rendered PNG maps; it has no backend
+and does not refit models in the browser.
+
+```bash
+python scripts/build_static_site_assets.py
+python -m http.server 8000 --directory site
+```
+
+Open `http://localhost:8000/`. The site defaults to the locked whole-block,
+spherical-area-weighted, aligned `<60°N` estimand; original-domain results are
+explicitly labelled as supporting sensitivities.
+
 ## Project stages
 
 1. **Regional minimum experiment** — SOCAT v2025, Southern Ocean, random versus coverage sampling.

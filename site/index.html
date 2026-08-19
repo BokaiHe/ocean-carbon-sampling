@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A reproducible observing-system simulation experiment for ocean-carbon sampling design."
+    />
+    <title>Ocean Carbon Sampling · Interactive OSSE</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23082f33' stroke='%238fe0d3' stroke-width='4'/%3E%3Cpath d='M20 37l25-10' stroke='%23f3b083' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="nav shell" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="Ocean Carbon Sampling home">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Ocean Carbon Sampling</span>
+        </a>
+        <div class="nav-links">
+          <a href="#sampling">Sampling</a>
+          <a href="#estimand">Estimand</a>
+          <a href="#sample-count">Sample count</a>
+          <a href="#technical">Methods</a>
+        </div>
+      </nav>
+
+      <div class="hero-grid shell" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">Interactive research brief · frozen analysis</p>
+          <h1>Where we observe changes what the ocean appears to tell us.</h1>
+          <p class="lede">
+            A reproducible observing-system simulation experiment comparing equal-count
+            sampling geometries for monthly surface-ocean pCO₂ reconstruction.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#sampling">Explore the evidence</a>
+            <a class="button ghost" href="#technical">Read the method boundaries</a>
+          </div>
+        </div>
+        <aside class="hero-result" aria-label="Default result summary">
+          <p class="card-kicker">Default estimand</p>
+          <p class="result-label">Historical − random MAE</p>
+          <p class="hero-number">+15.67<span>%</span></p>
+          <p class="hero-consistency">Worse in <strong>15/15</strong> year–fold units</p>
+          <p class="hero-boundary">
+            Whole-block · spherical area · candidates and evaluation &lt;60°N
+          </p>
+        </aside>
+      </div>
+    </header>
+
+    <main>
+      <section class="section shell" id="sampling">
+        <div class="section-heading">
+          <p class="step">Interaction 01</p>
+          <h2>Same sample count. Three observing geometries.</h2>
+          <p>
+            Switch the strategy, then reveal the places assigned zero probability by the
+            historical spatial baseline.
+          </p>
+        </div>
+
+        <div class="panel map-panel">
+          <div class="panel-toolbar">
+            <div class="segmented" role="group" aria-label="Sampling strategy">
+              <button class="segment active" data-strategy="random" aria-pressed="true">Random</button>
+              <button class="segment" data-strategy="historical" aria-pressed="false">Historical</button>
+              <button class="segment" data-strategy="coverage" aria-pressed="false">Coverage</button>
+            </div>
+            <label class="switch">
+              <input id="zero-toggle" type="checkbox" />
+              <span class="switch-track" aria-hidden="true"><span></span></span>
+              <span>显示零覆盖区</span>
+            </label>
+          </div>
+
+          <div class="map-stage">
+            <img
+              id="sampling-map"
+              src="assets/maps/sampling_random_base.png"
+              alt="Random sampling density on the 2005 mapped model domain"
+            />
+            <aside id="zero-callout" class="zero-callout" hidden>
+              <span class="callout-number">53.1%</span>
+              <span>of mapped cells have zero historical spatial weight</span>
+              <small>49.2% after spherical-area weighting</small>
+            </aside>
+          </div>
+          <div class="map-caption">
+            <p id="map-description">Random distributes 5,000 observations across the candidate pool.</p>
+            <p class="source-note">2005 · representative seed 0 · 5° × 10° display blocks</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-tint" id="estimand">
+        <div class="shell">
+          <div class="section-heading compact">
+            <p class="step">Interaction 02 · Core result</p>
+            <h2>One estimate, four defensible questions.</h2>
+            <p>
+              The number changes because weighting, evaluation domain and candidate support define
+              different estimands—not because the underlying run was hidden.
+            </p>
+          </div>
+
+          <div class="estimand-layout">
+            <form class="control-card" id="estimand-controls">
+              <fieldset>
+                <legend>加权方式</legend>
+                <div class="choice-row">
+                  <label><input type="radio" name="weight" value="equal" /><span>等格点</span></label>
+                  <label><input type="radio" name="weight" value="area" checked /><span>球面面积</span></label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>评价范围</legend>
+                <div class="choice-column">
+                  <label><input type="radio" name="domain" value="global" /><span>全域</span></label>
+                  <label><input type="radio" name="domain" value="eval60" /><span>仅评价 &lt;60°N</span></label>
+                  <label><input type="radio" name="domain" value="both60" checked /><span>候选池也限制</span></label>
+                </div>
+              </fieldset>
+              <fieldset>
+                <legend>验证方式</legend>
+                <div class="choice-row">
+                  <label><input type="radio" name="scheme" value="hidden" /><span>随机隐藏</span></label>
+                  <label><input type="radio" name="scheme" value="block" checked /><span>整块留出</span></label>
+                </div>
+              </fieldset>
+              <button class="button replay" id="replay-journey" type="button">重放口径修正</button>
+            </form>
+
+            <div class="result-console" aria-live="polite">
+              <div class="console-topline">
+                <span id="estimand-status" class="status default">Default estimand</span>
+                <span>Historical density − random</span>
+              </div>
+              <p class="metric-name">Mean signed error difference</p>
+              <p class="big-number" id="bias-value">−0.473 <span>µatm</span></p>
+              <p class="estimand-label" id="estimand-label"></p>
+
+              <div class="metric-grid">
+                <article class="metric-card">
+                  <p>MAE</p>
+                  <strong id="mae-value">+1.855</strong>
+                  <span id="mae-relative">+15.67%</span>
+                  <small id="mae-direction">15/15 worse</small>
+                </article>
+                <article class="metric-card">
+                  <p>RMSE</p>
+                  <strong id="rmse-value">+1.310</strong>
+                  <span id="rmse-relative">+5.15%</span>
+                  <small id="rmse-direction">12/15 worse</small>
+                </article>
+                <article class="metric-card">
+                  <p>Bias direction</p>
+                  <strong id="bias-direction">12/15</strong>
+                  <span>negative units</span>
+                  <small>Descriptive consistency</small>
+                </article>
+              </div>
+
+              <div class="journey" aria-label="Four-stage estimand sensitivity">
+                <button type="button" data-journey="equal|global|block">
+                  <span>01</span><strong>−4.954</strong><small>Equal · global</small>
+                </button>
+                <button type="button" data-journey="area|global|block">
+                  <span>02</span><strong>−1.884</strong><small>Area · global</small>
+                </button>
+                <button type="button" data-journey="area|eval60|block">
+                  <span>03</span><strong>−0.631</strong><small>Area · eval &lt;60°N</small>
+                </button>
+                <button type="button" class="active" data-journey="area|both60|block">
+                  <span>04</span><strong>−0.473</strong><small>Aligned &lt;60°N</small>
+                </button>
+              </div>
+              <p class="interpretation" id="estimand-note">
+                The large original signed offset is estimand-sensitive. The stable default finding is
+                the historical MAE penalty, not a universal global bias.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section shell" id="sample-count">
+        <div class="section-heading">
+          <p class="step">Interaction 03 · Supporting audit</p>
+          <h2>The coverage result changes with sample count.</h2>
+          <p>
+            This panel is deliberately labelled as a non-default hidden-cell, full-domain,
+            equal-cell audit. Δerror = coverage − random.
+          </p>
+        </div>
+
+        <div class="panel sweep-panel">
+          <div class="audit-label">Supporting · hidden cells · full domain · equal-cell</div>
+          <div class="slider-header">
+            <div>
+              <span>Sample count</span>
+              <strong id="budget-value">5,000</strong>
+            </div>
+            <p id="budget-interpretation">At high counts, the extreme tail falls while typical error remains higher.</p>
+          </div>
+          <input
+            id="budget-slider"
+            class="budget-slider"
+            type="range"
+            min="0"
+            max="3"
+            step="1"
+            value="3"
+            aria-label="Sample count"
+          />
+          <div class="slider-ticks" aria-hidden="true">
+            <span>500</span><span>1,000</span><span>2,500</span><span>5,000</span>
+          </div>
+
+          <div class="sweep-grid">
+            <article class="sweep-card" data-metric="median_absolute_error">
+              <div><p>Median absolute error</p><strong>+0.670</strong></div>
+              <span class="direction-pill worse">Higher</span>
+              <div class="zero-bar"><i></i></div>
+              <small>Common-error range</small>
+            </article>
+            <article class="sweep-card" data-metric="p99_absolute_error">
+              <div><p>p99 absolute error</p><strong>−4.720</strong></div>
+              <span class="direction-pill better">Lower</span>
+              <div class="zero-bar"><i></i></div>
+              <small>Extreme tail</small>
+            </article>
+            <article class="sweep-card" data-metric="rmse">
+              <div><p>RMSE</p><strong>−1.107</strong></div>
+              <span class="direction-pill better">Lower</span>
+              <div class="zero-bar"><i></i></div>
+              <small>Tail-sensitive summary</small>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="technical">
+        <div class="shell technical-shell">
+          <div class="section-heading compact inverse">
+            <p class="step">Interaction 04</p>
+            <h2>Technical details, available—not in the way.</h2>
+            <p>Open only the audit you want to inspect. None of these panels adds a new model fit.</p>
+          </div>
+
+          <div class="details-stack">
+            <details>
+              <summary><span>Month balance</span><small>1,800 deterministic selection audits</small></summary>
+              <div class="detail-body" id="month-audit"></div>
+            </details>
+            <details>
+              <summary><span>Regridding audit</span><small>Native-cell weighting sensitivity</small></summary>
+              <div class="detail-body" id="regrid-audit"></div>
+            </details>
+            <details>
+              <summary><span>15 year–fold distributions</span><small>Descriptive consistency, not formal significance</small></summary>
+              <div class="detail-body">
+                <p>
+                  Three prespecified years × five exhaustive spatial folds. Each unit averages 20 paired
+                  sampling seeds. The units share one ESM run and are not independent Earth-system replicates.
+                </p>
+                <a href="data/site-data.json">Inspect the frozen JSON contract →</a>
+              </div>
+            </details>
+            <details>
+              <summary><span>Interpretability gate</span><small>Why SHAP is not shown as mechanism</small></summary>
+              <div class="detail-body">
+                <p>
+                  Spatially grouped XGBoost models failed the prespecified out-of-fold generalization gate.
+                  SHAP artifacts were withheld because explaining a non-generalizing model would not establish
+                  a scientific driver.
+                </p>
+                <p>The complete gate decision remains in the reproducible repository documentation.</p>
+              </div>
+            </details>
+            <details>
+              <summary><span>Not yet supported</span><small>Explicit project boundary</small></summary>
+              <div class="detail-body">
+                <p>
+                  Sea-ice-aware accessibility, cross-model robustness, buffered extrapolation, integrated-flux
+                  effects, cost-aware routing and direct real-ocean performance remain outside the present claim.
+                </p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="shell footer-grid">
+        <div><strong>Ocean Carbon Sampling</strong><p>Analysis frozen · interface reads precomputed assets only.</p></div>
+        <div class="footer-links">
+          <a href="#top">Back to top</a>
+          <a href="#technical">Methods</a>
+          <a href="data/site-data.json">JSON</a>
+        </div>
+      </div>
+    </footer>
+
+    <noscript>This interactive brief requires JavaScript to switch frozen result views.</noscript>
+  </body>
+</html>
