@@ -22,10 +22,12 @@
         "zero": "assets/maps/sampling_coverage_zero.png"
       }
     },
+    "priority_diagnostic": "assets/maps/historical_zero_priority_diagnostic.png",
     "zero_coverage_cell_pct": 53.1,
     "zero_coverage_area_pct": 49.2,
     "zero_coverage_cells": 21580,
-    "definition": "SOCAT 1990–2004 historical spatial-marginal weight equals zero on the complete 2005 mapped model domain."
+    "definition": "SOCAT 1990–2004 historical spatial-marginal weight equals zero on the complete 2005 mapped model domain.",
+    "priority_definition": "Supporting 2005 full-domain diagnostic: structural-zero cells are coloured by absolute paired-seed mean signed error multiplied by the spherical cell-area factor. This is not a causal marginal-gain map."
   },
   "estimands": {
     "equal|global|hidden": {

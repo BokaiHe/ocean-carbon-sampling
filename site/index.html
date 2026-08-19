@@ -56,28 +56,35 @@
       <section class="section shell" id="sampling">
         <div class="section-heading">
           <p class="step">Interaction 01</p>
-          <h2>Same sample count. Three observing geometries.</h2>
+          <h2>Where do 5,000 observations go—and where is risk left unresolved?</h2>
           <p>
-            Switch the strategy, then reveal the places assigned zero probability by the
-            historical spatial baseline.
+            The first map shows the experimental input: how each rule allocates the same
+            number of observations. It is a sampling map, not a performance map.
           </p>
         </div>
 
         <div class="panel map-panel">
           <div class="panel-toolbar">
             <div class="segmented" role="group" aria-label="Sampling strategy">
-              <button class="segment active" data-strategy="random" aria-pressed="true">Random</button>
-              <button class="segment" data-strategy="historical" aria-pressed="false">Historical</button>
-              <button class="segment" data-strategy="coverage" aria-pressed="false">Coverage</button>
+              <button class="segment active" data-strategy="random" aria-pressed="true">
+                <span>Random</span><small>equal candidate probability</small>
+              </button>
+              <button class="segment" data-strategy="historical" aria-pressed="false">
+                <span>Historical</span><small>repeat SOCAT density</small>
+              </button>
+              <button class="segment" data-strategy="coverage" aria-pressed="false">
+                <span>Coverage</span><small>fill sparse month–space blocks</small>
+              </button>
             </div>
             <label class="switch">
               <input id="zero-toggle" type="checkbox" />
               <span class="switch-track" aria-hidden="true"><span></span></span>
-              <span>显示零覆盖区</span>
+              <span>Overlay historical structural-zero areas</span>
             </label>
           </div>
 
           <div class="map-stage">
+            <span class="map-role">Design map · not model error</span>
             <img
               id="sampling-map"
               src="assets/maps/sampling_random_base.png"
@@ -90,8 +97,45 @@
             </aside>
           </div>
           <div class="map-caption">
-            <p id="map-description">Random distributes 5,000 observations across the candidate pool.</p>
-            <p class="source-note">2005 · representative seed 0 · 5° × 10° display blocks</p>
+            <p id="map-description">Random gives every candidate month-cell equal selection probability.</p>
+            <p class="source-note">All strategies: n = 5,000 · 2005 · seed 0 · points summarize 5° × 10° blocks</p>
+          </div>
+        </div>
+
+        <div class="logic-bridge" aria-label="How to read the two maps">
+          <span>1 · Change the allocation rule above</span>
+          <i aria-hidden="true">→</i>
+          <span>2 · Observe which ocean areas lose support</span>
+          <i aria-hidden="true">→</i>
+          <span>3 · Inspect where unsupported error affects the global offset</span>
+        </div>
+
+        <div class="panel priority-panel">
+          <div class="priority-copy">
+            <p class="card-kicker">Supporting diagnostic · 2005</p>
+            <h3>Where should a follow-up sampling experiment test first?</h3>
+            <p>
+              Colour appears only where the historical baseline assigns zero sampling
+              probability. Darker cells combine a larger mean signed reconstruction error
+              with a larger spherical area, so they contribute more to the global signed offset.
+            </p>
+            <div class="priority-stat">
+              <strong>53.1%</strong>
+              <span>of mapped ocean cells have zero historical support<br />49.2% by spherical area</span>
+            </div>
+            <p class="caveat">
+              <strong>Diagnostic, not a promise of improvement.</strong> This map identifies
+              candidates for an add-observation experiment; it does not estimate the causal
+              gain from sampling any one cell.
+            </p>
+          </div>
+          <div class="priority-figure">
+            <span class="map-role">Outcome diagnostic · not marginal value</span>
+            <img
+              id="priority-map"
+              src="assets/maps/historical_zero_priority_diagnostic.png"
+              alt="Area-weighted magnitude of historical mean signed error within structural-zero sampling cells"
+            />
           </div>
         </div>
       </section>

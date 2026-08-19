@@ -13,9 +13,9 @@ const state = {
 
 const budgets = ["500", "1000", "2500", "5000"];
 const strategyDescriptions = {
-  random: "Random distributes 5,000 observations across the candidate pool.",
-  historical: "Historical follows the SOCAT 1990–2004 spatiotemporal observing pattern.",
-  coverage: "Coverage fills underrepresented month-aware 5° × 10° cells.",
+  random: "Random gives every candidate month-cell equal selection probability; clusters arise only from the realized draw.",
+  historical: "Historical repeats the SOCAT 1990–2004 sampling density, concentrating observations where ships previously measured.",
+  coverage: "Coverage prioritizes underrepresented month–space blocks; it changes allocation, not the total of 5,000 observations.",
 };
 
 const $ = (selector, root = document) => root.querySelector(selector);

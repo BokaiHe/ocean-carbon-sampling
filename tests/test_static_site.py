@@ -65,3 +65,7 @@ def test_all_pre_rendered_maps_exist() -> None:
             path = SITE / data["maps"]["images"][strategy][variant]
             assert path.is_file()
             assert path.stat().st_size > 10_000
+    priority = SITE / data["maps"]["priority_diagnostic"]
+    assert priority.is_file()
+    assert priority.stat().st_size > 10_000
+    assert "not a causal marginal-gain map" in data["maps"]["priority_definition"]

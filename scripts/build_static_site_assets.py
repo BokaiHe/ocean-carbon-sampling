@@ -11,9 +11,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import yaml
-from matplotlib.collections import PatchCollection
-from matplotlib.colors import Normalize
-from matplotlib.patches import Rectangle
+from matplotlib.colors import BoundaryNorm, ListedColormap, PowerNorm
 
 from ocean_carbon_sampling.data import read_socat_monthly
 from ocean_carbon_sampling.osse_experiment import historical_spatial_weights
@@ -279,7 +277,7 @@ def render_sampling_maps(
         float(latitudes.max() + 0.5),
     ]
     vmax = float(sampling["observations"].quantile(0.98))
-    norm = Normalize(vmin=0.0, vmax=max(vmax, 1.0))
+    norm = PowerNorm(gamma=0.72, vmin=0.0, vmax=max(vmax, 1.0))
     maps: dict[str, dict[str, str]] = {}
     for strategy in ("random", "historical_density", "spatial_coverage"):
         subset = sampling.loc[sampling["strategy"] == strategy].copy()
@@ -291,28 +289,32 @@ def render_sampling_maps(
         for show_zero in (False, True):
             fig, ax = plt.subplots(figsize=(12.8, 6.4), dpi=150)
             fig.patch.set_facecolor("#f7f9f7")
-            ax.set_facecolor("#eef1ee")
+            # The axes background is land. Only valid model-ocean cells receive
+            # the blue raster, so coastlines remain legible without a GIS layer.
+            ax.set_facecolor("#e9dfcf")
             ocean_rgba = np.zeros((*ocean.shape, 4), dtype=float)
-            ocean_rgba[np.isfinite(ocean)] = (0.83, 0.89, 0.87, 1.0)
+            ocean_rgba[np.isfinite(ocean)] = (0.82, 0.91, 0.93, 1.0)
             ax.imshow(ocean_rgba, origin="lower", extent=extent, interpolation="none")
             if show_zero:
                 zero_rgba = np.zeros((*zero.shape, 4), dtype=float)
-                zero_rgba[zero == 1] = (0.36, 0.39, 0.40, 0.78)
+                zero_rgba[zero == 1] = (0.32, 0.35, 0.37, 0.60)
                 ax.imshow(zero_rgba, origin="lower", extent=extent, interpolation="none")
 
-            patches = [
-                Rectangle((row.longitude - 5.0, row.latitude - 2.5), 10.0, 5.0)
-                for row in subset.itertuples(index=False)
-            ]
-            collection = PatchCollection(
-                patches,
+            # The source table summarizes 1-degree selections into 5 x 10 degree
+            # display blocks. Plot compact points at block centres instead of
+            # painting the entire block, which previously obscured coastlines.
+            collection = ax.scatter(
+                subset["longitude"],
+                subset["latitude"],
+                s=13.0 + 58.0 * np.sqrt(subset["observations"] / max(vmax, 1.0)),
+                c=subset["observations"],
                 cmap="YlOrRd",
                 norm=norm,
-                edgecolor=(1, 1, 1, 0.28),
-                linewidth=0.25,
+                edgecolors=(1, 1, 1, 0.78),
+                linewidths=0.35,
+                alpha=0.92,
+                zorder=3,
             )
-            collection.set_array(subset["observations"].to_numpy(dtype=float))
-            ax.add_collection(collection)
             ax.set_xlim(-180, 180)
             ax.set_ylim(-82, 90)
             ax.set_xticks([-180, -120, -60, 0, 60, 120, 180])
@@ -322,7 +324,11 @@ def render_sampling_maps(
             for spine in ax.spines.values():
                 spine.set_visible(False)
             colorbar = fig.colorbar(collection, ax=ax, orientation="horizontal", pad=0.075, fraction=0.04)
-            colorbar.set_label("Selected observations per 5° × 10° block", color="#35423f", fontsize=9)
+            colorbar.set_label(
+                "Observations summarized at each 5° × 10° block centre",
+                color="#35423f",
+                fontsize=9,
+            )
             colorbar.ax.tick_params(labelsize=8, colors="#50605c")
             suffix = "zero" if show_zero else "base"
             filename = f"sampling_{short}_{suffix}.png"
@@ -330,6 +336,99 @@ def render_sampling_maps(
             plt.close(fig)
             maps[short][suffix] = f"assets/maps/{filename}"
     return maps
+
+
+def render_priority_diagnostic(
+    *,
+    density_cells: pd.DataFrame,
+    output_dir: Path,
+) -> str:
+    """Map structural-zero cells by their contribution to the signed-offset diagnostic.
+
+    This is deliberately not labelled marginal sampling value: no add-one-location
+    intervention was run. It identifies locations where zero historical support and
+    a large area-weighted mean signed error coincide.
+    """
+    output_dir.mkdir(parents=True, exist_ok=True)
+    frame = density_cells.copy()
+    frame["valid"] = 1.0
+    frame["priority"] = np.where(
+        frame["historical_spatial_density"].to_numpy(dtype=float) <= 0,
+        np.abs(frame["signed_error_historical_density"].to_numpy(dtype=float))
+        * np.cos(np.deg2rad(frame["latitude"].to_numpy(dtype=float))),
+        np.nan,
+    )
+    ocean, longitudes, latitudes = _raster(frame, "valid")
+    priority, _, _ = _raster(frame, "priority")
+    extent = [
+        float(longitudes.min() - 0.5),
+        float(longitudes.max() + 0.5),
+        float(latitudes.min() - 0.5),
+        float(latitudes.max() + 0.5),
+    ]
+    finite = priority[np.isfinite(priority)]
+    q75, q90, q98 = np.quantile(finite, [0.75, 0.90, 0.98])
+    upper = float(finite.max()) + np.finfo(float).eps
+    boundaries = [0.0, float(q75), float(q90), float(q98), upper]
+    cmap = ListedColormap(["#bcc7c8", "#f2bb72", "#e76655", "#57234f"])
+    norm = BoundaryNorm(boundaries, cmap.N)
+
+    fig, ax = plt.subplots(figsize=(12.8, 6.4), dpi=150)
+    fig.patch.set_facecolor("#f7f9f7")
+    ax.set_facecolor("#e9dfcf")
+    ocean_rgba = np.zeros((*ocean.shape, 4), dtype=float)
+    ocean_rgba[np.isfinite(ocean)] = (0.82, 0.91, 0.93, 1.0)
+    ax.imshow(ocean_rgba, origin="lower", extent=extent, interpolation="none")
+    image = ax.imshow(
+        priority,
+        origin="lower",
+        extent=extent,
+        interpolation="none",
+        cmap=cmap,
+        norm=norm,
+        alpha=0.94,
+    )
+    ax.axhline(60, color="#183f44", linestyle=(0, (5, 4)), linewidth=1.0)
+    ax.text(
+        177,
+        62.5,
+        "60°N default-domain boundary",
+        ha="right",
+        va="bottom",
+        fontsize=8,
+        color="#183f44",
+    )
+    ax.set_xlim(-180, 180)
+    ax.set_ylim(-82, 90)
+    ax.set_xticks([-180, -120, -60, 0, 60, 120, 180])
+    ax.set_yticks([-60, -30, 0, 30, 60, 90])
+    ax.tick_params(colors="#50605c", labelsize=9)
+    ax.grid(color="white", linewidth=0.5, alpha=0.42)
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    colorbar = fig.colorbar(
+        image,
+        ax=ax,
+        orientation="horizontal",
+        pad=0.075,
+        fraction=0.04,
+        boundaries=boundaries,
+        ticks=[
+            (boundaries[index] + boundaries[index + 1]) / 2
+            for index in range(len(boundaries) - 1)
+        ],
+    )
+    colorbar.set_label(
+        "Potential contribution to the global signed offset within structural-zero cells",
+        color="#35423f",
+        fontsize=9,
+    )
+    colorbar.ax.set_xticklabels(["lower 75%", "top 25%", "top 10%", "top 2%"])
+    colorbar.ax.tick_params(labelsize=8, colors="#50605c")
+    filename = "historical_zero_priority_diagnostic.png"
+    fig.savefig(output_dir / filename, bbox_inches="tight", facecolor=fig.get_facecolor())
+    plt.close(fig)
+    return f"assets/maps/{filename}"
 
 
 def main() -> None:
@@ -341,6 +440,13 @@ def main() -> None:
     sampling = pd.read_parquet(args.results_dir / "osse_visual_demo_sampling.parquet")
     density = load_complete_density(config, args.year)
     maps = render_sampling_maps(sampling=sampling, density=density, output_dir=map_dir)
+    density_cells = pd.read_parquet(
+        args.results_dir / "osse_historical_bias_density_cells_2005.parquet"
+    )
+    priority_map = render_priority_diagnostic(
+        density_cells=density_cells,
+        output_dir=map_dir,
+    )
     coverage = pd.read_csv(args.results_dir / "osse_historical_spatial_coverage_2005.csv")
     zero = coverage.set_index("coverage_group").loc["zero_density"]
 
@@ -355,6 +461,7 @@ def main() -> None:
         },
         "maps": {
             "images": maps,
+            "priority_diagnostic": priority_map,
             "zero_coverage_cell_pct": round(100.0 * float(zero["cell_fraction"]), 1),
             "zero_coverage_area_pct": round(
                 100.0 * float(zero["spherical_area_fraction"]), 1
@@ -363,6 +470,11 @@ def main() -> None:
             "definition": (
                 "SOCAT 1990–2004 historical spatial-marginal weight equals zero "
                 "on the complete 2005 mapped model domain."
+            ),
+            "priority_definition": (
+                "Supporting 2005 full-domain diagnostic: structural-zero cells are "
+                "coloured by absolute paired-seed mean signed error multiplied by "
+                "the spherical cell-area factor. This is not a causal marginal-gain map."
             ),
         },
         "estimands": build_estimands(args.results_dir),
@@ -381,7 +493,10 @@ def main() -> None:
         encoding="utf-8",
     )
     print(f"wrote {output}")
-    print(f"wrote {sum(len(value) for value in maps.values())} map PNGs to {map_dir}")
+    print(
+        f"wrote {sum(len(value) for value in maps.values()) + 1} map PNGs "
+        f"to {map_dir}"
+    )
 
 
 if __name__ == "__main__":
