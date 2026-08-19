@@ -9,9 +9,20 @@ manifest retains filenames, source URLs and SHA-256 hashes. No SOCAT-derived
 reconstruction product is used as truth; SOCAT only defines the historical
 observing-pattern weights.
 
-## Absolute baselines at sample count 5,000
+## Default reporting estimand
 
-Values are means across three prespecified years for the month-stratified
+Unless a result is explicitly labelled as supporting, reported portfolio
+numbers use **whole-spatial-block validation, spherical one-degree cell-area
+weighting, and candidate/evaluation pools jointly restricted to latitude
+<60°N**. The descriptive consistency units are 15 prespecified year–folds.
+The 20 paired seeds are within-unit sampling replicates; grid cells are used for
+descriptive spatial decomposition and are not independent Earth-system
+replicates.
+
+## Supporting original-domain absolute baselines at sample count 5,000
+
+This section is explicitly **full model domain with equal-cell weighting**, not
+the default estimand. Values are means across three prespecified years for the month-stratified
 hidden-cell test, and equally weighted means across 15 year–fold units for the
 whole-spatial-block test.
 
@@ -65,9 +76,10 @@ and −4.851 µatm in whole blocks, versus +0.065 and +0.104 µatm for random.
 These are equal-cell means over the full complete-model domain; the area and
 latitude audit below shows that they are not domain-invariant global offsets.
 
-## Factorized historical month-balance audit
+## Supporting factorized historical month-balance audit
 
-The defensive control is stricter than merely matching global month shares.
+This control uses the original full-domain, equal-cell estimand. It is stricter
+than merely matching global month shares.
 SOCAT counts from 1990–2004 are first summed over month to form a historical
 spatial marginal. That same location weight is then used in every month, with
 exact quotas of 416 or 417 observations per month at sample count 5,000. This
@@ -86,20 +98,20 @@ removing both global month imbalance and the historical space–month interactio
 Whole-block month balancing reduces the original historical-minus-random bias
 magnitude from 4.954 to 3.839 µatm, leaving 77.5% of it. It retains 85.0% of
 the RMSE penalty and 83.9% of the p99 penalty. Space–month coupling therefore
-contributes materially, but the historical spatial marginal is sufficient to
-reproduce most of the penalty under the locked model. This resolves the main
-alternative explanation without claiming that seasonality is irrelevant.
+contributes materially, while the spatial marginal reproduces most of the
+penalty under this non-default estimand. This shows that seasonality is not the
+sole contributor; it does not establish the original signed offset as a
+domain-invariant result.
 
-## Geographic-gap versus generic data-scarcity diagnostic
+## Supporting mechanism diagnostic
 
 Random sampling does not develop a comparable signed bias when its sample
 count is reduced by an order of magnitude. At counts 500, 1,000, 2,500 and
 5,000, the pooled random biases are +0.026, +0.351, +0.170 and +0.065 µatm.
 At count 500 the three annual means are −0.18, +0.04 and +0.21 µatm. Thus
 nominal sample count or ordinary information loss alone does not reproduce the
-stable historical negative bias. This does not estimate the effective sample
-size of a clustered design; the supported distinction is geographic structure
-versus generic data scarcity, not an exact ESS equivalence.
+historical offset under this diagnostic. This does not estimate the effective
+sample size of a clustered design.
 
 The 2005 cell-level diagnostic merges local 20-seed historical signed error
 with the SOCAT 1990–2004 spatial marginal. The 20,160 zero-density cells have a
@@ -113,7 +125,9 @@ Atlantic cells.
 
 Grid cells are spatially dependent, so this curve and its nominal correlations
 are descriptive rather than inferential. It strengthens the geographic-gap
-interpretation but does not identify a causal local density response.
+interpretation but does not identify a causal local density response. The
+supported wording is that the penalty is concentrated in structural-zero
+regions rather than changing monotonically across positive-density groups.
 
 ## Structural-zero contribution decomposition
 
@@ -145,14 +159,14 @@ areas; cells were also reported above and below 60°N. The independent
 descriptive units remain three years for hidden cells and 15 year–fold units
 for whole blocks.
 
-| Validation | Estimand | Historical − random bias | Bias direction | RMSE difference |
-| --- | --- | ---: | ---: | ---: |
-| Hidden cells | Full domain, equal cell | −4.887 | 3/3 negative | +9.865 |
-| Hidden cells | Full domain, spherical area | −2.049 | 3/3 negative | +5.969 |
-| Hidden cells | South of 60°N, spherical area; full-domain training | −0.813 | 3/3 negative | +3.703 |
-| Whole blocks | Full domain, equal cell | −4.954 | 15/15 negative | +8.936 |
-| Whole blocks | Full domain, spherical area | −1.884 | 15/15 negative | +4.743 |
-| Whole blocks | South of 60°N, spherical area; full-domain training | −0.631 | 15/15 negative | +2.214 |
+The four-line whole-block sensitivity table is retained in the main narrative:
+
+| Estimand | Historical − random bias |
+| --- | ---: |
+| Full model domain, equal-cell weighting | −4.954 |
+| Full model domain, spherical area weighting | −1.884 |
+| <60°N evaluation only, spherical area weighting | −0.631 |
+| **Default:** candidates and evaluation <60°N, spherical area weighting | **−0.473** |
 
 Changing only the evaluation weights leaves training unchanged. A stricter
 feasibility proxy therefore rebuilds random, historical and coverage strategies
@@ -165,7 +179,7 @@ after restricting both candidate and evaluation pools to latitude <60°N.
 | Hidden cells, <60°N | Coverage − random | −0.002 | 2/3 negative | +0.186 | −1.745 | 0/3 |
 | Whole blocks, <60°N | Coverage − random | +0.094 | 11/15 negative | −0.007 | −2.201 | 1/15 |
 
-The defensible strong result is now the historical error-magnitude penalty,
+The default result is the historical error-magnitude penalty,
 especially MAE, not a universal −4.85 µatm signed offset. The latter is a
 high-northern, equal-cell-domain result. The latitude-cap experiment is not a
 sea-ice mask: the current CMIP download and processed truth contain `spco2`,
@@ -174,8 +188,9 @@ potentially ice-covered cells—enter the original candidate and evaluation
 pools. A physically feasible observing-domain result requires an explicit
 sea-ice field and a prespecified accessibility rule.
 
-## Distribution across 15 year–fold units
+## Supporting original-domain distribution across 15 year–fold units
 
+The following values use full-domain equal-cell weighting.
 Coverage-minus-random differences at sample count 5,000:
 
 | Metric | Median | IQR | Range | Units below zero |
@@ -198,14 +213,14 @@ the historical pattern, a +8.936 µatm deterioration; all 15/15 unit differences
 are above zero. The historical-minus-random signed-bias difference is negative
 in 3/3 hidden-cell years and 15/15 whole-block units. In hidden cells,
 historical p99 absolute error rises
-from 66.406 to 127.954 µatm, nearly doubling. This is the strongest result under
-the original equal-cell full-domain objective. The area/domain audit narrows
-the robust claim to an error-magnitude penalty and shows that the signed offset
-is high-northern and estimand-sensitive.
+from 66.406 to 127.954 µatm, nearly doubling. This is the largest effect under
+the supporting equal-cell full-domain objective. The area/domain audit narrows
+the default claim to an error-magnitude penalty and shows that the signed
+offset is high-northern and estimand-sensitive.
 
-## Sample-count boundary
+## Supporting original-domain sample-count boundary
 
-The month-stratified hidden-cell comparison uses all four locked sample counts.
+This hidden-cell comparison uses full-domain equal-cell weighting and all four locked sample counts.
 At 500 observations, coverage has higher RMSE and p99 error than random in all
 three years: extreme-tail suppression has not emerged. At 1,000 the direction
 is mixed. Only at 2,500 and 5,000 do all three years favour coverage for p99 and

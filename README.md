@@ -6,9 +6,8 @@ This project is inspired by a collaborative course project in EESC/STAT 4243. Th
 
 ## Research question
 
-Under the same annual sample count, which seasonally aware spatial
-allocation strategy improves blocked out-of-sample fCO2 reconstruction most
-efficiently?
+Under the same annual sample count, how do seasonally aware spatial allocation
+strategies change blocked out-of-sample surface-ocean CO2 reconstruction?
 
 - random sampling;
 - densifying historically sampled regions;
@@ -31,6 +30,15 @@ comparison therefore primarily tests spatial allocation. Historical-density
 sampling has a larger deviation of 0.875 percentage points and is interpreted
 as a complete historical spatiotemporal observing-pattern baseline. See
 [`docs/osse_temporal_design.md`](docs/osse_temporal_design.md).
+
+## Default reporting estimand
+
+Unless explicitly labelled as a supporting sensitivity analysis, portfolio
+numbers use **whole-spatial-block validation, spherical one-degree cell-area
+weighting, and candidate/evaluation pools jointly restricted to latitude
+<60°N**. The default descriptive units are the 15 prespecified year–fold units;
+grid cells and paired seeds within a unit are not independent Earth-system
+replicates.
 
 ## Regional validation result
 
@@ -80,37 +88,27 @@ baseline, so the truth does not inherit SOCAT's sparse sampling mask.
 
 ![Fixed-sample-count error tradeoff and regridding robustness](results/public/fig3_error_tradeoff_and_robustness.png)
 
-The locked global OSSE separates sampling geometry from sample count: each
-strategy receives the same number of observations, uses the same reconstruction
-model, and is evaluated against complete model truth. At sufficiently high
-sample counts, coverage lowers p99 error but raises median, MAE and p95 error in
-the month-stratified hidden-cell test. Its lower RMSE is therefore a
-tail-sensitive consequence of a few very large errors, not independent evidence
-of broad improvement. A stricter spatial-block holdout repeats five exhaustive
-folds in 2005, 2010 and 2014 with 20 paired seeds. The same sub-p95 deterioration
-persists, while the p99 benefit becomes directionally unstable: its mean
-difference is −3.590 µatm, but only 9/15 year–fold units favour coverage. The
-clean conclusion is that coverage lowers the extreme tail while raising error
-in the more common range; that tail benefit is not stable when complete
-regions are unseen. Historical-pattern sampling has a larger but estimand-
-sensitive penalty. Under the original equal-cell full domain, whole-block RMSE
-increases from 27.549 to 36.486 µatm (+8.936), all 15/15 units are worse, and
-signed bias is approximately −4.85 µatm. Spherical evaluation weighting reduces
-historical-minus-random bias to −2.049 µatm in hidden cells and −1.884 µatm in
-whole blocks. When candidates and evaluation are both restricted below 60°N,
-the area-weighted bias differences fall to −0.835 and −0.473 µatm, while MAE
-remains worse by +2.466 µatm in 3/3 hidden years and +1.855 µatm in all 15/15
-whole-block units. The robust conclusion is therefore an error-magnitude
-penalty; the large signed offset is a high-northern, equal-cell-domain result.
+The global OSSE gives every strategy the same sample count and reconstruction
+model. Under the default estimand, historical-minus-random MAE is **+1.855
+µatm** (historical worse in 15/15 year–fold units), RMSE is +1.310 µatm on
+average (worse in 12/15), and signed bias is −0.473 µatm (negative in 12/15).
+Coverage-minus-random MAE is −0.007 µatm, RMSE −2.201 µatm and signed bias
++0.094 µatm; these do not establish universal superiority across metrics.
 
-The mechanism is topological rather than a simple effective-sample-size loss.
-Across the complete 2005 mapped domain, 53.1% of spatial cells have zero
-historical spatial-marginal weight (49.2% of spherical area). In the 2005
-hidden-cell decomposition, zero-density cells contribute −5.010 µatm to the
-equal-cell mean while positive-density cells contribute only −0.104 µatm.
-Random sampling remains near zero across sample counts without a monotonic
-trend. The current inputs do not include sea-ice concentration, so the <60°N
-variant is a transparent feasibility proxy rather than a sea-ice mask. Full, source-grounded
+Supporting diagnostics narrow the mechanism statement: the penalty is
+concentrated in structural-zero regions rather than changing monotonically
+across positive sampling-density groups. In the original hidden-cell,
+equal-cell full-domain audit, reducing random sampling from 5,000 to 500 leaves
+bias near zero. The ten positive-density group means also remain within ±1
+µatm without a monotonic relationship.
+
+The historical whole-block signed-bias estimate changes across four reported
+estimands: **−4.954** (full domain, equal cell), **−1.884** (full domain,
+spherical area), **−0.631** (<60°N evaluation only, spherical area), and the
+default **−0.473 µatm** (candidates and evaluation both <60°N, spherical area).
+This self-correction is a methodological result, not hidden sensitivity
+analysis. The current inputs lack sea-ice concentration, so <60°N is a
+transparent feasibility proxy rather than a sea-ice mask. Full, source-grounded
 draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
 The rerunnable narrative is available in
@@ -120,11 +118,12 @@ with a map-first visual demo in
 and the exact redraw inputs are listed in
 [`docs/osse_figure_data_inventory.md`](docs/osse_figure_data_inventory.md).
 
-The hidden-cell redistribution is sample-count dependent. At count 500,
-coverage is worse than random for RMSE and p99 in all three years; extreme-tail
-suppression appears consistently only at 2,500 and 5,000. Median error is higher
-at every tested count. Absolute baselines, relative changes, truth-field scale
-references and full year–fold
+In the supporting original full-domain, equal-cell hidden-cell audit, the
+redistribution is sample-count dependent. At count 500, coverage is worse than
+random for RMSE and p99 in all three years; extreme-tail suppression appears
+consistently only at 2,500 and 5,000. Median error is higher at every tested
+count. Absolute baselines, relative changes, truth-field scale references and
+full year–fold
 distributions are reported in
 [`docs/osse_claims_audit.md`](docs/osse_claims_audit.md).
 
@@ -197,19 +196,13 @@ set. The completed 20-seed, four-budget single-year benchmark identifies a
 tradeoff between typical error and severe tail error. A prespecified robustness
 phase repeats the full design in 2005, 2010 and 2014. At the largest sample
 count, spatial coverage raises median, MAE and p95 error while reducing p99 and the
-tail-sensitive RMSE in the random hidden-cell test. Historical-density
-allocation is less accurate; its original equal-cell signed offset is strongly
-attenuated by spherical evaluation weights and by an aligned <60°N feasibility
-domain. The error-magnitude penalty is more robust: in the aligned area-weighted
-audit, historical MAE remains higher in 3/3 hidden years and 15/15 whole-block
-units. This remains a single-model, not a sea-ice-aware, real-ocean or
-cross-model conclusion. In the confirmatory
-three-year whole-block holdout, coverage still worsens median and MAE in all 15
-units and p95 in 14/15; its p99 mean favours coverage but only 9/15 unit
-directions agree. Historical-pattern RMSE is worse than random in 15/15. A
-native-cell-area weighting audit at sample count 5,000 preserves the directions
-of the three displayed, correlated coverage metrics; it is one robustness
-audit rather than multiple independent tests. See
+tail-sensitive RMSE in the original hidden-cell audit. The default whole-block,
+spherical-area-weighted, <60°N-aligned audit reports the narrower results above.
+Historical MAE remains higher in all 15/15 year–fold units; coverage has lower
+RMSE in 14/15 but essentially unchanged MAE. This remains a single-model, not a
+sea-ice-aware, real-ocean or cross-model conclusion. A separate native-cell-area
+**regridding** audit is retained as supporting provenance and must not be
+confused with evaluation-area weighting. See
 [`docs/osse_regrid_audit_results.md`](docs/osse_regrid_audit_results.md). Results are generated into
 `results/public/`; raw observations, resumable work files, withheld exploratory
 interpretations, and heavy local outputs remain excluded from Git.
