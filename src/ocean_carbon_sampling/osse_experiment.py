@@ -12,6 +12,58 @@ from ocean_carbon_sampling.experiment import make_model, regression_metrics
 from ocean_carbon_sampling.features import build_features
 
 
+def spherical_cell_area_weights(
+    latitude: np.ndarray | pd.Series,
+    *,
+    cell_height_degrees: float = 1.0,
+) -> np.ndarray:
+    """Return relative spherical areas for equal-width longitude cells."""
+    if cell_height_degrees <= 0:
+        raise ValueError("cell_height_degrees must be positive")
+    values = np.asarray(latitude, dtype=float)
+    if values.ndim != 1 or not np.isfinite(values).all():
+        raise ValueError("latitude must be a finite one-dimensional array")
+    if np.any((values < -90.0) | (values > 90.0)):
+        raise ValueError("latitude must lie within [-90, 90]")
+    half_height = cell_height_degrees / 2.0
+    lower = np.deg2rad(np.clip(values - half_height, -90.0, 90.0))
+    upper = np.deg2rad(np.clip(values + half_height, -90.0, 90.0))
+    return np.sin(upper) - np.sin(lower)
+
+
+def weighted_regression_metrics(
+    observed: np.ndarray,
+    predicted: np.ndarray,
+    weights: np.ndarray,
+) -> dict[str, float]:
+    """Compute signed and magnitude metrics under explicit evaluation weights."""
+    observed_values = np.asarray(observed, dtype=float)
+    predicted_values = np.asarray(predicted, dtype=float)
+    weight_values = np.asarray(weights, dtype=float)
+    if not (
+        observed_values.shape == predicted_values.shape == weight_values.shape
+        and observed_values.ndim == 1
+    ):
+        raise ValueError("observed, predicted and weights must be aligned 1D arrays")
+    if not (
+        np.isfinite(observed_values).all()
+        and np.isfinite(predicted_values).all()
+        and np.isfinite(weight_values).all()
+    ):
+        raise ValueError("metric inputs must be finite")
+    if np.any(weight_values < 0) or weight_values.sum() <= 0:
+        raise ValueError("weights must be nonnegative with a positive sum")
+    residual = predicted_values - observed_values
+    denominator = float(weight_values.sum())
+    return {
+        "bias": float(np.sum(weight_values * residual) / denominator),
+        "mae": float(np.sum(weight_values * np.abs(residual)) / denominator),
+        "rmse": float(
+            np.sqrt(np.sum(weight_values * np.square(residual)) / denominator)
+        ),
+    }
+
+
 def stratified_evaluation_positions(
     frame: pd.DataFrame,
     *,
@@ -41,9 +93,7 @@ def historical_density_weights(
     weight_column: str = "fco2_count",
 ) -> np.ndarray:
     """Map pre-pilot SOCAT observation density to model month-grid cells."""
-    historical = socat.loc[
-        socat["date"].dt.year.between(year_start, year_end)
-    ].copy()
+    historical = socat.loc[socat["date"].dt.year.between(year_start, year_end)].copy()
     historical["month"] = historical["date"].dt.month
     density = (
         historical.groupby(["month", "latitude", "longitude"], as_index=False)[
@@ -77,13 +127,9 @@ def historical_spatial_weights(
     month distribution, removing both global month imbalance and space–month
     interaction from the historical sampling mask.
     """
-    historical = socat.loc[
-        socat["date"].dt.year.between(year_start, year_end)
-    ].copy()
+    historical = socat.loc[socat["date"].dt.year.between(year_start, year_end)].copy()
     density = (
-        historical.groupby(["latitude", "longitude"], as_index=False)[
-            weight_column
-        ]
+        historical.groupby(["latitude", "longitude"], as_index=False)[weight_column]
         .sum()
         .rename(columns={weight_column: "historical_spatial_weight"})
     )
@@ -245,9 +291,7 @@ def run_osse_gate(
                             "n_evaluation": len(evaluation),
                             "n_evaluation_domain": len(observed),
                             **scores,
-                            "median_absolute_error": float(
-                                np.median(absolute_error)
-                            ),
+                            "median_absolute_error": float(np.median(absolute_error)),
                             "p95_absolute_error": float(
                                 np.quantile(absolute_error, 0.95)
                             ),
@@ -328,9 +372,7 @@ def summarize_paired_effects(
                 "mean_difference": float(values.mean()),
                 "sd_difference": float(values.std(ddof=1)),
                 "seed_bootstrap_low": float(np.quantile(bootstrap_means, alpha)),
-                "seed_bootstrap_high": float(
-                    np.quantile(bootstrap_means, 1.0 - alpha)
-                ),
+                "seed_bootstrap_high": float(np.quantile(bootstrap_means, 1.0 - alpha)),
                 "fraction_difference_below_zero": float(np.mean(values < 0)),
             }
         )
@@ -356,12 +398,8 @@ def summarize_year_consistency(paired_summary: pd.DataFrame) -> pd.DataFrame:
     group_columns = ["evaluation_domain", "budget", "comparison", "metric"]
     for keys, group in paired_summary.groupby(group_columns, sort=True):
         effects = group["mean_difference"].to_numpy(dtype=float)
-        intervals_below_zero = (
-            group["seed_bootstrap_high"].to_numpy(dtype=float) < 0
-        )
-        intervals_above_zero = (
-            group["seed_bootstrap_low"].to_numpy(dtype=float) > 0
-        )
+        intervals_below_zero = group["seed_bootstrap_high"].to_numpy(dtype=float) < 0
+        intervals_above_zero = group["seed_bootstrap_low"].to_numpy(dtype=float) > 0
         rows.append(
             {
                 **dict(zip(group_columns, keys, strict=True)),
@@ -372,12 +410,8 @@ def summarize_year_consistency(paired_summary: pd.DataFrame) -> pd.DataFrame:
                 "maximum_year_effect": float(effects.max()),
                 "years_effect_below_zero": int(np.sum(effects < 0)),
                 "years_effect_above_zero": int(np.sum(effects > 0)),
-                "years_interval_entirely_below_zero": int(
-                    intervals_below_zero.sum()
-                ),
-                "years_interval_entirely_above_zero": int(
-                    intervals_above_zero.sum()
-                ),
+                "years_interval_entirely_below_zero": int(intervals_below_zero.sum()),
+                "years_interval_entirely_above_zero": int(intervals_above_zero.sum()),
             }
         )
     return pd.DataFrame(rows)
@@ -406,12 +440,8 @@ def summarize_spatial_fold_consistency(
         group_columns.insert(0, "year")
     for keys, group in paired_summary.groupby(group_columns, sort=True):
         effects = group["mean_difference"].to_numpy(dtype=float)
-        intervals_below_zero = (
-            group["seed_bootstrap_high"].to_numpy(dtype=float) < 0
-        )
-        intervals_above_zero = (
-            group["seed_bootstrap_low"].to_numpy(dtype=float) > 0
-        )
+        intervals_below_zero = group["seed_bootstrap_high"].to_numpy(dtype=float) < 0
+        intervals_above_zero = group["seed_bootstrap_low"].to_numpy(dtype=float) > 0
         rows.append(
             {
                 **dict(zip(group_columns, keys, strict=True)),
@@ -424,12 +454,8 @@ def summarize_spatial_fold_consistency(
                 "maximum_fold_effect": float(effects.max()),
                 "folds_effect_below_zero": int(np.sum(effects < 0)),
                 "folds_effect_above_zero": int(np.sum(effects > 0)),
-                "folds_interval_entirely_below_zero": int(
-                    intervals_below_zero.sum()
-                ),
-                "folds_interval_entirely_above_zero": int(
-                    intervals_above_zero.sum()
-                ),
+                "folds_interval_entirely_below_zero": int(intervals_below_zero.sum()),
+                "folds_interval_entirely_above_zero": int(intervals_above_zero.sum()),
             }
         )
     return pd.DataFrame(rows)

@@ -92,21 +92,25 @@ persists, while the p99 benefit becomes directionally unstable: its mean
 difference is −3.590 µatm, but only 9/15 year–fold units favour coverage. The
 clean conclusion is that coverage lowers the extreme tail while raising error
 in the more common range; that tail benefit is not stable when complete
-regions are unseen. Historical-pattern sampling is the strong comparator:
-whole-block RMSE increases from 27.549 to 36.486 µatm (+8.936), and all 15/15
-units are worse than random under the present pointwise objective. Its global
-signed bias is approximately −4.85 µatm under both validation schemes, versus
-near zero for random and coverage; hidden-cell p99 nearly doubles from 66.406
-to 127.954 µatm. A factorized control preserves the historical spatial
-marginal while forcing exact uniform month quotas. Whole-block bias remains
-−3.736 µatm (difference from random −3.839; 15/15 units negative), retaining
-77.5% of the original bias magnitude. Thus space–month coupling contributes,
-but does not explain most of the model-conditioned historical penalty. Random
-sampling at count 500 remains nearly unbiased (+0.026 µatm pooled), excluding
-generic sample-count loss as a sufficient explanation. A cell-level diagnostic
-further shows a zero-coverage discontinuity: zero-density cells average −9.42
-µatm, while positive-density deciles stay between +1.09 and −0.92 µatm. Full,
-source-grounded
+regions are unseen. Historical-pattern sampling has a larger but estimand-
+sensitive penalty. Under the original equal-cell full domain, whole-block RMSE
+increases from 27.549 to 36.486 µatm (+8.936), all 15/15 units are worse, and
+signed bias is approximately −4.85 µatm. Spherical evaluation weighting reduces
+historical-minus-random bias to −2.049 µatm in hidden cells and −1.884 µatm in
+whole blocks. When candidates and evaluation are both restricted below 60°N,
+the area-weighted bias differences fall to −0.835 and −0.473 µatm, while MAE
+remains worse by +2.466 µatm in 3/3 hidden years and +1.855 µatm in all 15/15
+whole-block units. The robust conclusion is therefore an error-magnitude
+penalty; the large signed offset is a high-northern, equal-cell-domain result.
+
+The mechanism is topological rather than a simple effective-sample-size loss.
+Across the complete 2005 mapped domain, 53.1% of spatial cells have zero
+historical spatial-marginal weight (49.2% of spherical area). In the 2005
+hidden-cell decomposition, zero-density cells contribute −5.010 µatm to the
+equal-cell mean while positive-density cells contribute only −0.104 µatm.
+Random sampling remains near zero across sample counts without a monotonic
+trend. The current inputs do not include sea-ice concentration, so the <60°N
+variant is a transparent feasibility proxy rather than a sea-ice mask. Full, source-grounded
 draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
 The rerunnable narrative is available in
@@ -173,6 +177,8 @@ python scripts/run_osse_spatial_block_gate.py --config configs/osse_spatial_bloc
 python scripts/audit_osse_month_balance.py
 python scripts/run_historical_month_balance_audit.py
 python scripts/summarize_historical_bias_density.py
+python scripts/run_historical_area_domain_audit.py
+python scripts/run_latitude_cap_audit.py
 python scripts/summarize_osse_truth_scale.py
 python scripts/plot_osse_portfolio_figures.py
 jupyter lab notebooks/published/osse_results_walkthrough.ipynb
@@ -192,11 +198,12 @@ tradeoff between typical error and severe tail error. A prespecified robustness
 phase repeats the full design in 2005, 2010 and 2014. At the largest sample
 count, spatial coverage raises median, MAE and p95 error while reducing p99 and the
 tail-sensitive RMSE in the random hidden-cell test. Historical-density
-allocation is less accurate and introduces an approximately −4.85 µatm global
-signed bias under both validation schemes. After removal of both global month
-imbalance and historical space–month coupling, 77.5% of the whole-block bias
-magnitude and 85.0% of the RMSE penalty remain. This remains a single-model,
-not a real-ocean or cross-model, conclusion. In the confirmatory
+allocation is less accurate; its original equal-cell signed offset is strongly
+attenuated by spherical evaluation weights and by an aligned <60°N feasibility
+domain. The error-magnitude penalty is more robust: in the aligned area-weighted
+audit, historical MAE remains higher in 3/3 hidden years and 15/15 whole-block
+units. This remains a single-model, not a sea-ice-aware, real-ocean or
+cross-model conclusion. In the confirmatory
 three-year whole-block holdout, coverage still worsens median and MAE in all 15
 units and p95 in 14/15; its p99 mean favours coverage but only 9/15 unit
 directions agree. Historical-pattern RMSE is worse than random in 15/15. A
@@ -207,7 +214,7 @@ audit rather than multiple independent tests. See
 `results/public/`; raw observations, resumable work files, withheld exploratory
 interpretations, and heavy local outputs remain excluded from Git.
 
-Cross-model replication is the decisive unresolved test for the historical
-signed-bias result: the magnitude penalty may be robust while the signed offset
-changes under a reconstruction method with different shrinkage and spatial
-inductive bias.
+Cross-model replication and a prespecified sea-ice/accessibility mask are the
+decisive unresolved tests. The magnitude penalty may change under a different
+spatial inductive bias, while the signed offset is already shown to depend
+strongly on area weighting and the high-northern evaluation domain.

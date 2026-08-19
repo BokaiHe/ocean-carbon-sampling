@@ -1,0 +1,4 @@
+coverage_group,n_spatial_cells,cell_fraction,spherical_area_fraction
+all,40624,1.0,1.0
+zero_density,21580,0.5312130760141788,0.49179948175361166
+positive_density,19044,0.46878692398582117,0.5082005182463883

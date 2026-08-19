@@ -62,6 +62,8 @@ primarily about the magnitude distribution rather than a global signed offset.
 Near-zero global bias does not exclude cancelling regional biases. Historical
 sampling is qualitatively different: its bias is −4.822 µatm in hidden cells
 and −4.851 µatm in whole blocks, versus +0.065 and +0.104 µatm for random.
+These are equal-cell means over the full complete-model domain; the area and
+latitude audit below shows that they are not domain-invariant global offsets.
 
 ## Factorized historical month-balance audit
 
@@ -113,6 +115,65 @@ Grid cells are spatially dependent, so this curve and its nominal correlations
 are descriptive rather than inferential. It strengthens the geographic-gap
 interpretation but does not identify a causal local density response.
 
+## Structural-zero contribution decomposition
+
+Across all 40,624 complete spatial cells in the 2005 mapped model domain,
+21,580 (53.1%) receive zero SOCAT 1990–2004 spatial-marginal weight. Those
+structural zeros represent 49.2% of spherical one-degree cell area. The
+historical strategy cannot select them at any nominal sample count unless its
+support is changed.
+
+For the 2005 hidden-cell signed-error map, the equal-cell historical mean is
+−5.114 µatm. Zero-density cells contribute −5.010 µatm to that mean; covered
+cells contribute only −0.104 µatm and have group mean −0.222 µatm. Under exact
+spherical latitude-band weights, the total becomes −1.833 µatm: zero-density
+cells contribute −1.893 µatm and covered cells +0.060 µatm. Thus the bias is
+localized to structural zeros, but its nominal global magnitude is strongly
+latitude-weight sensitive.
+
+Cells at 60–90°N contribute −4.540 µatm of the equal-cell total, but −1.395
+µatm after spherical weighting because they comprise 10.8% of cells and only
+3.8% of spherical cell area in this evaluation sample. South of 60°N, the
+corresponding contributions are −0.574 and −0.438 µatm.
+
+## Evaluation-area and latitude-domain audit
+
+All locked models were refit for 20 paired seeds at sample count 5,000 in the
+three prespecified years and five whole-block folds. One-degree evaluation
+errors were summarized both equally and with exact spherical latitude-band
+areas; cells were also reported above and below 60°N. The independent
+descriptive units remain three years for hidden cells and 15 year–fold units
+for whole blocks.
+
+| Validation | Estimand | Historical − random bias | Bias direction | RMSE difference |
+| --- | --- | ---: | ---: | ---: |
+| Hidden cells | Full domain, equal cell | −4.887 | 3/3 negative | +9.865 |
+| Hidden cells | Full domain, spherical area | −2.049 | 3/3 negative | +5.969 |
+| Hidden cells | South of 60°N, spherical area; full-domain training | −0.813 | 3/3 negative | +3.703 |
+| Whole blocks | Full domain, equal cell | −4.954 | 15/15 negative | +8.936 |
+| Whole blocks | Full domain, spherical area | −1.884 | 15/15 negative | +4.743 |
+| Whole blocks | South of 60°N, spherical area; full-domain training | −0.631 | 15/15 negative | +2.214 |
+
+Changing only the evaluation weights leaves training unchanged. A stricter
+feasibility proxy therefore rebuilds random, historical and coverage strategies
+after restricting both candidate and evaluation pools to latitude <60°N.
+
+| Validation | Comparison | Area-weighted bias difference | Direction | MAE difference | RMSE difference | RMSE worse units |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| Hidden cells, <60°N | Historical − random | −0.835 | 3/3 negative | +2.466 | +4.224 | 3/3 |
+| Whole blocks, <60°N | Historical − random | −0.473 | 12/15 negative | +1.855 | +1.310 | 12/15 |
+| Hidden cells, <60°N | Coverage − random | −0.002 | 2/3 negative | +0.186 | −1.745 | 0/3 |
+| Whole blocks, <60°N | Coverage − random | +0.094 | 11/15 negative | −0.007 | −2.201 | 1/15 |
+
+The defensible strong result is now the historical error-magnitude penalty,
+especially MAE, not a universal −4.85 µatm signed offset. The latter is a
+high-northern, equal-cell-domain result. The latitude-cap experiment is not a
+sea-ice mask: the current CMIP download and processed truth contain `spco2`,
+`tos` and `sos`, but no `siconc`. Complete high-latitude model cells—including
+potentially ice-covered cells—enter the original candidate and evaluation
+pools. A physically feasible observing-domain result requires an explicit
+sea-ice field and a prespecified accessibility rule.
+
 ## Distribution across 15 year–fold units
 
 Coverage-minus-random differences at sample count 5,000:
@@ -138,9 +199,9 @@ are above zero. The historical-minus-random signed-bias difference is negative
 in 3/3 hidden-cell years and 15/15 whole-block units. In hidden cells,
 historical p99 absolute error rises
 from 66.406 to 127.954 µatm, nearly doubling. This is the strongest result under
-the present pointwise objective. The factorized audit above separates the
-historical spatial marginal from its monthly allocation and space–month
-interaction.
+the original equal-cell full-domain objective. The area/domain audit narrows
+the robust claim to an error-magnitude penalty and shows that the signed offset
+is high-northern and estimand-sensitive.
 
 ## Sample-count boundary
 
@@ -164,8 +225,8 @@ flux effect still requires applying a locked flux operator to each reconstructed
 field. The present quantitative claim remains a pointwise pCO2-reconstruction
 claim until that analysis is implemented.
 
-Cross-model robustness is a decisive unresolved test for the Strong result,
-not a generic optional extension. Signed bias can depend on a learner's
-shrinkage and inductive bias; a contrasting OI/kriging-style or other
-reconstruction method may preserve the magnitude penalty while changing the
-signed offset.
+Cross-model robustness and a sea-ice-aware accessibility mask are decisive
+unresolved tests, not generic optional extensions. Signed bias can depend on a
+learner's shrinkage and inductive bias, while the present audit already shows
+strong sensitivity to latitude and evaluation weights. A contrasting
+OI/kriging-style method may also change the magnitude penalty.

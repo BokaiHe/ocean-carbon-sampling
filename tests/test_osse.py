@@ -9,6 +9,10 @@ from ocean_carbon_sampling.osse import (
     pa_to_microatmosphere,
     regular_grid_centers,
 )
+from ocean_carbon_sampling.osse_experiment import (
+    spherical_cell_area_weights,
+    weighted_regression_metrics,
+)
 
 
 def test_pa_to_microatmosphere_converts_one_atmosphere():
@@ -32,9 +36,7 @@ def test_aggregate_curvilinear_averages_occupied_bins_only():
     latitude = np.array([[0.2, 0.3, 10.2]])
     longitude = np.array([[20.2, 20.4, 30.2]])
 
-    aggregated, counts = aggregate_curvilinear_to_regular(
-        values, latitude, longitude
-    )
+    aggregated, counts = aggregate_curvilinear_to_regular(values, latitude, longitude)
 
     assert aggregated[0, 90, 200] == pytest.approx(3.0)
     assert counts[0, 90, 200] == 2
@@ -80,3 +82,27 @@ def test_aggregate_curvilinear_rejects_weight_shape_mismatch():
             np.ones((2, 2)),
             cell_weights=np.ones((2, 3)),
         )
+
+
+def test_spherical_cell_area_weights_shrink_toward_poles():
+    weights = spherical_cell_area_weights(np.array([0.0, 60.0, 80.0, -60.0]))
+
+    assert weights[0] > weights[1] > weights[2] > 0
+    assert weights[1] == pytest.approx(weights[3])
+
+
+def test_weighted_regression_metrics_use_explicit_evaluation_weights():
+    metrics = weighted_regression_metrics(
+        np.array([0.0, 0.0]),
+        np.array([1.0, 3.0]),
+        np.array([3.0, 1.0]),
+    )
+
+    assert metrics["bias"] == pytest.approx(1.5)
+    assert metrics["mae"] == pytest.approx(1.5)
+    assert metrics["rmse"] == pytest.approx(np.sqrt(3.0))
+
+
+def test_weighted_regression_metrics_reject_zero_total_weight():
+    with pytest.raises(ValueError, match="positive sum"):
+        weighted_regression_metrics(np.array([0.0]), np.array([1.0]), np.array([0.0]))

@@ -41,6 +41,17 @@ PNG, PDF, or SVG files.
 | `results/public/osse_historical_bias_density_cells_2005.parquet` | Signed-error map cells merged with the SOCAT historical spatial marginal | 2005 hidden-evaluation spatial cell |
 | `results/public/osse_historical_bias_density_bins_2005.csv` | Zero-density group plus positive-density decile summaries | density group |
 | `results/public/osse_historical_bias_density_summary_2005.csv` | Descriptive Spearman correlations with spatial-dependence warning | scope × response |
+| `results/public/osse_historical_bias_domain_decomposition_2005.csv` | Equal-cell and spherical-area zero-coverage/latitude contribution decomposition | domain × weighting × response × coverage group |
+| `results/public/osse_historical_spatial_coverage_2005.csv` | Complete mapped-domain structural-zero cell and area shares | coverage group |
+| `results/public/osse_historical_area_domain_metrics.csv` | Refit random/historical metrics under equal-cell and spherical evaluation weights | validation × year × fold × seed × strategy × domain × weighting |
+| `results/public/osse_historical_area_domain_unit_summary.csv` | Seed-averaged area/domain results for each validation unit | validation × year × fold × strategy × domain × weighting |
+| `results/public/osse_historical_area_domain_overall.csv` | Absolute historical/random area-domain summaries | validation × strategy × domain × weighting |
+| `results/public/osse_historical_area_domain_paired.csv` | Unit-level historical-minus-random area/domain effects | validation × year × fold × domain × weighting |
+| `results/public/osse_historical_area_domain_paired_overall.csv` | Cross-unit historical-minus-random area/domain audit | validation × domain × weighting |
+| `results/public/osse_latitude_cap_metrics.csv` | Three-strategy refits with candidates and evaluation restricted below 60°N | validation × year × fold × seed × strategy × weighting |
+| `results/public/osse_latitude_cap_unit_summary.csv` | Seed-averaged latitude-cap results | validation × year × fold × strategy × weighting |
+| `results/public/osse_latitude_cap_paired.csv` | Unit-level latitude-cap comparator-minus-random effects | validation × year × fold × comparison × weighting |
+| `results/public/osse_latitude_cap_overall.csv` | Cross-unit aligned-domain sensitivity summary | validation × comparison × weighting |
 
 Regional context used by the walkthrough is retained in
 `spatial_sensitivity_overall_summary.csv` and
@@ -66,6 +77,9 @@ declared spatial aggregation for representative seed 0, not a subsample.
 - The spatial-weighting comparison remains a supporting audit sourced from
   `osse_regrid_audit_paired_summary.csv`; its correlated metric directions are
   not counted as independent tests.
+- Evaluation-area weighting and the aligned <60°N feasibility proxy are separate
+  estimands sourced from `osse_historical_area_domain_*` and
+  `osse_latitude_cap_*`; neither is described as a sea-ice mask.
 - The notebook spatial-block gate map uses every occupied block in
   `osse_spatial_block_confirmatory_blocks.csv`; its forest panels use all 45
   RMSE, p99 and median-error rows at sample count 5,000 from
