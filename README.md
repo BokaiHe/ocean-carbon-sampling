@@ -89,18 +89,22 @@ baseline, so the truth does not inherit SOCAT's sparse sampling mask.
 ![Fixed-sample-count error tradeoff and regridding robustness](results/public/fig3_error_tradeoff_and_robustness.png)
 
 The global OSSE gives every strategy the same sample count and reconstruction
-model. Under the default estimand, historical-minus-random MAE is **+1.855
-µatm** (historical worse in 15/15 year–fold units), RMSE is +1.310 µatm on
-average (worse in 12/15), and signed bias is −0.473 µatm (negative in 12/15).
-Coverage-minus-random MAE is −0.007 µatm, RMSE −2.201 µatm and signed bias
-+0.094 µatm; these do not establish universal superiority across metrics.
+model. Under the default estimand, random has MAE **11.836 µatm** and RMSE
+**25.422 µatm**. Historical sampling raises them by +1.855 µatm (**+15.67%**;
+worse in 15/15 year–fold units) and +1.310 µatm (**+5.15%**; worse in 12/15),
+respectively; its signed-bias difference is −0.473 µatm (negative in 12/15).
+Coverage changes MAE by −0.007 µatm (−0.06%) and RMSE by −2.201 µatm
+(−8.66%); its signed-bias difference is +0.094 µatm. These do not establish
+universal superiority across metrics.
 
-Supporting diagnostics narrow the mechanism statement: the penalty is
-concentrated in structural-zero regions rather than changing monotonically
-across positive sampling-density groups. In the original hidden-cell,
-equal-cell full-domain audit, reducing random sampling from 5,000 to 500 leaves
-bias near zero. The ten positive-density group means also remain within ±1
-µatm without a monotonic relationship.
+Under the default estimand, the supported finding is a historical MAE penalty.
+In the original hidden-cell, equal-cell full-domain supporting analysis, the
+penalty is concentrated in structural-zero regions rather than changing
+monotonically across positive sampling-density groups. That decomposition has
+not been repeated under the default estimand. In the same supporting audit,
+reducing random sampling from 5,000 to 500 leaves bias near zero, and the ten
+positive-density group means remain within ±1 µatm without a monotonic
+relationship.
 
 The historical whole-block signed-bias estimate changes across four reported
 estimands: **−4.954** (full domain, equal cell), **−1.884** (full domain,
@@ -126,6 +130,11 @@ count. Absolute baselines, relative changes, truth-field scale references and
 full year–fold
 distributions are reported in
 [`docs/osse_claims_audit.md`](docs/osse_claims_audit.md).
+
+The regional coverage rule fills underrepresented spatial cells. The global
+OSSE extends that idea with month-aware coverage cells so that the strategy is
+also seasonally balanced; the two stages therefore share a spatial principle
+but do not use an identical acquisition rule.
 
 ## Project stages
 
@@ -210,4 +219,6 @@ interpretations, and heavy local outputs remain excluded from Git.
 Cross-model replication and a prespecified sea-ice/accessibility mask are the
 decisive unresolved tests. The magnitude penalty may change under a different
 spatial inductive bias, while the signed offset is already shown to depend
-strongly on area weighting and the high-northern evaluation domain.
+strongly on area weighting and the high-northern evaluation domain. The 15
+year–fold units are descriptive consistency units; no formal whole-block
+significance test is claimed.

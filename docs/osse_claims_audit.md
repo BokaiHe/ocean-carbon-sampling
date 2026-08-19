@@ -19,6 +19,23 @@ The 20 paired seeds are within-unit sampling replicates; grid cells are used for
 descriptive spatial decomposition and are not independent Earth-system
 replicates.
 
+## Default absolute baselines at sample count 5,000
+
+These values use the default whole-block, spherical-area-weighted, aligned
+<60°N estimand. Relative change is `(comparator − random) / random × 100`.
+
+| Comparison | Metric | Random | Comparator | Difference | Relative change |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Historical − random | MAE | 11.836 | 13.691 | +1.855 | +15.67% |
+| Historical − random | RMSE | 25.422 | 26.732 | +1.310 | +5.15% |
+| Coverage − random | MAE | 11.836 | 11.829 | −0.007 | −0.06% |
+| Coverage − random | RMSE | 25.422 | 23.221 | −2.201 | −8.66% |
+
+The random signed bias is −0.009 µatm; historical and coverage biases are
+−0.482 and +0.085 µatm, giving differences of −0.473 and +0.094 µatm.
+Bias percentages are omitted because division by a near-zero random baseline
+would be unstable and misleading.
+
 ## Supporting original-domain absolute baselines at sample count 5,000
 
 This section is explicitly **full model domain with equal-cell weighting**, not
@@ -128,6 +145,9 @@ are descriptive rather than inferential. It strengthens the geographic-gap
 interpretation but does not identify a causal local density response. The
 supported wording is that the penalty is concentrated in structural-zero
 regions rather than changing monotonically across positive-density groups.
+This 2005 full-domain, equal-cell decomposition has not been repeated under the
+default <60°N, spherical-area-weighted estimand and is not used as its causal
+explanation.
 
 ## Structural-zero contribution decomposition
 
@@ -244,4 +264,6 @@ Cross-model robustness and a sea-ice-aware accessibility mask are decisive
 unresolved tests, not generic optional extensions. Signed bias can depend on a
 learner's shrinkage and inductive bias, while the present audit already shows
 strong sensitivity to latitude and evaluation weights. A contrasting
-OI/kriging-style method may also change the magnitude penalty.
+OI/kriging-style method may also change the magnitude penalty. The 15
+year–fold units are descriptive consistency units; the project does not claim
+a formal whole-block significance test.
