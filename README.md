@@ -101,7 +101,11 @@ to 127.954 µatm. A factorized control preserves the historical spatial
 marginal while forcing exact uniform month quotas. Whole-block bias remains
 −3.736 µatm (difference from random −3.839; 15/15 units negative), retaining
 77.5% of the original bias magnitude. Thus space–month coupling contributes,
-but does not explain most of the model-conditioned historical penalty. Full,
+but does not explain most of the model-conditioned historical penalty. Random
+sampling at count 500 remains nearly unbiased (+0.026 µatm pooled), excluding
+generic sample-count loss as a sufficient explanation. A cell-level diagnostic
+further shows a zero-coverage discontinuity: zero-density cells average −9.42
+µatm, while positive-density deciles stay between +1.09 and −0.92 µatm. Full,
 source-grounded
 draft captions and interpretation limits are provided in
 [`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
@@ -168,6 +172,7 @@ python scripts/run_osse_spatial_block_gate.py
 python scripts/run_osse_spatial_block_gate.py --config configs/osse_spatial_block_confirmatory.yaml
 python scripts/audit_osse_month_balance.py
 python scripts/run_historical_month_balance_audit.py
+python scripts/summarize_historical_bias_density.py
 python scripts/summarize_osse_truth_scale.py
 python scripts/plot_osse_portfolio_figures.py
 jupyter lab notebooks/published/osse_results_walkthrough.ipynb
@@ -201,3 +206,8 @@ audit rather than multiple independent tests. See
 [`docs/osse_regrid_audit_results.md`](docs/osse_regrid_audit_results.md). Results are generated into
 `results/public/`; raw observations, resumable work files, withheld exploratory
 interpretations, and heavy local outputs remain excluded from Git.
+
+Cross-model replication is the decisive unresolved test for the historical
+signed-bias result: the magnitude penalty may be robust while the signed offset
+changes under a reconstruction method with different shrinkage and spatial
+inductive bias.

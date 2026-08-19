@@ -38,6 +38,9 @@ PNG, PDF, or SVG files.
 | `results/public/osse_historical_month_balance_distribution_summary.csv` | Cross-unit absolute values, differences and direction counts | validation scheme × metric |
 | `results/public/osse_historical_month_balance_design.csv` | Locked factorization definition, years, seeds and unit counts | one design record |
 | `results/public/osse_historical_bias_map_2005.parquet` | Original and factorized historical signed-error maps with seed-direction consistency | 2005 hidden-evaluation spatial cell |
+| `results/public/osse_historical_bias_density_cells_2005.parquet` | Signed-error map cells merged with the SOCAT historical spatial marginal | 2005 hidden-evaluation spatial cell |
+| `results/public/osse_historical_bias_density_bins_2005.csv` | Zero-density group plus positive-density decile summaries | density group |
+| `results/public/osse_historical_bias_density_summary_2005.csv` | Descriptive Spearman correlations with spatial-dependence warning | scope × response |
 
 Regional context used by the walkthrough is retained in
 `spatial_sensitivity_overall_summary.csv` and

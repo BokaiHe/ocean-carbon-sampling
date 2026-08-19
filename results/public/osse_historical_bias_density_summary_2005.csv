@@ -1,0 +1,5 @@
+scope,response,n_cells,spearman_rho,nominal_p_value_not_for_inference,note
+all_cells,signed_error_historical_density,37920,0.0820424327860391,1.2249831061766854e-57,grid cells are spatially dependent; p is descriptive only
+all_cells,signed_error_historical_spatial_month_balanced,37920,0.06572884779363578,1.3893403085097432e-37,grid cells are spatially dependent; p is descriptive only
+positive_density_cells,signed_error_historical_density,17760,-0.06826061558295078,8.481153926315956e-20,grid cells are spatially dependent; p is descriptive only
+positive_density_cells,signed_error_historical_spatial_month_balanced,17760,-0.03858841513540396,2.6880250320958475e-07,grid cells are spatially dependent; p is descriptive only

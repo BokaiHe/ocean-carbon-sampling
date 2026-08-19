@@ -88,6 +88,31 @@ contributes materially, but the historical spatial marginal is sufficient to
 reproduce most of the penalty under the locked model. This resolves the main
 alternative explanation without claiming that seasonality is irrelevant.
 
+## Geographic-gap versus generic data-scarcity diagnostic
+
+Random sampling does not develop a comparable signed bias when its sample
+count is reduced by an order of magnitude. At counts 500, 1,000, 2,500 and
+5,000, the pooled random biases are +0.026, +0.351, +0.170 and +0.065 µatm.
+At count 500 the three annual means are −0.18, +0.04 and +0.21 µatm. Thus
+nominal sample count or ordinary information loss alone does not reproduce the
+stable historical negative bias. This does not estimate the effective sample
+size of a clustered design; the supported distinction is geographic structure
+versus generic data scarcity, not an exact ESS equivalence.
+
+The 2005 cell-level diagnostic merges local 20-seed historical signed error
+with the SOCAT 1990–2004 spatial marginal. The 20,160 zero-density cells have a
+mean signed error of −9.42 µatm. Across the 17,760 positive-density cells, the
+ten equal-count density-bin means range only from +1.09 to −0.92 µatm and do
+not form a strong monotonic curve. At 60–90°N, 86.6% of mapped cells have zero
+historical density; their mean error is −47.56 µatm, compared with −6.13 µatm
+for positive-density cells. The prominent northern map feature is therefore
+dominated by Arctic zero-coverage cells rather than densely sampled North
+Atlantic cells.
+
+Grid cells are spatially dependent, so this curve and its nominal correlations
+are descriptive rather than inferential. It strengthens the geographic-gap
+interpretation but does not identify a causal local density response.
+
 ## Distribution across 15 year–fold units
 
 Coverage-minus-random differences at sample count 5,000:
@@ -138,3 +163,9 @@ propagate directionally into a downstream flux estimate. A defensible numerical
 flux effect still requires applying a locked flux operator to each reconstructed
 field. The present quantitative claim remains a pointwise pCO2-reconstruction
 claim until that analysis is implemented.
+
+Cross-model robustness is a decisive unresolved test for the Strong result,
+not a generic optional extension. Signed bias can depend on a learner's
+shrinkage and inductive bias; a contrasting OI/kriging-style or other
+reconstruction method may preserve the magnitude penalty while changing the
+signed offset.

@@ -387,6 +387,99 @@ def plot_historical_bias_atlas(fields: pd.DataFrame) -> mpl.figure.Figure:
     return fig
 
 
+def plot_bias_density_diagnostic(
+    cells: pd.DataFrame,
+    bins: pd.DataFrame,
+) -> mpl.figure.Figure:
+    """Show the descriptive relation between SOCAT density and signed error."""
+    configure_theme()
+    response = "signed_error_historical_density"
+    y_low, y_high = np.nanquantile(cells[response], [0.01, 0.99])
+    visible = cells.loc[cells[response].between(y_low, y_high)]
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 2.75))
+
+    density_image = axes[0].hexbin(
+        visible["log10_one_plus_density"],
+        visible[response],
+        gridsize=(42, 34),
+        mincnt=1,
+        bins="log",
+        cmap=cmocean.cm.dense,
+        linewidths=0,
+        rasterized=True,
+    )
+    axes[0].axhline(0.0, color="#6B7280", linestyle="--", linewidth=0.8)
+    axes[0].axvline(0.0, color="#B45309", linestyle=":", linewidth=1.0)
+    axes[0].set(
+        xlabel="log10(1 + SOCAT 1990–2004 spatial count)",
+        ylabel="Local mean signed error (µatm)",
+        title="All mapped cells · colour = cell density",
+    )
+    colorbar = fig.colorbar(density_image, ax=axes[0], fraction=0.05, pad=0.03)
+    colorbar.set_label("log10(cell count)")
+    axes[0].text(
+        0.02,
+        0.96,
+        "a",
+        transform=axes[0].transAxes,
+        va="top",
+        fontweight="bold",
+        fontsize=8,
+    )
+
+    x = bins["density_bin"].to_numpy(dtype=int)
+    specifications = (
+        (
+            "signed_error_historical_density_mean",
+            "Observed historical pattern",
+            "#B45309",
+            "o",
+        ),
+        (
+            "signed_error_historical_spatial_month_balanced_mean",
+            "Spatial marginal × uniform month",
+            "#0F766E",
+            "s",
+        ),
+    )
+    for column, label, color, marker in specifications:
+        axes[1].plot(
+            x,
+            bins[column],
+            color=color,
+            marker=marker,
+            markersize=3.8,
+            linewidth=1.2,
+            label=label,
+        )
+    axes[1].axhline(0.0, color="#6B7280", linestyle="--", linewidth=0.8)
+    axes[1].set_xticks(x, ["0", *[f"D{value}" for value in x[1:]]])
+    axes[1].set(
+        xlabel="Historical density group · 0 then positive-density deciles",
+        ylabel="Mean local signed error (µatm)",
+        title="Negative mean is concentrated in zero-coverage cells",
+    )
+    axes[1].legend(fontsize=6.2, loc="lower right")
+    axes[1].grid(axis="y", color="#E5E7EB", linewidth=0.55)
+    axes[1].text(
+        0.02,
+        0.96,
+        "b",
+        transform=axes[1].transAxes,
+        va="top",
+        fontweight="bold",
+        fontsize=8,
+    )
+    fig.suptitle(
+        "Historical bias follows a zero-coverage discontinuity, not a monotonic density law",
+        fontsize=9,
+        fontweight="bold",
+        y=1.02,
+    )
+    fig.tight_layout()
+    return fig
+
+
 def plot_tradeoff_summary(effects: pd.DataFrame) -> mpl.figure.Figure:
     """Show the three-year paired-seed tradeoff with bootstrap intervals."""
     configure_theme()
