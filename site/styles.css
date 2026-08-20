@@ -304,7 +304,7 @@ body {
     linear-gradient(rgba(30, 48, 42, .022) 1px, transparent 1px),
     linear-gradient(90deg, rgba(30, 48, 42, .018) 1px, transparent 1px);
   background-size: 32px 32px;
-  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 .shell { width: min(1220px, calc(100% - 56px)); }
@@ -345,7 +345,7 @@ body {
   gap: 0;
   border-bottom: 1px solid #d4d6d1;
   color: #64706c;
-  font-family: Consolas, "Courier New", monospace;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   letter-spacing: .07em;
   text-transform: uppercase;
@@ -362,7 +362,7 @@ body {
 .eyebrow { color: var(--ocean); }
 h1, h2 { letter-spacing: -.035em; }
 h1 { max-width: 790px; font-size: clamp(48px, 5.7vw, 79px); line-height: 1.02; }
-.lede { color: #495652; font-family: Georgia, "Times New Roman", serif; font-size: 20px; line-height: 1.55; margin-top: 25px; max-width: 710px; }
+.lede { color: #495652; font-family: Arial, Helvetica, sans-serif; font-size: 18px; line-height: 1.62; margin-top: 25px; max-width: 710px; }
 .study-meta {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -372,7 +372,7 @@ h1 { max-width: 790px; font-size: clamp(48px, 5.7vw, 79px); line-height: 1.02; }
 }
 .study-meta > div { padding: 14px 13px 14px 0; }
 .study-meta > div + div { padding-left: 13px; border-left: 1px solid #d3d6d1; }
-.study-meta dt { color: #68736f; font-family: Consolas, "Courier New", monospace; font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+.study-meta dt { color: #68736f; font-family: Arial, Helvetica, sans-serif; font-size: 9px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .study-meta dd { margin: 3px 0 0; color: #21302c; font-size: 12px; font-weight: 700; }
 .hero-actions { margin-top: 26px; }
 .button { min-height: 42px; padding: 9px 16px; border-radius: 4px; font-size: 12px; letter-spacing: .02em; }
@@ -397,25 +397,25 @@ h1 { max-width: 790px; font-size: clamp(48px, 5.7vw, 79px); line-height: 1.02; }
 .hero-number { font-family: Georgia, "Times New Roman", serif; color: var(--ocean-deep); font-weight: 500; }
 .hero-number span { color: var(--coral); }
 .hero-consistency { border-color: #d1d5d0; }
-.hero-boundary { color: #63706b; font-family: Consolas, "Courier New", monospace; line-height: 1.55; }
-.hero-result-note { margin: 20px 0 0; padding-top: 17px; border-top: 1px solid #d1d5d0; color: #52605b; font-family: Georgia, "Times New Roman", serif; font-size: 13px; line-height: 1.6; }
+.hero-boundary { color: #63706b; font-family: Arial, Helvetica, sans-serif; font-size: 11px; font-weight: 600; line-height: 1.55; }
+.hero-result-note { margin: 20px 0 0; padding-top: 17px; border-top: 1px solid #d1d5d0; color: #52605b; font-family: Arial, Helvetica, sans-serif; font-size: 13px; line-height: 1.6; }
 
 .section { padding: 96px 0; }
 .section-tint { padding: 96px 0; background: #e9ebe5; border-top: 1px solid #d0d3cd; border-bottom: 1px solid #d0d3cd; }
 .section-heading { max-width: 850px; margin-bottom: 36px; }
-.step { display: flex; align-items: center; gap: 12px; color: var(--ocean); font-family: Consolas, "Courier New", monospace; font-size: 10px; }
+.step { display: flex; align-items: center; gap: 12px; color: var(--ocean); font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: 800; }
 .step::before { content: ""; width: 34px; height: 2px; background: var(--coral); }
 h2 { font-size: clamp(39px, 4.7vw, 59px); }
-.section-heading > p:last-child { max-width: 740px; color: var(--ink-soft); font-family: Georgia, "Times New Roman", serif; line-height: 1.65; }
+.section-heading > p:last-child { max-width: 740px; color: var(--ink-soft); font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 1.68; }
 
 .panel { border-color: #bfc6c0; border-radius: 7px; box-shadow: var(--shadow); }
 .panel-toolbar { background: #faf9f4; border-bottom-color: #c7ccc6; }
 .segmented { padding: 3px; background: #e7e9e4; border: 1px solid #d0d4ce; border-radius: 6px; }
 .segment { border-radius: 3px; }
 .segment.active { box-shadow: none; outline: 1px solid #bec6bf; }
-.map-role, .audit-label, .status, .map-metadata span { border-radius: 3px; font-family: Consolas, "Courier New", monospace; }
+.map-role, .audit-label, .status, .map-metadata span { border-radius: 3px; font-family: Arial, Helvetica, sans-serif; }
 .map-caption { padding: 14px 21px; border-top: 1px solid #d4d7d2; background: #faf9f4; }
-.map-caption > p { font-family: Georgia, "Times New Roman", serif; }
+.map-caption > p { font-family: Arial, Helvetica, sans-serif; }
 .map-metadata span { background: transparent; }
 .logic-bridge { border-radius: 4px; background: #e7ece8; box-shadow: inset 4px 0 0 var(--ocean); }
 .priority-copy { background: #183d3d; }
@@ -448,7 +448,7 @@ h2 { font-size: clamp(39px, 4.7vw, 59px); }
 .workflow-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--ocean); }
 .workflow-card::after { border-radius: 3px; background: #f7f5ef; }
 .workflow-icon { width: 52px; height: 52px; border-radius: 3px; background: #e4ece8; }
-.workflow-number { font-family: Consolas, "Courier New", monospace; }
+.workflow-number { font-family: Arial, Helvetica, sans-serif; font-weight: 800; }
 .workflow-equation { border-radius: 4px; background: #183d3d; }
 .workflow-equation strong { border-radius: 3px; }
 .workflow-boundary { border-radius: 4px; }
