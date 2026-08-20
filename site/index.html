@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -28,6 +28,12 @@
         </div>
       </nav>
 
+      <div class="publication-strip shell" aria-label="Study metadata">
+        <span>Research note 01</span>
+        <span>Observing-system simulation experiment</span>
+        <span>Frozen analysis · 2026</span>
+      </div>
+
       <div class="hero-grid shell" id="top">
         <div class="hero-copy">
           <p class="eyebrow">Interactive research brief · frozen analysis</p>
@@ -36,18 +42,31 @@
             A reproducible observing-system simulation experiment comparing equal-count
             sampling geometries for monthly surface-ocean pCO₂ reconstruction.
           </p>
+          <dl class="study-meta">
+            <div><dt>Model truth</dt><dd>IPSL-CM6A-LR</dd></div>
+            <div><dt>Historical weights</dt><dd>SOCAT 1990–2004</dd></div>
+            <div><dt>Study years</dt><dd>2005 · 2010 · 2014</dd></div>
+            <div><dt>Primary validation</dt><dd>Whole spatial blocks</dd></div>
+          </dl>
           <div class="hero-actions">
             <a class="button primary" href="#sampling">Explore the evidence</a>
             <a class="button ghost" href="#technical">Read the method boundaries</a>
           </div>
         </div>
         <aside class="hero-result" aria-label="Default result summary">
-          <p class="card-kicker">Default estimand</p>
+          <div class="result-heading">
+            <p class="card-kicker">Key finding · default estimand</p>
+            <span>01</span>
+          </div>
           <p class="result-label">Historical − random MAE</p>
           <p class="hero-number">+15.67<span>%</span></p>
           <p class="hero-consistency">Worse in <strong>15/15</strong> year–fold units</p>
           <p class="hero-boundary">
             Whole-block · spherical area · candidates and evaluation &lt;60°N
+          </p>
+          <p class="hero-result-note">
+            The historical geometry is consistently less accurate under the primary comparison.
+            This is an error-magnitude result, not evidence of a universal signed bias.
           </p>
         </aside>
       </div>
