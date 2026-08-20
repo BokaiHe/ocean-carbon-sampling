@@ -6,6 +6,9 @@ import argparse
 import json
 from pathlib import Path
 
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -15,6 +18,15 @@ from matplotlib.colors import BoundaryNorm, ListedColormap, PowerNorm
 
 from ocean_carbon_sampling.data import read_socat_monthly
 from ocean_carbon_sampling.osse_experiment import historical_spatial_weights
+
+mpl.rcParams.update(
+    {
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+        "svg.fonttype": "none",
+        "pdf.fonttype": 42,
+    }
+)
 
 WEIGHT_LABELS = {
     "equal": "Equal-cell weighting",
@@ -255,6 +267,42 @@ def _raster(frame: pd.DataFrame, column: str) -> tuple[np.ndarray, np.ndarray, n
     )
 
 
+def _draw_map_base(
+    ax: plt.Axes,
+    *,
+    ocean: np.ndarray,
+    extent: list[float],
+) -> None:
+    """Draw a restrained ocean field over white land."""
+    ax.set_facecolor("#ffffff")
+    ocean_rgba = np.zeros((*ocean.shape, 4), dtype=float)
+    ocean_rgba[np.isfinite(ocean)] = (0.90, 0.95, 0.97, 1.0)
+    ax.imshow(
+        ocean_rgba,
+        origin="lower",
+        extent=extent,
+        interpolation="none",
+        transform=ccrs.PlateCarree(),
+        zorder=0,
+    )
+
+
+def _draw_land_and_coastline(ax: plt.Axes) -> None:
+    """Draw a clean reference coastline independent of the model validity mask."""
+    ax.add_feature(
+        cfeature.LAND.with_scale("110m"),
+        facecolor="#ffffff",
+        edgecolor="none",
+        zorder=5,
+    )
+    ax.coastlines(
+        resolution="110m",
+        color="#111817",
+        linewidth=1.15,
+        zorder=6,
+    )
+
+
 def render_sampling_maps(
     *,
     sampling: pd.DataFrame,
@@ -287,18 +335,28 @@ def render_sampling_maps(
         }.get(strategy, strategy)
         maps[short] = {}
         for show_zero in (False, True):
-            fig, ax = plt.subplots(figsize=(12.8, 6.4), dpi=150)
-            fig.patch.set_facecolor("#f7f9f7")
-            # The axes background is land. Only valid model-ocean cells receive
-            # the blue raster, so coastlines remain legible without a GIS layer.
-            ax.set_facecolor("#e9dfcf")
-            ocean_rgba = np.zeros((*ocean.shape, 4), dtype=float)
-            ocean_rgba[np.isfinite(ocean)] = (0.82, 0.91, 0.93, 1.0)
-            ax.imshow(ocean_rgba, origin="lower", extent=extent, interpolation="none")
+            fig, ax = plt.subplots(
+                figsize=(12.8, 6.4),
+                dpi=150,
+                subplot_kw={"projection": ccrs.PlateCarree()},
+            )
+            fig.patch.set_facecolor("#ffffff")
+            _draw_map_base(
+                ax,
+                ocean=ocean,
+                extent=extent,
+            )
             if show_zero:
                 zero_rgba = np.zeros((*zero.shape, 4), dtype=float)
-                zero_rgba[zero == 1] = (0.32, 0.35, 0.37, 0.60)
-                ax.imshow(zero_rgba, origin="lower", extent=extent, interpolation="none")
+                zero_rgba[zero == 1] = (0.34, 0.37, 0.39, 0.52)
+                ax.imshow(
+                    zero_rgba,
+                    origin="lower",
+                    extent=extent,
+                    interpolation="none",
+                    transform=ccrs.PlateCarree(),
+                    zorder=1,
+                )
 
             # The source table summarizes 1-degree selections into 5 x 10 degree
             # display blocks. Plot compact points at block centres instead of
@@ -313,14 +371,21 @@ def render_sampling_maps(
                 edgecolors=(1, 1, 1, 0.78),
                 linewidths=0.35,
                 alpha=0.92,
+                transform=ccrs.PlateCarree(),
                 zorder=3,
             )
-            ax.set_xlim(-180, 180)
-            ax.set_ylim(-82, 90)
-            ax.set_xticks([-180, -120, -60, 0, 60, 120, 180])
-            ax.set_yticks([-60, -30, 0, 30, 60, 90])
+            _draw_land_and_coastline(ax)
+            ax.set_extent([-180, 180, -82, 90], crs=ccrs.PlateCarree())
+            ax.set_xticks(
+                [-180, -120, -60, 0, 60, 120, 180],
+                crs=ccrs.PlateCarree(),
+            )
+            ax.set_yticks(
+                [-60, -30, 0, 30, 60, 90],
+                crs=ccrs.PlateCarree(),
+            )
             ax.tick_params(colors="#50605c", labelsize=9)
-            ax.grid(color="white", linewidth=0.55, alpha=0.55)
+            ax.gridlines(color="#6f7b79", linewidth=0.45, alpha=0.20)
             for spine in ax.spines.values():
                 spine.set_visible(False)
             colorbar = fig.colorbar(collection, ax=ax, orientation="horizontal", pad=0.075, fraction=0.04)
@@ -331,7 +396,7 @@ def render_sampling_maps(
             )
             colorbar.ax.tick_params(labelsize=8, colors="#50605c")
             suffix = "zero" if show_zero else "base"
-            filename = f"sampling_{short}_{suffix}.png"
+            filename = f"sampling_{short}_{suffix}_coastline.png"
             fig.savefig(output_dir / filename, bbox_inches="tight", facecolor=fig.get_facecolor())
             plt.close(fig)
             maps[short][suffix] = f"assets/maps/{filename}"
@@ -373,12 +438,17 @@ def render_priority_diagnostic(
     cmap = ListedColormap(["#bcc7c8", "#f2bb72", "#e76655", "#57234f"])
     norm = BoundaryNorm(boundaries, cmap.N)
 
-    fig, ax = plt.subplots(figsize=(12.8, 6.4), dpi=150)
-    fig.patch.set_facecolor("#f7f9f7")
-    ax.set_facecolor("#e9dfcf")
-    ocean_rgba = np.zeros((*ocean.shape, 4), dtype=float)
-    ocean_rgba[np.isfinite(ocean)] = (0.82, 0.91, 0.93, 1.0)
-    ax.imshow(ocean_rgba, origin="lower", extent=extent, interpolation="none")
+    fig, ax = plt.subplots(
+        figsize=(12.8, 6.4),
+        dpi=150,
+        subplot_kw={"projection": ccrs.PlateCarree()},
+    )
+    fig.patch.set_facecolor("#ffffff")
+    _draw_map_base(
+        ax,
+        ocean=ocean,
+        extent=extent,
+    )
     image = ax.imshow(
         priority,
         origin="lower",
@@ -387,8 +457,18 @@ def render_priority_diagnostic(
         cmap=cmap,
         norm=norm,
         alpha=0.94,
+        transform=ccrs.PlateCarree(),
+        zorder=2,
     )
-    ax.axhline(60, color="#183f44", linestyle=(0, (5, 4)), linewidth=1.0)
+    ax.plot(
+        [-180, 180],
+        [60, 60],
+        color="#183f44",
+        linestyle=(0, (5, 4)),
+        linewidth=1.0,
+        transform=ccrs.PlateCarree(),
+        zorder=7,
+    )
     ax.text(
         177,
         62.5,
@@ -397,13 +477,18 @@ def render_priority_diagnostic(
         va="bottom",
         fontsize=8,
         color="#183f44",
+        transform=ccrs.PlateCarree(),
+        zorder=7,
     )
-    ax.set_xlim(-180, 180)
-    ax.set_ylim(-82, 90)
-    ax.set_xticks([-180, -120, -60, 0, 60, 120, 180])
-    ax.set_yticks([-60, -30, 0, 30, 60, 90])
+    _draw_land_and_coastline(ax)
+    ax.set_extent([-180, 180, -82, 90], crs=ccrs.PlateCarree())
+    ax.set_xticks(
+        [-180, -120, -60, 0, 60, 120, 180],
+        crs=ccrs.PlateCarree(),
+    )
+    ax.set_yticks([-60, -30, 0, 30, 60, 90], crs=ccrs.PlateCarree())
     ax.tick_params(colors="#50605c", labelsize=9)
-    ax.grid(color="white", linewidth=0.5, alpha=0.42)
+    ax.gridlines(color="#6f7b79", linewidth=0.45, alpha=0.20)
     for spine in ax.spines.values():
         spine.set_visible(False)
     colorbar = fig.colorbar(
@@ -425,7 +510,7 @@ def render_priority_diagnostic(
     )
     colorbar.ax.set_xticklabels(["lower 75%", "top 25%", "top 10%", "top 2%"])
     colorbar.ax.tick_params(labelsize=8, colors="#50605c")
-    filename = "historical_zero_priority_diagnostic.png"
+    filename = "historical_zero_priority_diagnostic_coastline.png"
     fig.savefig(output_dir / filename, bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close(fig)
     return f"assets/maps/{filename}"

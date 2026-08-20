@@ -10,19 +10,19 @@
   "maps": {
     "images": {
       "random": {
-        "base": "assets/maps/sampling_random_base.png",
-        "zero": "assets/maps/sampling_random_zero.png"
+        "base": "assets/maps/sampling_random_base_coastline.png",
+        "zero": "assets/maps/sampling_random_zero_coastline.png"
       },
       "historical": {
-        "base": "assets/maps/sampling_historical_base.png",
-        "zero": "assets/maps/sampling_historical_zero.png"
+        "base": "assets/maps/sampling_historical_base_coastline.png",
+        "zero": "assets/maps/sampling_historical_zero_coastline.png"
       },
       "coverage": {
-        "base": "assets/maps/sampling_coverage_base.png",
-        "zero": "assets/maps/sampling_coverage_zero.png"
+        "base": "assets/maps/sampling_coverage_base_coastline.png",
+        "zero": "assets/maps/sampling_coverage_zero_coastline.png"
       }
     },
-    "priority_diagnostic": "assets/maps/historical_zero_priority_diagnostic.png",
+    "priority_diagnostic": "assets/maps/historical_zero_priority_diagnostic_coastline.png",
     "zero_coverage_cell_pct": 53.1,
     "zero_coverage_area_pct": 49.2,
     "zero_coverage_cells": 21580,
