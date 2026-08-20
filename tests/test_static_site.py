@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,3 +70,11 @@ def test_all_pre_rendered_maps_exist() -> None:
     assert priority.is_file()
     assert priority.stat().st_size > 10_000
     assert "not a causal marginal-gain map" in data["maps"]["priority_definition"]
+
+
+def test_site_is_english_only_and_workflow_is_complete() -> None:
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    assert re.search(r"[\u3400-\u9fff]", html) is None
+    assert 'id="workflow"' in html
+    assert html.count('class="workflow-card"') == 6
+    assert html.count('class="workflow-icon"') == 6

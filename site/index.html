@@ -24,6 +24,7 @@
           <a href="#estimand">Estimand</a>
           <a href="#sample-count">Sample count</a>
           <a href="#technical">Methods</a>
+          <a href="#workflow">Workflow</a>
         </div>
       </nav>
 
@@ -87,7 +88,7 @@
             <span class="map-role">Design map · not model error</span>
             <img
               id="sampling-map"
-              src="assets/maps/sampling_random_base.png"
+              src="assets/maps/sampling_random_base_coastline.png"
               alt="Random sampling density on the 2005 mapped model domain"
             />
             <aside id="zero-callout" class="zero-callout" hidden>
@@ -159,28 +160,28 @@
           <div class="estimand-layout">
             <form class="control-card" id="estimand-controls">
               <fieldset>
-                <legend>加权方式</legend>
+                <legend>Weighting</legend>
                 <div class="choice-row">
-                  <label><input type="radio" name="weight" value="equal" /><span>等格点</span></label>
-                  <label><input type="radio" name="weight" value="area" checked /><span>球面面积</span></label>
+                  <label><input type="radio" name="weight" value="equal" /><span>Equal cell</span></label>
+                  <label><input type="radio" name="weight" value="area" checked /><span>Spherical area</span></label>
                 </div>
               </fieldset>
               <fieldset>
-                <legend>评价范围</legend>
+                <legend>Evaluation domain</legend>
                 <div class="choice-column">
-                  <label><input type="radio" name="domain" value="global" /><span>全域</span></label>
-                  <label><input type="radio" name="domain" value="eval60" /><span>仅评价 &lt;60°N</span></label>
-                  <label><input type="radio" name="domain" value="both60" checked /><span>候选池也限制</span></label>
+                  <label><input type="radio" name="domain" value="global" /><span>Full domain</span></label>
+                  <label><input type="radio" name="domain" value="eval60" /><span>Evaluate below 60°N</span></label>
+                  <label><input type="radio" name="domain" value="both60" checked /><span>Also restrict candidates</span></label>
                 </div>
               </fieldset>
               <fieldset>
-                <legend>验证方式</legend>
+                <legend>Validation</legend>
                 <div class="choice-row">
-                  <label><input type="radio" name="scheme" value="hidden" /><span>随机隐藏</span></label>
-                  <label><input type="radio" name="scheme" value="block" checked /><span>整块留出</span></label>
+                  <label><input type="radio" name="scheme" value="hidden" /><span>Hidden cells</span></label>
+                  <label><input type="radio" name="scheme" value="block" checked /><span>Whole blocks</span></label>
                 </div>
               </fieldset>
-              <button class="button replay" id="replay-journey" type="button">重放口径修正</button>
+              <button class="button replay" id="replay-journey" type="button">Replay the estimand journey</button>
             </form>
 
             <div class="result-console" aria-live="polite">
@@ -342,6 +343,114 @@
           </div>
         </div>
       </section>
+
+      <section class="section workflow-section" id="workflow">
+        <div class="shell">
+          <div class="section-heading workflow-heading">
+            <p class="step">The complete method · plain-language version</p>
+            <h2>How the experiment works.</h2>
+            <p>
+              Imagine planning a fleet of research ships in a virtual ocean where the true
+              monthly CO₂ field is already known. We can hide that truth, sample only a few
+              places, reconstruct the rest, and check exactly how much each sampling plan missed.
+            </p>
+          </div>
+
+          <div class="workflow-grid">
+            <article class="workflow-card">
+              <div class="workflow-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="16"></circle><circle cx="24" cy="24" r="8"></circle><path d="M24 4v7M24 37v7M4 24h7M37 24h7"></path></svg>
+              </div>
+              <span class="workflow-number">01</span>
+              <h3>Ask one controlled question</h3>
+              <p>
+                If every plan receives exactly 5,000 observations, does changing <em>where</em>
+                they are collected change reconstruction error?
+              </p>
+            </article>
+
+            <article class="workflow-card">
+              <div class="workflow-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="18"></circle><path d="M6 24h36M24 6c6 6 9 12 9 18s-3 12-9 18M24 6c-6 6-9 12-9 18s3 12 9 18M10 15h28M10 33h28"></path></svg>
+              </div>
+              <span class="workflow-number">02</span>
+              <h3>Create a virtual ocean</h3>
+              <p>
+                Monthly surface-ocean pCO₂, temperature and salinity from IPSL-CM6A-LR form the
+                known “truth” for 2005, 2010 and 2014. SOCAT is used only to describe historical
+                sampling density—not to define the truth.
+              </p>
+            </article>
+
+            <article class="workflow-card">
+              <div class="workflow-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48"><path d="M7 10h34v28H7zM18 10v28M30 10v28M7 20h34M7 29h34"></path><circle cx="13" cy="15" r="2"></circle><circle cx="25" cy="25" r="2"></circle><circle cx="36" cy="34" r="2"></circle></svg>
+              </div>
+              <span class="workflow-number">03</span>
+              <h3>Simulate three sampling plans</h3>
+              <p>
+                Random samples candidates equally. Historical repeats the SOCAT pattern.
+                Coverage prioritizes sparse month–space blocks. The sample count stays fixed, so
+                only the placement rule changes.
+              </p>
+            </article>
+
+            <article class="workflow-card">
+              <div class="workflow-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48"><path d="M8 35l9-9 7 5 15-17"></path><path d="M31 14h8v8"></path><circle cx="12" cy="14" r="4"></circle><circle cx="36" cy="34" r="4"></circle><path d="M16 14h11M21 34h11"></path></svg>
+              </div>
+              <span class="workflow-number">04</span>
+              <h3>Teach one model, then hide places</h3>
+              <p>
+                The same gradient-boosting model learns from each selected sample. It then predicts
+                places it did not see. Whole-region holdouts are the main test because they are
+                harder than hiding scattered cells.
+              </p>
+            </article>
+
+            <article class="workflow-card">
+              <div class="workflow-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48"><path d="M24 5l15 6v11c0 10-6 17-15 21-9-4-15-11-15-21V11z"></path><path d="M16 24l5 5 11-12"></path></svg>
+              </div>
+              <span class="workflow-number">05</span>
+              <h3>Make the comparison fair</h3>
+              <p>
+                Plans share paired random seeds, three years and five spatial folds. The default
+                result also weights cells by spherical area and aligns both sampling and evaluation
+                below 60°N.
+              </p>
+            </article>
+
+            <article class="workflow-card">
+              <div class="workflow-icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48"><path d="M8 39h32M11 35V24h7v11M21 35V15h7v20M31 35V9h7v26"></path><path d="M10 10l7 5 8-7 11 5"></path></svg>
+              </div>
+              <span class="workflow-number">06</span>
+              <h3>Measure, challenge, and limit the claim</h3>
+              <p>
+                MAE, RMSE, signed bias and tail errors describe different failure modes. Sample-count,
+                month-balance, regridding and domain checks reveal which conclusions are stable—and
+                which still require cross-model or real-ocean validation.
+              </p>
+            </article>
+          </div>
+
+          <div class="workflow-equation" aria-label="Experiment summary">
+            <span>Same sample count</span><b>→</b><span>Different locations</span><b>→</b>
+            <span>Same reconstruction model</span><b>→</b><span>Same held-out tests</span><b>→</b>
+            <strong>Compare what changes</strong>
+          </div>
+
+          <aside class="workflow-boundary">
+            <strong>What this experiment can—and cannot—say</strong>
+            <p>
+              It tests sampling geometry under controlled model truth. It does not yet prove the
+              best ship route, real-world cost, sea-ice accessibility, integrated carbon flux, or
+              performance across a second reconstruction model.
+            </p>
+          </aside>
+        </div>
+      </section>
     </main>
 
     <footer>
@@ -350,6 +459,7 @@
         <div class="footer-links">
           <a href="#top">Back to top</a>
           <a href="#technical">Methods</a>
+          <a href="#workflow">Workflow</a>
           <a href="data/site-data.json">JSON</a>
         </div>
       </div>
