@@ -20,6 +20,7 @@
           <span>Ocean Carbon Sampling</span>
         </a>
         <div class="nav-links">
+          <a href="#context">Context</a>
           <a href="#sampling">Sampling</a>
           <a href="#estimand">Estimand</a>
           <a href="#sample-count">Sample count</a>
@@ -68,11 +69,68 @@
             The historical geometry is consistently less accurate under the primary comparison.
             This is an error-magnitude result, not evidence of a universal signed bias.
           </p>
+          <figure class="hero-context-thumb">
+            <img
+              src="assets/context/nasa-ocean-co2-sources-sinks.png"
+              alt="NASA visualization of ocean carbon dioxide sources and sinks around the globe"
+            />
+            <figcaption>External context · NASA ocean CO₂ sources and sinks · not study output</figcaption>
+          </figure>
         </aside>
       </div>
     </header>
 
     <main>
+      <section class="context-section" id="context">
+        <div class="shell">
+          <div class="context-intro">
+            <div>
+              <p class="step">Scientific context · external imagery</p>
+              <h2>Why does sampling geometry matter?</h2>
+            </div>
+            <p>
+              Ocean conditions vary sharply across space, while ship-based measurements are costly
+              and geographically constrained. These reference images set the physical context for the
+              controlled experiment below; neither image is used as model input or evidence.
+            </p>
+          </div>
+
+          <div class="context-gallery">
+            <figure class="context-figure context-figure-primary">
+              <div class="context-image-wrap">
+                <img
+                  src="assets/context/nasa-celtic-sea-phytoplankton.jpg"
+                  alt="NASA satellite image of a blue and green phytoplankton bloom in the Celtic Sea"
+                />
+                <span>Seen from orbit</span>
+              </div>
+              <figcaption>
+                <strong>Ocean structure is not smooth.</strong>
+                Satellite-observed phytoplankton form fronts, filaments and blooms—visible reminders
+                that biological and physical ocean processes vary over short distances.
+                <a href="https://science.nasa.gov/image-detail/phytoplanktonbloom-france-amo-20240510-lrg/">NASA Earth Observatory ↗</a>
+              </figcaption>
+            </figure>
+
+            <figure class="context-figure context-figure-secondary">
+              <div class="context-image-wrap">
+                <img
+                  src="assets/context/noaa-ctd-launch.jpg"
+                  alt="A CTD rosette being lowered from a research vessel into the ocean"
+                />
+                <span>Measured from ships</span>
+              </div>
+              <figcaption>
+                <strong>Ocean observations require access.</strong>
+                A CTD deployment illustrates the logistical reality of shipborne sampling. It is
+                contextual—not the specific surface pCO₂ system represented by SOCAT weights here.
+                <a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA Ocean Exploration ↗</a>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
       <section class="section shell" id="sampling">
         <div class="section-heading">
           <p class="step">Interaction 01</p>
