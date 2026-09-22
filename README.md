@@ -2,6 +2,10 @@
 
 An independent, reproducible study of how fixed-sample-count strategies affect out-of-sample reconstruction of Southern Ocean surface-ocean fCO2, followed by a global observing-system simulation experiment (OSSE) and an interactive web application.
 
+**[Open the interactive research brief](https://bokaihe.github.io/ocean-carbon-sampling/)**
+
+The website is a static, precomputed presentation layer: it does not refit models in the browser, and every displayed result is backed by the curated outputs in this repository.
+
 This project is inspired by a collaborative course project in EESC/STAT 4243. The research question, experiment design, validation framework, implementation, and analyses in this repository are being independently redesigned.
 
 ## Research question
