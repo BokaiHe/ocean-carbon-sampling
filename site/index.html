@@ -52,6 +52,7 @@
           <div class="hero-actions">
             <a class="button primary" href="#sampling">Explore the evidence</a>
             <a class="button ghost" href="#technical">Read the method boundaries</a>
+            <a class="button ghost" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a>
           </div>
         </div>
         <aside class="hero-result" aria-label="Default result summary">
@@ -61,6 +62,7 @@
           </div>
           <p class="result-label">Historical − random MAE</p>
           <p class="hero-number">+15.67<span>%</span></p>
+          <p class="hero-absolute">Mean absolute error (MAE): <strong>11.836 → 13.691 µatm</strong><br />Random → historical; an increase of <strong>1.855 µatm</strong>.</p>
           <p class="hero-consistency">Worse in <strong>15/15</strong> year–fold units</p>
           <p class="hero-boundary">
             Whole-block · spherical area · candidates and evaluation &lt;60°N
@@ -70,11 +72,13 @@
             This is an error-magnitude result, not evidence of a universal signed bias.
           </p>
           <figure class="hero-context-thumb">
+            <a href="assets/maps/sampling_historical_base_coastline.png" aria-label="Open the full-resolution historical sampling map">
             <img
-              src="assets/context/nasa-ocean-co2-sources-sinks.png"
-              alt="NASA visualization of ocean carbon dioxide sources and sinks around the globe"
+              src="assets/maps/sampling_historical_base_coastline.png"
+              alt="This project's historical sampling plan, summarized by spatial block for 2005"
             />
-            <figcaption>External context · NASA ocean CO₂ sources and sinks · not study output</figcaption>
+            </a>
+            <figcaption>Our sampling design · 2005 · 5,000 observations · seed 0. Full-domain illustration; the headline result uses the aligned &lt;60°N domain. Select the map to inspect it at full resolution.</figcaption>
           </figure>
         </aside>
       </div>
@@ -133,7 +137,7 @@
 
       <section class="section shell" id="sampling">
         <div class="section-heading">
-          <p class="step">Interaction 01</p>
+          <p class="step">The sampling plans</p>
           <h2>Where do 5,000 observations go—and where is risk left unresolved?</h2>
           <p>
             The first map shows the experimental input: how each rule allocates the same
@@ -168,11 +172,6 @@
               src="assets/maps/sampling_random_base_coastline.png"
               alt="Random sampling density on the 2005 mapped model domain"
             />
-            <aside id="zero-callout" class="zero-callout" hidden>
-              <span class="callout-number">53.1%</span>
-              <span>of mapped cells have zero historical spatial weight</span>
-              <small>49.2% after spherical-area weighting</small>
-            </aside>
           </div>
           <div class="map-caption">
             <p id="map-description">Random gives every candidate month-cell equal selection probability.</p>
@@ -183,6 +182,12 @@
               <span>5° × 10° summary</span>
             </div>
           </div>
+          <aside id="zero-callout" class="zero-callout" hidden>
+            <span class="callout-number">53.1%</span>
+            <span>of mapped cells have zero historical spatial weight</span>
+            <small>49.2% after spherical-area weighting</small>
+          </aside>
+          <p class="map-resolution-note">Reading the overlay: dots summarize observations at 5° × 10° block centres; shading follows the finer mapped grid. For Historical, a block-centre dot can overlap a grey cell even though the selected observations lie in supported cells elsewhere in that block. Random and Coverage are not restricted to historical support.</p>
         </div>
 
         <div class="logic-bridge" aria-label="How to read the two maps">
@@ -226,7 +231,7 @@
       <section class="section section-tint" id="estimand">
         <div class="shell">
           <div class="section-heading compact">
-            <p class="step">Interaction 02 · Core result</p>
+            <p class="step">The core result</p>
             <h2>One estimate, four defensible questions.</h2>
             <p>
               The number changes because weighting, evaluation domain and candidate support define
@@ -316,7 +321,7 @@
 
       <section class="section shell" id="sample-count">
         <div class="section-heading">
-          <p class="step">Interaction 03 · Supporting audit</p>
+          <p class="step">Does it depend on sample size? · Supporting audit</p>
           <h2>The coverage result changes with sample count.</h2>
           <p>
             This panel is deliberately labelled as a non-default hidden-cell, full-domain,
@@ -373,7 +378,7 @@
       <section class="section section-dark" id="technical">
         <div class="shell technical-shell">
           <div class="section-heading compact inverse">
-            <p class="step">Interaction 04</p>
+            <p class="step">Methods &amp; evidence</p>
             <h2>Technical details, available—not in the way.</h2>
             <p>Open only the audit you want to inspect. None of these panels adds a new model fit.</p>
           </div>
@@ -405,7 +410,7 @@
                   SHAP artifacts were withheld because explaining a non-generalizing model would not establish
                   a scientific driver.
                 </p>
-                <p>The complete gate decision remains in the reproducible repository documentation.</p>
+                <p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/diagnostic_results.md">Read the full interpretability-gate decision in the repository →</a></p>
               </div>
             </details>
             <details>
@@ -526,14 +531,20 @@
               performance across a second reconstruction model.
             </p>
           </aside>
+          <aside class="workflow-boundary">
+            <strong>What could this change in practice?</strong>
+            <p>A practical next step is to compare feasible additions to ship routes or float deployments using this framework, asking which placements reduce held-out reconstruction error. That would require platform-specific measurements, access and cost constraints, and another reconstruction model before making deployment recommendations.</p>
+          </aside>
         </div>
       </section>
     </main>
 
     <footer>
       <div class="shell footer-grid">
-        <div><strong>Ocean Carbon Sampling</strong><p>Analysis frozen · interface reads precomputed assets only.</p></div>
+        <div><strong>Bokai He · Ocean Carbon Sampling</strong><p>Columbia University · Earth and Environmental Engineering (EEE)</p><p>Independent project inspired by coursework. Analysis frozen; results are precomputed.</p></div>
         <div class="footer-links">
+          <a href="https://github.com/BokaiHe/ocean-carbon-sampling">GitHub repository ↗</a>
+          <a href="https://github.com/BokaiHe">Contact · GitHub profile ↗</a>
           <a href="#top">Back to top</a>
           <a href="#technical">Methods</a>
           <a href="#workflow">Workflow</a>

@@ -402,7 +402,7 @@ h1 { max-width: 790px; font-size: clamp(48px, 5.7vw, 79px); line-height: 1.02; }
 .hero-boundary { color: #5a6d78; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 600; line-height: 1.55; }
 .hero-result-note { margin: 20px 0 0; padding-top: 17px; border-top: 1px solid #d1d8dc; color: #4d606b; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.65; }
 .hero-context-thumb { margin: 18px 0 0; border: 1px solid #c4ced4; background: #eef3f5; }
-.hero-context-thumb img { display: block; width: 100%; aspect-ratio: 2 / 1; object-fit: cover; }
+.hero-context-thumb img { display: block; width: 100%; height: auto; object-fit: contain; }
 .hero-context-thumb figcaption { padding: 8px 10px; color: #536773; font-size: 12px; font-weight: 700; line-height: 1.45; }
 
 .context-section {
@@ -528,6 +528,42 @@ summary small { font-size: 13px; line-height: 1.45; }
 .footer-grid p { font-size: 13px; }
 .footer-links { font-size: 14px; }
 
+/* Keep annotations outside the plotted geography at every viewport size. */
+.map-stage, .map-stage img { min-height: 0; }
+.map-stage img { object-fit: contain; }
+.map-role {
+  position: static;
+  display: block;
+  padding: 12px 18px;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  background: #f7f9fa;
+  box-shadow: none;
+}
+.priority-figure { flex-direction: column; align-items: stretch; min-height: 0; }
+.priority-figure img { height: auto; }
+.zero-callout {
+  position: static;
+  width: auto;
+  margin: 0;
+  padding: 18px 22px;
+  color: var(--ink);
+  background: #e4edf1;
+  border-radius: 0;
+  box-shadow: none;
+}
+.zero-callout:not([hidden]) { display: grid; grid-template-columns: auto 1fr; column-gap: 18px; align-items: center; }
+.zero-callout .callout-number { grid-row: span 2; color: var(--ocean-deep); font-size: 32px; }
+.zero-callout small { color: #465c69; margin-top: 4px; font-size: 13px; }
+.map-resolution-note { margin: 0; padding: 16px 22px 20px; color: #465c69; background: #f7f9fa; font-size: 14px; line-height: 1.65; }
+.section-dark .section-heading > p:last-child { color: #d4e0e6; }
+.hero-absolute { font-size: 14px; line-height: 1.65; color: #465c69; }
+.hero-context-thumb a:focus-visible { display: block; outline: 3px solid var(--ocean); outline-offset: 3px; }
+.footer-links { flex-wrap: wrap; justify-content: flex-end; line-height: 1.7; }
+.footer-grid > div:first-child { flex: 1 1 50%; }
+.footer-links { flex: 1 1 40%; }
+.footer-grid a { text-underline-offset: 4px; }
+
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 42px; padding: 64px 0 72px; }
   .hero-copy { max-width: none; }
@@ -553,4 +589,5 @@ summary small { font-size: 13px; line-height: 1.45; }
   .context-image-wrap img { height: 250px; }
   .context-figure figcaption { padding: 17px 18px 19px; }
   .section, .section-tint { padding: 68px 0; }
+  .footer-links { justify-content: flex-start; }
 }

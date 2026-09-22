@@ -170,7 +170,7 @@ function renderAudits() {
   const regrid = state.data.audits.regridding;
   $("#regrid-audit").innerHTML = `
     <p>Exact native-cell-area weighting preserved ${regrid.direction_checks_passed}/${regrid.direction_checks} prespecified directions. ${regrid.note}</p>
-    <a href="../docs/osse_regrid_audit_results.md">Open the full regridding audit →</a>`;
+    <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/osse_regrid_audit_results.md">Open the full regridding audit →</a>`;
 }
 
 function bindEvents() {
