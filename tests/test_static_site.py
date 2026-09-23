@@ -135,3 +135,22 @@ def test_presentation_scope_credit_and_working_repository_links() -> None:
     assert "https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/osse_regrid_audit_results.md" in js
     assert "before training" in html
     assert "because they are" not in html
+
+
+def test_story_order_and_archived_map_scope() -> None:
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    sections = re.findall(r'<section[^>]+id="([^"]+)"', html)
+    assert sections.index("results") < sections.index("sample-count")
+    assert sections.index("sample-count") < sections.index("estimand")
+    assert sections.index("estimand") < sections.index("technical")
+    technical = html.split('id="technical"', 1)[1].split("</section>", 1)[0]
+    assert '<details id="archived-bias-map">' in technical
+    assert technical.count('id="priority-map"') == 1
+    assert html.count('id="priority-map"') == 1
+    assert "Not a sampling-priority map." in technical
+    assert "locations north of 60°N" in technical
+    assert "Where should a follow-up sampling experiment test first?" not in html
+    assert "Why this different scope?" in html
+    assert "reversal threshold cannot be transferred" in html
+    assert '<details class="mobile-navigation" id="mobile-navigation">' in html
+    assert "Escape" in (SITE / "app.js").read_text(encoding="utf-8")

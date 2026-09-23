@@ -22,11 +22,24 @@
         <div class="nav-links">
           <a href="#context">Context</a>
           <a href="#sampling">Sampling</a>
-          <a href="#estimand">Estimand</a>
+          <a href="#validation">Results</a>
           <a href="#sample-count">Sample count</a>
           <a href="#technical">Methods</a>
           <a href="#workflow">Workflow</a>
         </div>
+        <details class="mobile-navigation" id="mobile-navigation">
+          <summary>Menu</summary>
+          <div class="mobile-nav-links">
+            <a href="#context">Context</a>
+            <a href="#sampling">Sampling plans</a>
+            <a href="#validation">Core results</a>
+            <a href="#sample-count">Coverage &amp; sample count</a>
+            <a href="#estimand">Signed-bias audit</a>
+            <a href="#technical">Methods</a>
+            <a href="#workflow">Workflow &amp; next question</a>
+            <a href="#related-work">Related work &amp; credits</a>
+          </div>
+        </details>
       </nav>
 
       <div class="publication-strip shell" aria-label="Study metadata">
@@ -195,45 +208,10 @@
           <p class="map-resolution-note">Reading the overlay: dots summarize observations at 5° × 10° block centres; shading follows the finer mapped grid. For historical-density, a block-centre dot can overlap a grey cell even though the selected observations lie in supported cells elsewhere in that block. Random and Coverage are not restricted to historical support. None of these rules simulates feasible ship routes.</p>
         </div>
 
-        <div class="logic-bridge" aria-label="How to read the two maps">
-          <span>1 · Change the allocation rule above</span>
-          <i aria-hidden="true">→</i>
-          <span>2 · Observe which ocean areas lose support</span>
-          <i aria-hidden="true">→</i>
-          <span>3 · Inspect where unsupported error affects the global offset</span>
-        </div>
 
-        <div class="panel priority-panel">
-          <div class="priority-copy">
-            <p class="card-kicker">Supporting diagnostic · 2005</p>
-            <h3>Where should a follow-up sampling experiment test first?</h3>
-            <p>
-              Colour appears only where the historical-density baseline assigns zero sampling
-              probability. Darker cells combine a larger mean signed reconstruction error
-              with a larger spherical area, so they contribute more to the global signed offset.
-            </p>
-            <div class="priority-stat">
-              <strong>53.1%</strong>
-              <span>of mapped ocean cells have zero historical support<br />49.2% by spherical area</span>
-            </div>
-            <p class="caveat">
-              <strong>Diagnostic, not a promise of improvement.</strong> This map identifies
-              candidates for an add-observation experiment; it does not estimate the causal
-              gain from sampling any one cell.
-            </p>
-          </div>
-          <div class="priority-figure">
-            <span class="map-role">Outcome diagnostic · not marginal value</span>
-            <img
-              id="priority-map"
-              src="assets/maps/historical_zero_priority_diagnostic_coastline.png"
-              alt="Area-weighted magnitude of historical-density mean signed error within structural-zero sampling cells"
-            />
-          </div>
-        </div>
       </section>
 
-      <section class="section section-tint" id="estimand">
+      <section class="section section-tint" id="results">
         <div class="shell">
           <div id="validation" class="section-heading">
             <p class="step">The core result · two different questions</p>
@@ -242,6 +220,71 @@
           </div>
           <div id="validation-comparison" class="validation-grid" aria-label="Primary evaluation and spatial stress test"></div>
           <p class="comparison-boundary">The primary test reserves about 20% of month-cells within each month before sampling, using one fixed set per year. It measures dispersed missing-cell reconstruction, not a full-field reconstruction after unrestricted sampling. The stress test instead excludes complete 20° × 10° blocks, with no buffer. Neither the three years nor the 15 year–fold units are independent ESM replicates; direction counts are not formal significance tests.</p>
+
+        </div>
+      </section>
+
+      <section class="section shell" id="sample-count">
+        <div class="section-heading">
+          <p class="step">Does it depend on sample size? · Supporting audit</p>
+          <h2>The coverage result changes with sample count.</h2>
+          <p>
+            Why this different scope? The existing four-count sweep was run on the full domain
+            with equal-cell weighting. We retain it to show sample-count sensitivity without
+            introducing new fits; an aligned &lt;60°N, area-weighted four-count sweep has not
+            been run. Its magnitudes and reversal threshold cannot be transferred to the
+            primary result. Δerror = coverage − random.
+          </p>
+        </div>
+
+        <div class="panel sweep-panel">
+          <div class="audit-label">Supporting · hidden cells · full domain · equal-cell</div>
+          <div class="slider-header">
+            <div>
+              <span>Sample count</span>
+              <strong id="budget-value">5,000</strong>
+            </div>
+            <p id="budget-interpretation">At high counts, the extreme tail falls while typical error remains higher.</p>
+          </div>
+          <input
+            id="budget-slider"
+            class="budget-slider"
+            type="range"
+            min="0"
+            max="3"
+            step="1"
+            value="3"
+            aria-label="Sample count"
+          />
+          <div class="slider-ticks" aria-hidden="true">
+            <span>500</span><span>1,000</span><span>2,500</span><span>5,000</span>
+          </div>
+
+          <div class="sweep-grid">
+            <article class="sweep-card" data-metric="median_absolute_error">
+              <div><p>Median absolute error</p><strong>+0.670</strong></div>
+              <span class="direction-pill worse">Higher</span>
+              <div class="zero-bar"><i></i></div>
+              <small>Common-error range</small>
+            </article>
+            <article class="sweep-card" data-metric="p99_absolute_error">
+              <div><p>p99 absolute error</p><strong>−4.720</strong></div>
+              <span class="direction-pill better">Lower</span>
+              <div class="zero-bar"><i></i></div>
+              <small>Extreme tail</small>
+            </article>
+            <article class="sweep-card" data-metric="rmse">
+              <div><p>RMSE</p><strong>−1.107</strong></div>
+              <span class="direction-pill better">Lower</span>
+              <div class="zero-bar"><i></i></div>
+              <small>Tail-sensitive summary</small>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-tint" id="estimand">
+        <div class="shell">
           <div class="section-heading compact">
             <p class="step">A self-correction · keep the estimand visible</p>
             <h2>Why did the signed offset shrink?</h2>
@@ -332,62 +375,6 @@
         </div>
       </section>
 
-      <section class="section shell" id="sample-count">
-        <div class="section-heading">
-          <p class="step">Does it depend on sample size? · Supporting audit</p>
-          <h2>The coverage result changes with sample count.</h2>
-          <p>
-            This panel is deliberately labelled as a non-default hidden-cell, full-domain,
-            equal-cell audit. Δerror = coverage − random.
-          </p>
-        </div>
-
-        <div class="panel sweep-panel">
-          <div class="audit-label">Supporting · hidden cells · full domain · equal-cell</div>
-          <div class="slider-header">
-            <div>
-              <span>Sample count</span>
-              <strong id="budget-value">5,000</strong>
-            </div>
-            <p id="budget-interpretation">At high counts, the extreme tail falls while typical error remains higher.</p>
-          </div>
-          <input
-            id="budget-slider"
-            class="budget-slider"
-            type="range"
-            min="0"
-            max="3"
-            step="1"
-            value="3"
-            aria-label="Sample count"
-          />
-          <div class="slider-ticks" aria-hidden="true">
-            <span>500</span><span>1,000</span><span>2,500</span><span>5,000</span>
-          </div>
-
-          <div class="sweep-grid">
-            <article class="sweep-card" data-metric="median_absolute_error">
-              <div><p>Median absolute error</p><strong>+0.670</strong></div>
-              <span class="direction-pill worse">Higher</span>
-              <div class="zero-bar"><i></i></div>
-              <small>Common-error range</small>
-            </article>
-            <article class="sweep-card" data-metric="p99_absolute_error">
-              <div><p>p99 absolute error</p><strong>−4.720</strong></div>
-              <span class="direction-pill better">Lower</span>
-              <div class="zero-bar"><i></i></div>
-              <small>Extreme tail</small>
-            </article>
-            <article class="sweep-card" data-metric="rmse">
-              <div><p>RMSE</p><strong>−1.107</strong></div>
-              <span class="direction-pill better">Lower</span>
-              <div class="zero-bar"><i></i></div>
-              <small>Tail-sensitive summary</small>
-            </article>
-          </div>
-        </div>
-      </section>
-
       <section class="section section-dark" id="technical">
         <div class="shell technical-shell">
           <div class="section-heading compact inverse">
@@ -397,6 +384,40 @@
           </div>
 
           <div class="details-stack">
+            <details id="archived-bias-map">
+              <summary><span>Archived signed-bias map</span><small>2005 · full domain, including &gt;60°N · not sampling priorities</small></summary>
+              <div class="detail-body">
+        <div class="panel priority-panel">
+          <div class="priority-copy">
+            <p class="card-kicker">Archived diagnostic · 2005 · full domain</p>
+            <h3>Where did the original signed-offset concern arise?</h3>
+            <p>
+              Colour appears only where the historical-density baseline assigns zero sampling
+              probability. Darker cells combine a larger absolute seed-mean signed reconstruction error
+              with a larger spherical area, highlighting large area-scaled signed errors, not contributions to primary-domain MAE.
+            </p>
+            <div class="priority-stat">
+              <strong>53.1%</strong>
+              <span>of mapped ocean cells have zero historical support<br />49.2% by spherical area</span>
+            </div>
+            <p class="caveat">
+              <strong>Not a sampling-priority map.</strong> This original full-domain diagnostic includes
+              locations north of 60°N, which the primary result excludes. It preserves the
+              history of the signed-bias audit; it neither decomposes primary-domain MAE
+              nor estimates the gain from adding observations.
+            </p>
+          </div>
+          <div class="priority-figure">
+            <span class="map-role">Archived full-domain diagnostic · not primary MAE</span>
+            <img
+              id="priority-map"
+              src="assets/maps/historical_zero_priority_diagnostic_coastline.png"
+              alt="Area-weighted magnitude of historical-density mean signed error within structural-zero sampling cells"
+            />
+          </div>
+        </div>
+              </div>
+            </details>
             <details>
               <summary><span>Month balance</span><small>1,800 deterministic selection audits</small></summary>
               <div class="detail-body" id="month-audit"></div>

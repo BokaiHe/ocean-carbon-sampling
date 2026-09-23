@@ -3,6 +3,13 @@
 Presentation revision: 2026-09-23. This revision uses existing result tables.
 No observations, sampling rules, model fits or numerical results were changed.
 
+Navigation and narrative follow-up: the sample-count comparison precedes the
+signed-offset sensitivity journey. The original 2005 full-domain bias map is
+archived in the website's collapsed Methods section, not offered as a priority
+map for the <60°N primary domain. The sweep retains its original full-domain,
+equal-cell scope because no aligned-domain four-count sweep has been run;
+its reversal threshold is not transferred to the primary comparison.
+
 ## One research question and one storyline
 
 At a fixed number of selected month-cells, how do random, historical-density

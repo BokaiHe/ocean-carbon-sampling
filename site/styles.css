@@ -575,9 +575,22 @@ summary small { font-size: 13px; line-height: 1.45; }
 .project-credits p { margin: 14px 0; font-size: 15px; line-height: 1.75; }
 .project-credits p strong { font: inherit; font-weight: 700; }
 .detail-body li { margin-bottom: 12px; }
+.mobile-navigation { display: none; }
+.mobile-navigation > summary { min-height: 44px; padding: 8px 12px; border: 1px solid #a7bac5; border-radius: 4px; font-weight: 700; }
+.mobile-navigation > summary::after { color: var(--ocean-deep); }
+.mobile-nav-links { display: grid; padding: 8px 0; }
+.mobile-nav-links a { display: block; padding: 10px 14px; min-height: 44px; color: var(--ocean-deep); font-size: 15px; text-decoration: none; }
+.mobile-nav-links a:hover, .mobile-nav-links a:focus-visible { background: #e4edf1; }
+#archived-bias-map .priority-panel { margin: 0 0 24px; grid-template-columns: 1fr; }
+#archived-bias-map .priority-copy { padding: 24px; }
 .reference-card a, .project-credits a { color: var(--ocean-deep); text-underline-offset: 3px; overflow-wrap: anywhere; }
 
 @media (max-width: 900px) {
+  .nav { height: auto; min-height: 72px; flex-wrap: wrap; align-items: center; padding-block: 12px; gap: 14px; }
+  .mobile-navigation { display: block; border: 0; }
+  .mobile-navigation[open] { flex-basis: 100%; }
+  .mobile-navigation[open] > summary { width: fit-content; margin-left: auto; }
+  .mobile-nav-links { margin-top: 10px; border: 1px solid #c6d2d9; border-radius: 4px; background: #f7f9fa; }
   .hero-grid { grid-template-columns: 1fr; gap: 42px; padding: 64px 0 72px; }
   .hero-copy { max-width: none; }
   .hero-result { width: min(100%, 580px); }
@@ -591,8 +604,8 @@ summary small { font-size: 13px; line-height: 1.45; }
 
 @media (max-width: 620px) {
   .shell { width: min(100% - 28px, 1220px); }
-  .publication-strip { overflow-x: auto; white-space: nowrap; }
-  .publication-strip span { padding-right: 11px; margin-right: 11px; }
+  .publication-strip { flex-wrap: wrap; overflow: visible; white-space: normal; gap: 7px 14px; padding-block: 12px; line-height: 1.6; }
+  .publication-strip span { padding-right: 0; margin-right: 0; border-right: 0; max-width: 100%; }
   .hero-grid { padding: 50px 0 58px; }
   h1 { font-size: 43px; }
   .study-meta { grid-template-columns: 1fr; }

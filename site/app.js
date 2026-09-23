@@ -230,6 +230,18 @@ async function initialize() {
   }
 }
 
+// Navigation must work even if the frozen data request fails.
+const mobileNavigation = $("#mobile-navigation");
+mobileNavigation.addEventListener("click", (event) => {
+  if (event.target.closest("a")) mobileNavigation.open = false;
+});
+mobileNavigation.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && mobileNavigation.open) {
+    mobileNavigation.open = false;
+    $("summary", mobileNavigation).focus();
+  }
+});
+
 initialize();
 
 function renderValidationComparison() {
