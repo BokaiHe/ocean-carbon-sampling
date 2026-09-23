@@ -8,6 +8,9 @@ import re
 import runpy
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
+
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 
@@ -204,3 +207,52 @@ def test_visual_brief_charts_retain_scopes_and_accessible_values() -> None:
     assert 'id="budget-slider"' not in html
     assert '"aria-labelledby"' in js
     assert '"mouseenter","focus","click"' in js
+
+
+def test_supporting_error_map_preserves_every_source_location_and_difference() -> None:
+    source = pd.read_parquet(ROOT / "results/public/osse_visual_demo_fields.parquet")
+    exported = pd.read_csv(SITE / "data/supporting-error-map.csv")
+    audit = json.loads(
+        (SITE / "data/supporting-error-map.json").read_text(encoding="utf-8")
+    )
+    pd.testing.assert_frame_equal(
+        exported[["latitude", "longitude"]], source[["latitude", "longitude"]]
+    )
+    expected = source.absolute_error_historical_density - source.absolute_error_random
+    np.testing.assert_allclose(exported.delta_mae_uatm, expected, equal_nan=True)
+    assert len(exported) == audit["source_locations"] == 40624
+    assert expected.notna().sum() == audit["finite_locations"] == 37920
+    assert expected.isna().sum() == audit["missing_locations"] == 2704
+    assert (expected < -30).sum() == audit["below_colour_scale"] == 115
+    assert (expected > 30).sum() == audit["above_colour_scale"] == 2169
+    assert expected.min() == audit["minimum_uatm"]
+    assert expected.max() == audit["maximum_uatm"]
+    assert audit["no_new_fits_or_predictions"] is True
+    assert (audit["year"], audit["seeds"], audit["sample_count"]) == (2005, 20, 5000)
+    for extension in ("png", "svg", "pdf"):
+        assert (
+            SITE / f"assets/maps/supporting_mae_difference_2005.{extension}"
+        ).stat().st_size > 10000
+    svg = (SITE / "assets/maps/supporting_mae_difference_2005.svg").read_text(
+        encoding="utf-8"
+    )
+    assert "<text" in svg
+
+
+def test_refined_charts_and_supporting_map_keep_interpretation_explicit() -> None:
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    assert "axis is zoomed, not zero-based" in html
+    assert "equally spaced categories, not a linear axis" in html
+    supporting = html.split('id="error-map"', 1)[1].split("</section>", 1)[0]
+    for phrase in (
+        "not the primary scope",
+        "2005",
+        "20 paired seeds",
+        "no mapped error",
+        "not global area-weighted contributions",
+        "not a crop",
+        "±30",
+        "No models were retrained",
+    ):
+        assert phrase in supporting
+    assert 'href="data/supporting-error-map.csv"' in supporting

@@ -137,7 +137,10 @@ published methodology and new implementation is kept distinct.
 
 The public page now shows paired MAE (3 primary year means and 15 stress-test
 year–fold means), all 12 evaluation variants, the four-count coverage sweep,
-occupied sampling blocks, and the four-step signed-bias sensitivity audit.
+occupied sampling blocks, and four independent dots for the signed-bias
+sensitivity audit. The paired MAE axis is zoomed to the data range; the four
+sample counts are equally spaced categories, with the median-error direction
+explicitly annotated.
 SVG marks expose exact values on hover, tap or keyboard focus; expandable
 tables preserve the numerical record. Scope captions remain visible. The
 variants are correlated, paired lines are not confidence intervals, and the
@@ -149,8 +152,11 @@ curated CSV/parquet outputs; the other charts use the unchanged frozen result
 JSON. The map and occupied-block bars describe one original full-domain
 selection (2005, seed 0), not the primary aligned-domain experiments.
 
-Archived full-domain per-cell mean absolute errors would permit a supporting
-historical-density-minus-random error map without retraining. Aligned-domain
+Archived full-domain per-cell mean absolute errors now provide a supporting
+historical-density-minus-random error map without retraining or prediction.
+Its heading, caption and downloadable metadata identify the 2005 original
+full-domain protocol. Missing cells remain missing and colour-saturated values
+remain intact in the CSV. See [figure QA](site_error_map_notes.md). Aligned-domain
 caches retain aggregate scores rather than per-cell predictions. Clipping the
 archived map would not reproduce the aligned training domain, so it cannot
 serve as the primary-scope penalty map requested for a future presentation.

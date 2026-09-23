@@ -6,8 +6,8 @@
   <meta name="description" content="A visual, reproducible OSSE of ocean-carbon sampling: historical-density costs, coverage trade-offs and evaluation sensitivity." />
   <title>Ocean Carbon Sampling · Visual research brief</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=visual-brief-1" />
-  <script src="app.js?v=visual-brief-1" defer></script>
+  <link rel="stylesheet" href="styles.css?v=visual-brief-2" />
+  <script src="app.js?v=visual-brief-2" defer></script>
 </head>
 <body>
   <header id="top">
@@ -39,7 +39,7 @@
         <div id="paired-chart" class="chart" aria-live="polite"></div>
         <p class="chart-note">MAE = average absolute error. 5,000 samples · area-weighted · both domains &lt;60°N. Each row averages 20 paired seeds; rows are not independent ESM replicates.</p>
         <details class="chart-about"><summary>About this chart &amp; exact values</summary>
-          <p>Primary: 3 year means on one fixed, month-stratified hidden set per year. Stress test: 15 year–fold means with complete blocks held out. Connecting lines pair two strategies on the same test set; they are not confidence intervals. Larger MAE means larger typical absolute error. These magnitudes are conditional on this learner and model truth.</p>
+          <p>Primary: 3 year means on one fixed, month-stratified hidden set per year. Stress test: 15 year–fold means with complete blocks held out. Connecting lines pair two strategies on the same test set; they are not confidence intervals. The horizontal axis is zoomed, not zero-based. Larger MAE means larger typical absolute error. These magnitudes are conditional on this learner and model truth.</p>
           <div id="paired-table" class="table-scroll"></div>
           <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/results/public/osse_latitude_cap_paired.csv">Source: paired unit results ↗</a>
         </details>
@@ -94,12 +94,28 @@
       </figure>
     </div></section>
 
+    <section class="section shell" id="error-map">
+      <div class="section-heading"><p class="eyebrow">Supporting spatial evidence · not the primary scope</p><h2>Where historical-density adds—and reduces—error.</h2></div>
+      <figure class="chart-panel outcome-map">
+        <div class="legend"><span><i class="key hidden"></i>Blue: lower error</span><span><i class="key historical"></i>Rust: higher error</span><span><i class="key missing"></i>Grey water: no mapped error</span></div>
+        <a href="assets/maps/supporting_mae_difference_2005.png" aria-label="Open the supporting error map at full resolution"><img id="error-difference-map" src="assets/maps/supporting_mae_difference_2005.png" width="2829" height="1818" loading="lazy" alt="Supporting 2005 full-domain map of historical-density minus random mean absolute error. Rust indicates larger error, blue smaller error. The dashed line marks 60 degrees north; this is not the aligned-domain primary analysis." /></a>
+        <figcaption class="chart-note">2005 · original full-domain hidden cells · 5,000 samples · 20 paired seeds. Local mean absolute-error differences, not global area-weighted contributions. Dashed line: 60°N reference, not a crop.</figcaption>
+        <p class="chart-note"><a href="assets/maps/supporting_mae_difference_2005.png">Enlarge map ↗</a> · Colour saturates at ±30 µatm; arrowheads indicate values beyond the scale.</p>
+        <details class="chart-about"><summary>About this supporting map &amp; source data</summary>
+          <p>Each mapped value subtracts the saved random mean absolute error from the historical-density mean absolute error, averaged over 20 paired seeds and the available hidden months at that location. All 40,624 source locations are retained in the download; 37,920 have paired error estimates and 2,704 have none. Missing values are not zero, and grey water does not mean historical zero support.</p>
+          <p>The colour scale saturates for 115 locations below −30 and 2,169 above +30 µatm; no values are removed or altered in the data. There is no smoothing and no statistical-significance overlay. Coastlines are a cartographic reference.</p>
+          <p>This is the original full-domain analysis, not the primary aligned &lt;60°N experiment. Cropping the map cannot reproduce its training pool. The map shows error differences—not the benefit of adding observations at a location. No models were retrained.</p>
+          <p><a href="data/supporting-error-map.csv" download>Map values (CSV)</a> · <a href="data/supporting-error-map.json">Provenance &amp; range</a> · <a href="assets/maps/supporting_mae_difference_2005.svg">SVG</a> · <a href="assets/maps/supporting_mae_difference_2005.pdf">PDF</a> · <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/build_site_error_map.py">Reproduce the figure ↗</a></p>
+        </details>
+      </figure>
+    </section>
+
     <section class="section shell" id="sample-count">
       <div class="section-heading"><p class="eyebrow">03 · Coverage is not a universal fix</p><h2>Coverage can reduce tail error while raising median error.</h2></div>
       <figure class="chart-panel">
         <div class="legend"><span><i class="key median"></i>Median absolute error</span><span><i class="key p99"></i>p99 absolute error</span><span><i class="key rmse"></i>RMSE</span></div>
         <div id="sweep-chart" class="chart"></div>
-        <p class="chart-note">Coverage − random, µatm · hidden cells · full domain · equal-cell weighting. Below zero = lower error.</p>
+        <p class="chart-note">Coverage − random, µatm · hidden cells · full domain · equal-cell weighting. Below zero = lower error. Counts are equally spaced categories, not a linear axis.</p>
         <details class="chart-about"><summary>Why this different scope? &amp; exact values</summary>
           <p>Median describes the middle absolute error; p99 is the error threshold exceeded by about 1% of evaluated cells. RMSE gives larger errors extra weight, so it is not a separate proof of an overall improvement.</p>
           <p>The four-count sweep exists only for the original full-domain, equal-cell evaluation. No aligned &lt;60°N, area-weighted sweep has been run. Its magnitudes and reversal threshold cannot be transferred to the primary result. Lines connect four tested counts, not an estimated continuous learning curve. Hyperparameters remain fixed across counts.</p>
@@ -159,7 +175,7 @@
           <p class="map-role">Archived outcome diagnostic · not marginal value</p>
           <img id="priority-map" src="assets/maps/historical_zero_priority_diagnostic_coastline.png" alt="Original full-domain signed-bias diagnostic, including the high northern latitudes" loading="lazy" />
         </div></details>
-        <details><summary>Can we map the historical-density MAE penalty?</summary><div class="detail-body"><p>Saved 2005 full-domain fields contain mean absolute error for both strategies, so that supporting difference can be computed without retraining. The aligned-domain runs retain aggregate scores, not per-cell predictions. Clipping the old map to &lt;60°N would not recreate the aligned training pool. A primary-scope penalty map is therefore not shown here.</p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/export_osse_visual_demo_data.py">Inspect the saved-field provenance ↗</a></div></details>
+        <details><summary>Supporting map versus primary-scope map</summary><div class="detail-body"><p>The <a href="#error-map">supporting error map</a> uses saved 2005 full-domain errors without retraining. The aligned-domain runs retain aggregate scores, not per-cell predictions. Clipping the old map to &lt;60°N would not recreate the aligned training pool. A primary-scope penalty map is therefore not shown here.</p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/export_osse_visual_demo_data.py">Inspect the saved-field provenance ↗</a></div></details>
       </div>
     </div></section>
 

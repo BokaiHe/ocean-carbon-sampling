@@ -42,9 +42,10 @@ function pairedChart() {
   const chart=makeChart("paired-chart",548,"Paired MAE in three primary years and 15 stress-test units","Each row compares random and historical-density mean absolute error on the same evaluation set. Lines pair strategies, not confidence intervals.");
   const {svg,width}=chart,L=86,R=22;
   const pairs=Object.values(state.charts.pairs).flat();
-  const max=Math.ceil(Math.max(...pairs.flatMap(r=>[r.random,r.historical]))/5)*5;
-  const x=n=>L+n/max*(width-L-R), bottom=510;
-  for(let tick=0;tick<=max;tick+=5){line(svg,x(tick),34,x(tick),bottom);label(svg,x(tick),bottom+22,tick,{"text-anchor":"middle"});}
+  const values=pairs.flatMap(r=>[r.random,r.historical]);
+  const min=Math.floor(Math.min(...values)/2)*2, max=Math.ceil(Math.max(...values)/2)*2;
+  const x=n=>L+(n-min)/(max-min)*(width-L-R), bottom=510;
+  for(let tick=min;tick<=max;tick+=2){line(svg,x(tick),34,x(tick),bottom);label(svg,x(tick),bottom+22,tick,{"text-anchor":"middle"});}
   label(svg,L+(width-L-R)/2,545,"MAE (µatm) · lower is better",{"text-anchor":"middle"});
   let y=22;const rows=[];
   for(const [key,title] of groups){
@@ -109,12 +110,13 @@ function robustnessChart() {
   table("robustness-table",["Protocol","Weights","Domain","Random MAE","Historical MAE","Change"],rows);
 }
 function sweepChart() {
-  const chart=makeChart("sweep-chart",350,"Coverage error differences at four tested sample counts","Three curves show median absolute error, p99 absolute error and RMSE differences relative to random. Lines only connect measured counts.");
-  const {svg,width}=chart,L=48,R=18,top=28,bottom=284;
-  const counts=[500,1000,2500,5000],x=n=>L+(n-500)/4500*(width-L-R),y=n=>top+(3-n)/11*(bottom-top);
+  const chart=makeChart("sweep-chart",380,"Coverage error differences at four tested sample counts","Three curves show median absolute error, p99 absolute error and RMSE differences relative to random. Counts are equally spaced categories; lines only connect measured counts.");
+  const {svg,width}=chart,L=48,R=18,top=58,bottom=304;
+  const counts=[500,1000,2500,5000],x=n=>L+counts.indexOf(n)/3*(width-L-R),y=n=>top+(3-n)/11*(bottom-top);
   [-8,-6,-4,-2,0,2].forEach(t=>{line(svg,L,y(t),width-R,y(t),{stroke:t===0?"#4b6271":"#dbe3e7","stroke-dasharray":t===0?"5 4":"none"});label(svg,L-10,y(t)+5,signed(t,0),{"text-anchor":"end"});});
-  counts.forEach((n,i)=>label(svg,x(n),310,width<500?({500:"500",1000:"1k",2500:"2.5k",5000:"5k"}[n]):n.toLocaleString("en-US"),{"text-anchor":i===3?"end":"middle","font-size":13}));
-  label(svg,L,16,"Δerror (µatm)",{fill:"#243b49"});label(svg,(L+width-R)/2,339,"Selected month-cells",{"text-anchor":"middle"});
+  counts.forEach((n,i)=>label(svg,x(n),330,n.toLocaleString("en-US"),{"text-anchor":i===3?"end":"middle","font-size":13}));
+  label(svg,L,16,"Δerror (µatm)",{fill:"#243b49"});label(svg,(L+width-R)/2,369,"Sample count · equally spaced",{"text-anchor":"middle","font-size":13});
+  label(svg,2,40,"Median: higher at all four counts",{fill:colors.median,"font-weight":700,"font-size":13});
   const metrics=[["median_absolute_error","median","Median"],["p99_absolute_error","p99","p99"],["rmse","rmse","RMSE"]];
   const rows=[];
   for(const [key,color,name] of metrics){
@@ -134,13 +136,11 @@ function biasChart() {
   const keys=state.data.estimand_journey,values=keys.map(k=>state.data.estimands[k].metrics.bias.difference);
   const x=i=>L+i/3*(width-L-R),y=n=>top+(0-n)/5.5*(bottom-top);
   [0,-2.5,-5].forEach(t=>{line(svg,L,y(t),width-R,y(t),{stroke:t===0?"#617986":"#dbe3e7"});label(svg,L-9,y(t)+5,signed(t,1),{"text-anchor":"end","font-size":13});});
-  let path="M"+x(0)+" "+y(values[0]);values.slice(1).forEach((v,i)=>{path+=" H"+x(i+1)+" V"+y(v);});
-  svgEl("path",{d:path,fill:"none",stroke:colors.random,"stroke-width":2.5},svg);
   const captions=[["Equal","Full"],["Area","Full"],["Area","Eval <60°N"],["Area","Both <60°N"]],rows=[];
   values.forEach((v,i)=>{
     mark(chart,`${captions[i].join(" · ")}: historical-density − random signed bias ${signed(v)} µatm, whole-block stress test.`,g=>{svgEl("circle",{cx:x(i),cy:y(v),r:5,fill:colors.random},g);svgEl("circle",{cx:x(i),cy:y(v),r:13,fill:"transparent"},g);});
     const anchor=i===0?"start":i===3?"end":"middle";
-    label(svg,x(i),y(v)-12,signed(v),{"text-anchor":anchor,fill:"#243b49","font-size":13});
+    label(svg,x(i),y(v)+(v>-1?24:-12),signed(v),{"text-anchor":anchor,fill:"#243b49","font-size":13});
     label(svg,x(i),231,captions[i][0],{"text-anchor":anchor,"font-size":13});
     label(svg,x(i),251,width<400&&i>1?(i===2?"Eval":"Both"):captions[i][1],{"text-anchor":anchor,"font-size":13});
     if(width<400&&i>1)label(svg,x(i),270,"<60°N",{"text-anchor":anchor,"font-size":13});

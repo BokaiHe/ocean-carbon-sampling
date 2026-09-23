@@ -168,7 +168,7 @@ python -m http.server 8000 --directory site
 Open `http://localhost:8000/`, not `site/index.html` via `file://`.
 No model run or raw-data download is required to preview the checked-in site.
 The paired MAE chart foregrounds `area|both60|hidden`, alongside the whole-block
-stress test. The separate signed-bias step chart uses whole-block results only.
+stress test. The separate signed-bias dot chart uses whole-block results only.
 All four sample counts and all 12 evaluation variants are visible simultaneously;
 hover, tap or focus marks for values, or expand the accessible source tables.
 
@@ -177,6 +177,7 @@ To regenerate site assets from curated outputs and required local inputs:
 ```bash
 python scripts/build_static_site_assets.py
 python scripts/export_site_chart_data.py
+python scripts/build_site_error_map.py
 ```
 
 The second command reads only frozen paired-unit and sampling-summary outputs;
@@ -184,8 +185,10 @@ it does not train models. It exports `site/data/chart-data.json` for the 3 + 15
 paired rows and illustrative occupied-block bars. The other charts read the
 unchanged `site-data.json`. Scope notes remain directly below each chart.
 
-Saved 2005 full-domain per-cell mean absolute errors support a historical-density
-minus random map without fitting. Aligned-domain caches contain aggregate
+The supporting 2005 full-domain error map is now displayed, built by subtracting
+the saved per-cell mean absolute errors without fitting or new predictions.
+Its CSV retains missing values and values beyond the ±30 µatm colour scale;
+see [map contract and QA](docs/site_error_map_notes.md). Aligned-domain caches contain aggregate
 scores, not per-cell predictions. Clipping the old fields would not reproduce
 the aligned training pool, so no primary-scope penalty map is claimed.
 
