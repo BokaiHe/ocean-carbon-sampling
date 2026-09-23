@@ -6,7 +6,7 @@ const state = {
   showZero: false,
   weight: "area",
   domain: "both60",
-  scheme: "block",
+  scheme: "hidden",
   budgetIndex: 3,
   replayTimers: [],
 };
@@ -14,7 +14,7 @@ const state = {
 const budgets = ["500", "1000", "2500", "5000"];
 const strategyDescriptions = {
   random: "Random gives every candidate month-cell equal selection probability; clusters arise only from the realized draw.",
-  historical: "Historical repeats the SOCAT 1990–2004 sampling density, concentrating observations where ships previously measured.",
+  historical: "Historical-density draws month-cells without replacement using SOCAT 1990–2004 density weights. It does not replay cruises, repeat lines or platform trajectories.",
   coverage: "Coverage prioritizes underrepresented month–space blocks; it changes allocation, not the total of 5,000 observations.",
 };
 
@@ -59,7 +59,8 @@ function updateMap() {
   image.classList.add("loading");
   image.onload = () => image.classList.remove("loading");
   image.src = source;
-  image.alt = `${state.strategy} sampling density${state.showZero ? " with historical structural-zero regions" : ""}`;
+  const strategyLabel = state.strategy === "historical" ? "historical-density" : state.strategy;
+  image.alt = `${strategyLabel} sampling density${state.showZero ? " with historical structural-zero regions" : ""}`;
   $("#zero-callout").hidden = !state.showZero;
   $("#map-description").textContent = strategyDescriptions[state.strategy];
   $$("[data-strategy]").forEach((button) => {
@@ -100,7 +101,7 @@ function updateEstimand() {
   $("#estimand-label").textContent = result.label;
 
   const status = $("#estimand-status");
-  status.textContent = result.status === "default" ? "Default estimand" : "Supporting sensitivity";
+  status.textContent = result.status === "default" ? "Primary · hidden cells" : result.scheme === "block" ? "Stress test · whole blocks" : "Supporting sensitivity";
   status.className = `status ${result.status}`;
   $$("[data-journey]").forEach((button) => {
     button.classList.toggle("active", button.dataset.journey === key);
@@ -108,10 +109,13 @@ function updateEstimand() {
 
   if (result.status === "default") {
     $("#estimand-note").textContent =
-      "The stable default finding is the historical MAE penalty. The signed offset is smaller and less directionally consistent.";
+      "Historical-density raises MAE in all 3 year-level units, each averaging 20 paired seeds on one fixed hidden set. This is conditional on one ESM and one locked learner, not full-field or real-ocean validation.";
   } else if (key === "equal|global|block") {
     $("#estimand-note").textContent =
-      "This is the initial equal-cell, full-domain estimate—not the portfolio default. Continue the four-stage sensitivity path before interpreting it.";
+      "This is the original full-domain, equal-cell whole-block stress test. Follow the four-stage path to see how its signed offset changes; the path does not replace the primary hidden-cell comparison.";
+  } else if (result.scheme === "block") {
+    $("#estimand-note").textContent =
+      "Whole-block stress test: entire 20° × 10° blocks are excluded before sampling. The 15 year–fold units are descriptive and share one ESM run; this is not the main test of dispersed missing cells.";
   } else {
     $("#estimand-note").textContent =
       "Supporting sensitivity state. Weighting, evaluation domain and candidate support change the quantity being estimated.";
@@ -162,10 +166,11 @@ function renderAudits() {
   const month = state.data.audits.month_balance;
   const rows = ["random", "spatial_coverage", "historical_density"].map((strategy) => {
     const item = month[strategy];
-    return `<tr><td>${strategy.replaceAll("_", " ")}</td><td>${item.minimum_months_covered}/12</td><td>${item.mean_abs_equal_deviation_pp.toFixed(3)} pp</td></tr>`;
+    const label = strategy === "historical_density" ? "historical-density" : strategy.replaceAll("_", " ");
+    return `<tr><td>${label}</td><td>${item.minimum_months_covered}/12</td><td>${item.mean_abs_equal_deviation_pp.toFixed(3)} pp</td></tr>`;
   });
   $("#month-audit").innerHTML = `
-    <p>Every selection covers all 12 months. Random and coverage are closely balanced; historical is a complete spatiotemporal baseline.</p>
+    <p>Supporting whole-block audit: every selection covers all 12 months. Random and coverage are closely balanced; historical-density retains spatial and monthly density variation, not real cruise trajectories.</p>
     <table class="mini-table"><thead><tr><th>Strategy</th><th>Months</th><th>Mean deviation</th></tr></thead><tbody>${rows.join("")}</tbody></table>`;
   const regrid = state.data.audits.regridding;
   $("#regrid-audit").innerHTML = `
@@ -205,6 +210,9 @@ async function initialize() {
     const response = await fetch("data/site-data.json");
     if (!response.ok) throw new Error(`Data request failed: ${response.status}`);
     state.data = await response.json();
+    [state.weight, state.domain, state.scheme] = state.data.metadata.default_estimand.split("|");
+    syncControls();
+    renderValidationComparison();
     const zero = state.data.maps;
     $(".zero-callout .callout-number").textContent = `${zero.zero_coverage_cell_pct.toFixed(1)}%`;
     $(".zero-callout small").textContent = `${zero.zero_coverage_area_pct.toFixed(1)}% after spherical-area weighting`;
@@ -223,3 +231,20 @@ async function initialize() {
 }
 
 initialize();
+
+function renderValidationComparison() {
+  const records = [
+    ["hidden", "Primary · scattered hidden cells", "3 years; one fixed hidden set per year"],
+    ["block", "Stress test · whole blocks", "15 year–fold units"],
+  ];
+  $("#validation-comparison").innerHTML = records.map(([scheme, title, units]) => {
+    const { mae, rmse, bias } = state.data.estimands[`area|both60|${scheme}`].metrics;
+    return `<article class="validation-card"><h3>${title}</h3>
+      <p class="validation-question">${scheme === "hidden" ? "Can we reconstruct dispersed missing month-cells?" : "Can we reconstruct whole areas excluded from training?"}</p>
+      <p class="validation-number">${pct(mae.relative_pct)} <span>MAE</span></p>
+      <p>Random ${mae.random.toFixed(3)} → historical-density ${mae.comparator.toFixed(3)} µatm<br />Difference ${signed(mae.difference)} µatm · ${mae.direction}</p>
+      <p>RMSE: ${rmse.random.toFixed(3)} → ${rmse.comparator.toFixed(3)} µatm<br />Difference ${signed(rmse.difference)} µatm (${pct(rmse.relative_pct)})</p>
+      <p>Signed-bias difference: ${signed(bias.difference)} µatm</p>
+      <small>${units}; 20 paired seeds per unit. Descriptive consistency, not independent Earth-system replication.</small></article>`;
+  }).join("");
+}

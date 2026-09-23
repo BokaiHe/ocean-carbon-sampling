@@ -563,6 +563,19 @@ summary small { font-size: 13px; line-height: 1.45; }
 .footer-grid > div:first-child { flex: 1 1 50%; }
 .footer-links { flex: 1 1 40%; }
 .footer-grid a { text-underline-offset: 4px; }
+.validation-grid, .related-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.validation-card, .reference-card { padding: 25px; background: #fff; border: 1px solid #c6d2d9; border-top: 4px solid var(--ocean); border-radius: 5px; }
+.validation-card h3, .reference-card h3 { font-family: Arial, Helvetica, sans-serif; font-size: 20px; line-height: 1.4; }
+.validation-card p, .reference-card p, .reference-card a { font-size: 15px; line-height: 1.7; }
+.validation-card small { display: block; font-size: 14px; line-height: 1.6; color: #465c69; }
+.validation-card .validation-number { margin: 18px 0; font-size: 38px; font-weight: 700; color: var(--ocean-deep); }
+.validation-number span { font-size: 17px; }
+.comparison-boundary { margin: 20px 0 64px; font-size: 15px; line-height: 1.75; color: #465c69; }
+.project-credits { display: block; margin-top: 28px; }
+.project-credits p { margin: 14px 0; font-size: 15px; line-height: 1.75; }
+.project-credits p strong { font: inherit; font-weight: 700; }
+.detail-body li { margin-bottom: 12px; }
+.reference-card a, .project-credits a { color: var(--ocean-deep); text-underline-offset: 3px; overflow-wrap: anywhere; }
 
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 42px; padding: 64px 0 72px; }
@@ -590,4 +603,6 @@ summary small { font-size: 13px; line-height: 1.45; }
   .context-figure figcaption { padding: 17px 18px 19px; }
   .section, .section-tint { padding: 68px 0; }
   .footer-links { justify-content: flex-start; }
+  .validation-grid, .related-grid { grid-template-columns: 1fr; }
+  .segment { min-width: 0; font-size: 14px; overflow-wrap: anywhere; }
 }

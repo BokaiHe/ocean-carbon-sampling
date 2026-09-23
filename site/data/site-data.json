@@ -4,8 +4,9 @@
     "generated_from": "Frozen results/public tables",
     "map_year": 2005,
     "sample_count": 5000,
-    "default_estimand": "area|both60|block",
-    "default_comparison": "historical density minus random"
+    "default_estimand": "area|both60|hidden",
+    "default_comparison": "historical-density minus random",
+    "presentation_revision": "2026-09-23: hidden-cell primary; whole-block stress test; no new fits"
   },
   "maps": {
     "images": {
@@ -232,7 +233,7 @@
       "domain": "both60",
       "scheme": "hidden",
       "label": "Spherical cell-area weighting · Candidates and evaluation restricted to <60°N · Month-stratified hidden cells",
-      "status": "supporting"
+      "status": "default"
     },
     "equal|global|block": {
       "n_units": 15,
@@ -436,7 +437,7 @@
       "domain": "both60",
       "scheme": "block",
       "label": "Spherical cell-area weighting · Candidates and evaluation restricted to <60°N · Whole-spatial-block holdout",
-      "status": "default"
+      "status": "supporting"
     }
   },
   "estimand_journey": [

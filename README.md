@@ -1,243 +1,182 @@
 # Ocean Carbon Sampling
 
-An independent, reproducible study of how fixed-sample-count strategies affect out-of-sample reconstruction of Southern Ocean surface-ocean fCO2, followed by a global observing-system simulation experiment (OSSE) and an interactive web application.
+A reproducible fixed-sample-count observing-system simulation experiment (OSSE)
+and interactive research brief by **Bokai He**, Columbia University, Earth and
+Environmental Engineering. Contact: **bh2954@columbia.edu**.
 
 **[Open the interactive research brief](https://bokaihe.github.io/ocean-carbon-sampling/)**
 
-The website is a static, precomputed presentation layer: it does not refit models in the browser, and every displayed result is backed by the curated outputs in this repository.
+## Research question and storyline
 
-This project is inspired by a collaborative course project in EESC/STAT 4243. The research question, experiment design, validation framework, implementation, and analyses in this repository are being independently redesigned.
+At the same annual number of selected month-cells, how do **random**,
+**historical-density** and **seasonally aware coverage** sampling change monthly
+surface-ocean pCO2 reconstruction error under a specified learner and domain?
 
-## Research question
+1. **Quantify the cost of historical-density allocation.** This is a controlled
+   estimate, not a new discovery that real-world ocean sampling is uneven.
+2. **Test the limits of broader coverage.** Coverage does not improve every
+   error measure; its effects depend on sample count and evaluation.
+3. **Ask where to add observations next.** That is a future experiment on an
+   existing network, not a question answered by these replacement rules.
 
-Under the same annual sample count, how do seasonally aware spatial allocation
-strategies change blocked out-of-sample surface-ocean CO2 reconstruction?
+The website reads frozen JSON and pre-rendered maps. It does not fit models,
+optimize ship routes or estimate deployment benefits in the browser.
 
-- random sampling;
-- densifying historically sampled regions;
-- expanding spatial coverage while representing all months;
-- uncertainty-and-diversity-guided sampling.
+## Two evaluations, two questions
 
-## Temporal design boundary
+Both headline comparisons use **5,000 samples, spherical cell-area weighting,
+and candidates and evaluation jointly restricted to latitude <60°N**.
+The latitude cutoff is not a sea-ice or physical-accessibility mask.
 
-This is a reconstruction experiment, not a future-forecasting experiment. All
-12 months are modelled jointly with cyclic month features. The random hidden
-set is stratified by month so that seasonal composition cannot confound the
-strategy comparison; the stricter spatial holdout keeps all 12 months from a
-location in the same fold.
+| Evaluation | Random MAE | Historical-density MAE | Difference | Relative increase | Descriptive consistency |
+|---|---:|---:|---:|---:|---|
+| Primary: dispersed hidden cells | 9.508 | 11.975 | +2.466 | +25.94% | 3/3 year means worse |
+| Stress test: whole blocks | 11.836 | 13.691 | +1.855 | +15.67% | 15/15 year-fold means worse |
 
-A selection-only audit of the full three-year confirmatory design shows that
-every one of the 1,800 strategy selections covers all 12 months. At budget
-5,000, the mean absolute deviation from an equal monthly share is 0.292
-percentage points for random sampling and 0.222 for spatial coverage. Their
-comparison therefore primarily tests spatial allocation. Historical-density
-sampling has a larger deviation of 0.875 percentage points and is interpreted
-as a complete historical spatiotemporal observing-pattern baseline. See
-[`docs/osse_temporal_design.md`](docs/osse_temporal_design.md).
+Units: µatm. Differences are calculated before rounding. These magnitudes are
+**conditional on one IPSL-CM6A-LR simulation and one locked HistGradientBoosting
+learner**, not universal penalties for the real network.
+[Source table](results/public/osse_latitude_cap_overall.csv).
 
-## Default reporting estimand
+- **Primary:** reserve approximately 20% of month-cells within each month
+  before sampling. One fixed test set per year is shared by all strategies
+  and 20 paired seeds. This tests dispersed missing-cell reconstruction, not
+  full-field performance after sampling from the unrestricted domain.
+- **Stress test:** exclude all months in held-out 20° × 10° blocks before
+  sampling. Five checkerboard folds have no buffer. Each of the 15 year-fold
+  means averages 20 paired seeds.
+- The three years share one ESM run. Direction counts are descriptive,
+  not independent-replicate significance tests. No formal whole-block
+  significance test is claimed.
+  [Per-unit effects](results/public/osse_latitude_cap_paired.csv).
 
-Unless explicitly labelled as a supporting sensitivity analysis, portfolio
-numbers use **whole-spatial-block validation, spherical one-degree cell-area
-weighting, and candidate/evaluation pools jointly restricted to latitude
-<60°N**. The default descriptive units are the 15 prespecified year–fold units;
-grid cells and paired seeds within a unit are not independent Earth-system
-replicates.
+**Presentation revision, 2026-09-23:** hidden-cell results now anchor the brief;
+whole-block results are a stress test. This is a post-analysis reframing of
+existing runs, not a new preregistered experiment. Older notebooks and audit
+documents retain their earlier whole-block-default narrative as provenance.
+[Current positioning and scope](docs/project_positioning.md).
 
-## Regional validation result
+## What broader coverage does, and does not, show
 
-![Five-fold spatial sensitivity](results/public/spatial_fold_sensitivity.png)
+Under the primary aligned-domain evaluation, coverage changes MAE by
+**+0.186 µatm** (9.508 to 9.695), while lowering the tail-sensitive RMSE by
+**1.745 µatm** (20.766 to 19.021). Under the whole-block stress test, MAE is
+nearly unchanged (−0.007 µatm) and RMSE is lower (−2.201 µatm).
+Neither combination establishes overall superiority.
 
-Across all five prespecified spatial holdouts and 20 sampling seeds per fold,
-coverage sampling improved geographic balance in 100/100 fold-seed combinations.
-Predictive gains were heterogeneous: four fold means favored coverage, three
-fold-specific seed intervals were entirely above zero, and fold 4 favored random
-sampling (mean RMSE gain −0.661 µatm; 95% seed-bootstrap interval −1.149 to
-−0.192).
+The sample-count slider uses a **separate supporting analysis**: original
+full-domain, equal-cell hidden evaluation. At 500 samples, coverage raises
+median, p99 and RMSE; at higher counts, extreme-tail reductions coexist with
+higher median error. This is conditional on the fixed learner, not an isolated
+causal effect of geometry. [Claims audit](docs/osse_claims_audit.md).
 
-The defensible conclusion is therefore not that geographic coverage is always
-superior, but that it reliably changes the sampling geometry and often improves
-prediction depending on the held-out region. See
-[`docs/spatial_sensitivity_results.md`](docs/spatial_sensitivity_results.md) for
-the full result and interpretation boundary.
+## A methodological self-correction
 
-## Explainability gate
+Historical-density minus random signed bias in the **whole-block stress test**
+changes with the quantity being estimated:
 
-![XGBoost interpretability gate](results/public/diagnostic_interpretability_gate.png)
+| Weighting and domain | Bias difference, µatm |
+|---|---:|
+| Full domain, equal-cell | −4.954 |
+| Full domain, spherical area | −1.884 |
+| Evaluation only <60°N, spherical area | −0.631 |
+| Candidates and evaluation <60°N, spherical area | −0.473 |
 
-We tested whether environmental and geographic features could predict the
-observation-level benefit of coverage sampling in unseen spatial blocks. The
-diagnostic XGBoost models did not pass the prespecified grouped-validation gate:
-the primary squared-error target had negative pooled out-of-fold R² for both
-feature sets, and rank correlations were weak. SHAP values are therefore
-withheld from the public interpretation rather than presented as scientific
-drivers. See [`docs/diagnostic_results.md`](docs/diagnostic_results.md) for the
-validation metrics and decision rule.
+These are not four independent confirmations. The last value is not the primary
+hidden-cell estimate (−0.835 µatm). The original large offset was reclassified
+as an estimand-sensitivity example, not evidence of a universal signed bias.
 
-## Global OSSE figure drafts
+The 2005 full-domain structural-zero maps and density diagnostics are supporting
+analyses, not a decomposition of the primary result or a causal map of the
+best places to add observations.
 
-The OSSE truth is the monthly surface-ocean `spco2` field from the CMIP6
-IPSL-CM6A-LR historical simulation, member `r1i1p1f1`—not a SOCAT-derived
-reconstruction product. SST and salinity from the same simulation are model
-predictors. SOCAT is used only to construct the historical observing-pattern
-baseline, so the truth does not inherit SOCAT's sparse sampling mask.
+## Data, methods and boundaries
 
-> **Draft visual layer.** These figures preserve the verified analysis and
-> panel content, but their layout, typography, and legends are not final
-> portfolio graphics. All source tables are retained for a later redesign.
+- **Truth:** monthly CMIP6 IPSL-CM6A-LR historical `spco2`, member `r1i1p1f1`,
+  for 2005, 2010 and 2014. Not a SOCAT-derived reconstruction product.
+- **Sampling:** random gives candidates equal probability; historical-density
+  samples without replacement using SOCAT 1990–2004 month-location count
+  weights; coverage prioritizes underrepresented month-space blocks.
+  Historical-density does not replay cruises, repeat lines or trajectories.
+- **Idealized observations:** monthly model-grid truth has no added measurement
+  or representation error. SST and salinity are from the same simulation.
+  Real-world errors and strategy rankings remain unverified.
+- **Locked learner and limited features:** fixed HistGradientBoosting settings
+  across counts and strategies; inputs are SST, salinity, latitude, cyclic
+  longitude, year and cyclic month. No MLD, chlorophyll or atmospheric CO2.
+  No ablation establishes which features dominate. Sample-count responses
+  depend on the learner as well as sampling.
+- **Separate yearly fits:** all 12 months are fitted jointly within each year;
+  the year feature is constant within a fit. Continuous interannual variability,
+  trends and decadal carbon-sink skill are not evaluated.
+- **Fair within-protocol comparison:** target-blind sampling, common test sets,
+  paired seeds and nested sample-count prefixes. Month-balance controls and
+  native-cell-area regridding remain supporting audits.
 
-![Locked global OSSE design](results/public/fig1_osse_design.png)
+Cross-learner and cross-ESM generality, noisy observations, full-field recovery
+after unrestricted sampling, integrated flux, sea-ice-aware access and feasible
+observation-addition plans remain **not yet supported**.
 
-![Cross-year OSSE learning curves](results/public/fig2_cross_year_learning_curves.png)
+## Related work and attribution
 
-![Fixed-sample-count error tradeoff and regridding robustness](results/public/fig3_error_tradeoff_and_robustness.png)
+The model-truth approach builds on the Large Ensemble Testbed literature,
+including [Gloege et al. (2021)](https://doi.org/10.1029/2020GB006788).
+[Heimdal et al. (2024)](https://doi.org/10.5194/bg-21-2159-2024) evaluates
+autonomous additions to SOCAT using pCO2-Residual and multiple ESMs. Our
+fixed-count rules, single learner and held-out evaluations answer a smaller,
+different question, not a replication or superiority claim.
+[Full references and verified method distinctions](docs/project_positioning.md).
 
-The global OSSE gives every strategy the same sample count and reconstruction
-model. Under the default estimand, random has MAE **11.836 µatm** and RMSE
-**25.422 µatm**. Historical sampling raises them by +1.855 µatm (**+15.67%**;
-worse in 15/15 year–fold units) and +1.310 µatm (**+5.15%**; worse in 12/15),
-respectively; its signed-bias difference is −0.473 µatm (negative in 12/15).
-Coverage changes MAE by −0.007 µatm (−0.06%) and RMSE by −2.201 µatm
-(−8.66%); its signed-bias difference is +0.094 µatm. These do not establish
-universal superiority across metrics.
+This is an independent extension of a **Spring 2025 EESC/STAT 4243 course
+project in Galen A. McKinley's class**. This credit refers to the course
+foundation, not supervision or endorsement of every subsequent extension.
 
-Under the default estimand, the supported finding is a historical MAE penalty.
-In the original hidden-cell, equal-cell full-domain supporting analysis, the
-penalty is concentrated in structural-zero regions rather than changing
-monotonically across positive sampling-density groups. That decomposition has
-not been repeated under the default estimand. In the same supporting audit,
-reducing random sampling from 5,000 to 500 leaves bias near zero, and the ten
-positive-density group means remain within ±1 µatm without a monotonic
-relationship.
+The [original collaborative project](https://github.com/spariser/ReconstructOceanCarbonP3G1)
+was by **Azam Khan, Bokai He, Sarah Pariser and Zhi Wang**. Its public
+contribution statement credits Bokai He with statistical significance analysis
+and NGBoost/XGBoost comparison. The team's work is not represented as
+sole-authored. This repository separately develops fixed-count experiments,
+evaluation audits and the interactive brief. Course-level statistical tests
+are not evidence of formal significance in the present OSSE.
 
-The historical whole-block signed-bias estimate changes across four reported
-estimands: **−4.954** (full domain, equal cell), **−1.884** (full domain,
-spherical area), **−0.631** (<60°N evaluation only, spherical area), and the
-default **−0.473 µatm** (candidates and evaluation both <60°N, spherical area).
-This self-correction is a methodological result, not hidden sensitivity
-analysis. The current inputs lack sea-ice concentration, so <60°N is a
-transparent feasibility proxy rather than a sea-ice mask. Full, source-grounded
-draft captions and interpretation limits are provided in
-[`docs/osse_portfolio_figure_legends.md`](docs/osse_portfolio_figure_legends.md).
-The rerunnable narrative is available in
-[`notebooks/published/osse_results_walkthrough.ipynb`](notebooks/published/osse_results_walkthrough.ipynb),
-with a map-first visual demo in
-[`notebooks/published/osse_visual_story_demo.ipynb`](notebooks/published/osse_visual_story_demo.ipynb),
-and the exact redraw inputs are listed in
-[`docs/osse_figure_data_inventory.md`](docs/osse_figure_data_inventory.md).
+## Completed work and retained evidence
 
-In the supporting original full-domain, equal-cell hidden-cell audit, the
-redistribution is sample-count dependent. At count 500, coverage is worse than
-random for RMSE and p99 in all three years; extreme-tail suppression appears
-consistently only at 2,500 and 5,000. Median error is higher at every tested
-count. Absolute baselines, relative changes, truth-field scale references and
-full year–fold
-distributions are reported in
-[`docs/osse_claims_audit.md`](docs/osse_claims_audit.md).
+- Regional SOCAT minimum experiment and repeated-seed spatial benchmark:
+  [regional sensitivity](docs/spatial_sensitivity_results.md).
+- Spatially grouped XGBoost interpretability gate: it failed to generalize
+  sufficiently, so SHAP was withheld as a driver explanation:
+  [gate decision](docs/diagnostic_results.md).
+- Global OSSE, cross-year/sample-count comparisons, month-balance controls,
+  regridding and area/domain audits:
+  [temporal design](docs/osse_temporal_design.md),
+  [regridding audit](docs/osse_regrid_audit_results.md).
+- Rerunnable [walkthrough](notebooks/published/osse_results_walkthrough.ipynb)
+  and [visual demo](notebooks/published/osse_visual_story_demo.ipynb).
+  These preserve the earlier presentation; use this README for current scope.
+- Frozen web brief and [figure-data inventory](docs/osse_figure_data_inventory.md).
+  Source tables remain preserved; no new numerical experiment accompanies this revision.
 
-The regional coverage rule fills underrepresented spatial cells. The global
-OSSE extends that idea with month-aware coverage cells so that the strategy is
-also seasonally balanced; the two stages therefore share a spatial principle
-but do not use an identical acquisition rule.
-
-## Static interactive brief
-
-The four-interaction portfolio site lives in [`site/`](site/). It reads a
-small frozen JSON contract and swaps pre-rendered PNG maps; it has no backend
-and does not refit models in the browser.
-
-```bash
-python scripts/build_static_site_assets.py
-python -m http.server 8000 --directory site
-```
-
-Open `http://localhost:8000/`. The site defaults to the locked whole-block,
-spherical-area-weighted, aligned `<60°N` estimand; original-domain results are
-explicitly labelled as supporting sensitivities.
-
-## Project stages
-
-1. **Regional minimum experiment** — SOCAT v2025, Southern Ocean, random versus coverage sampling.
-2. **Regional benchmark** — all strategies, repeated seeds, temporal and spatial holdouts, probabilistic evaluation.
-3. **Global OSSE** — subsample an Earth system model field using SOCAT-like masks and compare reconstructions with model truth.
-4. **Interactive application** — explore observations, sampling choices, learning curves, and calibration.
-
-## Repository policy
-
-The repository intentionally excludes raw data, working notebooks, trained models, caches, logs, and uncurated experiment outputs. Only reusable source code, configuration, tests, a small demo dataset, published notebooks, and curated public results belong in Git.
-
-## Quick start
+## Run locally
 
 ```bash
 python -m venv .venv
 pip install -e ".[dev,model,osse,app,notebook]"
 pytest
+python -m http.server 8000 --directory site
 ```
 
-Data are not downloaded automatically. See [`data/README.md`](data/README.md) and the SOCAT data-use statement before running experiments.
+Open `http://localhost:8000/`, not `site/index.html` via `file://`.
+No model run or raw-data download is required to preview the checked-in site.
+The initial state is `area|both60|hidden`; the whole-block sensitivity replay
+intentionally ends at `area|both60|block`.
 
-Run the reproducible data audit, minimum experiment, and repeated-seed benchmark
-after placing the SOCAT CSV at the configured raw-data path:
+To regenerate site assets from curated outputs and required local inputs:
 
 ```bash
-python scripts/make_data_audit.py data/raw/socat/SOCATv2025_tracks_gridded_monthly.csv
-python scripts/run_minimal_experiment.py
-python scripts/run_seed_benchmark.py
-python scripts/plot_seed_benchmark.py
-python scripts/run_spatial_sensitivity.py
-python scripts/plot_spatial_sensitivity.py
-python scripts/build_observation_effects.py
-python scripts/run_xgb_shap_diagnostic.py
-python scripts/plot_diagnostic_gate.py
-python scripts/download_osse_pilot.py --dry-run
-python scripts/audit_osse_inputs.py
-python scripts/prepare_osse_pilot.py
-python scripts/run_osse_gate.py
-python scripts/run_osse_gate.py --phase benchmark
-python scripts/prepare_osse_pilot.py --years 2010 2014
-python scripts/run_osse_gate.py --phase cross_year
-python scripts/prepare_osse_pilot.py --years 2005 2010 2014 --regrid area_weighted
-python scripts/run_osse_gate.py --phase regrid_audit
-python scripts/summarize_regrid_audit.py
-python scripts/run_osse_spatial_block_gate.py
-python scripts/run_osse_spatial_block_gate.py --config configs/osse_spatial_block_confirmatory.yaml
-python scripts/audit_osse_month_balance.py
-python scripts/run_historical_month_balance_audit.py
-python scripts/summarize_historical_bias_density.py
-python scripts/run_historical_area_domain_audit.py
-python scripts/run_latitude_cap_audit.py
-python scripts/summarize_osse_truth_scale.py
-python scripts/plot_osse_portfolio_figures.py
-jupyter lab notebooks/published/osse_results_walkthrough.ipynb
-jupyter lab notebooks/published/osse_visual_story_demo.ipynb
+python scripts/build_static_site_assets.py
 ```
 
-## Current status
-
-The SOCAT coverage audit, leakage-aware minimum experiment, 20-seed benchmark,
-five-fold spatial sensitivity analysis, and spatially grouped XGBoost/SHAP
-interpretability gate are implemented. The first global OSSE pilot is specified
-for IPSL-CM6A-LR historical output (2005–2014), with input download and audit
-tools ready. A three-seed, two-budget execution gate now compares random,
-historical-density and spatial-coverage sampling on a common 2005 evaluation
-set. The completed 20-seed, four-budget single-year benchmark identifies a
-tradeoff between typical error and severe tail error. A prespecified robustness
-phase repeats the full design in 2005, 2010 and 2014. At the largest sample
-count, spatial coverage raises median, MAE and p95 error while reducing p99 and the
-tail-sensitive RMSE in the original hidden-cell audit. The default whole-block,
-spherical-area-weighted, <60°N-aligned audit reports the narrower results above.
-Historical MAE remains higher in all 15/15 year–fold units; coverage has lower
-RMSE in 14/15 but essentially unchanged MAE. This remains a single-model, not a
-sea-ice-aware, real-ocean or cross-model conclusion. A separate native-cell-area
-**regridding** audit is retained as supporting provenance and must not be
-confused with evaluation-area weighting. See
-[`docs/osse_regrid_audit_results.md`](docs/osse_regrid_audit_results.md). Results are generated into
-`results/public/`; raw observations, resumable work files, withheld exploratory
-interpretations, and heavy local outputs remain excluded from Git.
-
-Cross-model replication and a prespecified sea-ice/accessibility mask are the
-decisive unresolved tests. The magnitude penalty may change under a different
-spatial inductive bias, while the signed offset is already shown to depend
-strongly on area weighting and the high-northern evaluation domain. The 15
-year–fold units are descriptive consistency units; no formal whole-block
-significance test is claimed.
+The repository excludes raw data, trained models, caches, working notebooks
+and uncurated outputs. For experiment reproduction, start with
+[`data/README.md`](data/README.md), existing `configs/` and their corresponding
+`scripts/run_*.py` runners. Data are not downloaded automatically.

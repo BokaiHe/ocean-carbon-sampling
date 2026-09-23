@@ -166,7 +166,7 @@ def build_estimands(results_dir: Path) -> dict[str, object]:
                     f"{WEIGHT_LABELS[weight]} · {DOMAIN_LABELS['both60']} · "
                     f"{SCHEME_LABELS[scheme]}"
                 ),
-                "status": "default" if key == "area|both60|block" else "supporting",
+                "status": "default" if key == "area|both60|hidden" else "supporting",
             }
     if len(estimands) != 12:
         raise RuntimeError(f"Expected 12 estimand states, found {len(estimands)}")
@@ -541,8 +541,9 @@ def main() -> None:
             "generated_from": "Frozen results/public tables",
             "map_year": args.year,
             "sample_count": 5000,
-            "default_estimand": "area|both60|block",
-            "default_comparison": "historical density minus random",
+            "default_estimand": "area|both60|hidden",
+            "default_comparison": "historical-density minus random",
+            "presentation_revision": "2026-09-23: hidden-cell primary; whole-block stress test; no new fits",
         },
         "maps": {
             "images": maps,

@@ -41,41 +41,46 @@
           <h1>Where we observe changes what the ocean appears to tell us.</h1>
           <p class="lede">
             A reproducible observing-system simulation experiment comparing equal-count
-            sampling geometries for monthly surface-ocean pCO₂ reconstruction.
+            sampling rules for monthly surface-ocean pCO₂ reconstruction. We quantify the cost
+            of historical-density sampling, test the limits of broader coverage, and identify
+            what a future observation-addition experiment should ask.
           </p>
           <dl class="study-meta">
             <div><dt>Model truth</dt><dd>IPSL-CM6A-LR</dd></div>
             <div><dt>Historical weights</dt><dd>SOCAT 1990–2004</dd></div>
             <div><dt>Study years</dt><dd>2005 · 2010 · 2014</dd></div>
-            <div><dt>Primary validation</dt><dd>Whole spatial blocks</dd></div>
+            <div><dt>Primary / stress test</dt><dd>Hidden cells / whole blocks</dd></div>
           </dl>
           <div class="hero-actions">
             <a class="button primary" href="#sampling">Explore the evidence</a>
             <a class="button ghost" href="#technical">Read the method boundaries</a>
             <a class="button ghost" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a>
+            <a class="button ghost" href="#related-work">Related work &amp; credits</a>
           </div>
         </div>
         <aside class="hero-result" aria-label="Default result summary">
           <div class="result-heading">
-            <p class="card-kicker">Key finding · default estimand</p>
+            <p class="card-kicker">Key finding · hidden-cell evaluation</p>
             <span>01</span>
           </div>
-          <p class="result-label">Historical − random MAE</p>
-          <p class="hero-number">+15.67<span>%</span></p>
-          <p class="hero-absolute">Mean absolute error (MAE): <strong>11.836 → 13.691 µatm</strong><br />Random → historical; an increase of <strong>1.855 µatm</strong>.</p>
-          <p class="hero-consistency">Worse in <strong>15/15</strong> year–fold units</p>
+          <p class="result-label">Historical-density − random MAE</p>
+          <p class="hero-number">+25.94<span>%</span></p>
+          <p class="hero-absolute">Mean absolute error (MAE): <strong>9.508 → 11.975 µatm</strong><br />Random → historical-density; an increase of <strong>2.466 µatm</strong>.</p>
+          <p class="hero-consistency">Worse in <strong>3/3</strong> year-level means, each averaged over 20 paired seeds</p>
           <p class="hero-boundary">
-            Whole-block · spherical area · candidates and evaluation &lt;60°N
+            Hidden cells · spherical area · candidates and evaluation &lt;60°N
           </p>
           <p class="hero-result-note">
-            The historical geometry is consistently less accurate under the primary comparison.
-            This is an error-magnitude result, not evidence of a universal signed bias.
+            Conditional on one IPSL-CM6A-LR simulation and one fixed HistGradientBoosting
+            learner using SST, salinity, spatial and calendar features. This is not a universal
+            sampling penalty or evidence of a universal signed bias.
           </p>
+          <p class="hero-absolute">Whole-block stress test: <strong>+15.67% MAE</strong>, worse in 15/15 year–fold means. <a href="#validation">Compare both evaluations ↓</a></p>
           <figure class="hero-context-thumb">
-            <a href="assets/maps/sampling_historical_base_coastline.png" aria-label="Open the full-resolution historical sampling map">
+            <a href="assets/maps/sampling_historical_base_coastline.png" aria-label="Open the full-resolution historical-density sampling map">
             <img
               src="assets/maps/sampling_historical_base_coastline.png"
-              alt="This project's historical sampling plan, summarized by spatial block for 2005"
+              alt="This project's historical-density sampling plan, summarized by spatial block for 2005"
             />
             </a>
             <figcaption>Our sampling design · 2005 · 5,000 observations · seed 0. Full-domain illustration; the headline result uses the aligned &lt;60°N domain. Select the map to inspect it at full resolution.</figcaption>
@@ -152,7 +157,7 @@
                 <span>Random</span><small>equal candidate probability</small>
               </button>
               <button class="segment" data-strategy="historical" aria-pressed="false">
-                <span>Historical</span><small>repeat SOCAT density</small>
+                <span>Historical-density</span><small>weights, not cruise tracks</small>
               </button>
               <button class="segment" data-strategy="coverage" aria-pressed="false">
                 <span>Coverage</span><small>fill sparse month–space blocks</small>
@@ -187,7 +192,7 @@
             <span>of mapped cells have zero historical spatial weight</span>
             <small>49.2% after spherical-area weighting</small>
           </aside>
-          <p class="map-resolution-note">Reading the overlay: dots summarize observations at 5° × 10° block centres; shading follows the finer mapped grid. For Historical, a block-centre dot can overlap a grey cell even though the selected observations lie in supported cells elsewhere in that block. Random and Coverage are not restricted to historical support.</p>
+          <p class="map-resolution-note">Reading the overlay: dots summarize observations at 5° × 10° block centres; shading follows the finer mapped grid. For historical-density, a block-centre dot can overlap a grey cell even though the selected observations lie in supported cells elsewhere in that block. Random and Coverage are not restricted to historical support. None of these rules simulates feasible ship routes.</p>
         </div>
 
         <div class="logic-bridge" aria-label="How to read the two maps">
@@ -203,7 +208,7 @@
             <p class="card-kicker">Supporting diagnostic · 2005</p>
             <h3>Where should a follow-up sampling experiment test first?</h3>
             <p>
-              Colour appears only where the historical baseline assigns zero sampling
+              Colour appears only where the historical-density baseline assigns zero sampling
               probability. Darker cells combine a larger mean signed reconstruction error
               with a larger spherical area, so they contribute more to the global signed offset.
             </p>
@@ -222,7 +227,7 @@
             <img
               id="priority-map"
               src="assets/maps/historical_zero_priority_diagnostic_coastline.png"
-              alt="Area-weighted magnitude of historical mean signed error within structural-zero sampling cells"
+              alt="Area-weighted magnitude of historical-density mean signed error within structural-zero sampling cells"
             />
           </div>
         </div>
@@ -230,9 +235,16 @@
 
       <section class="section section-tint" id="estimand">
         <div class="shell">
+          <div id="validation" class="section-heading">
+            <p class="step">The core result · two different questions</p>
+            <h2>A sampling penalty, with an explicit test boundary.</h2>
+            <p>Both comparisons use 5,000 selected month-cells, spherical-area weighting, and candidates and evaluation below 60°N. Historical-density is compared with random under the same locked learner. The 23 September 2026 presentation revision repositions these existing results; it is not a new experiment or a newly preregistered protocol. Differences are calculated before rounding.</p>
+          </div>
+          <div id="validation-comparison" class="validation-grid" aria-label="Primary evaluation and spatial stress test"></div>
+          <p class="comparison-boundary">The primary test reserves about 20% of month-cells within each month before sampling, using one fixed set per year. It measures dispersed missing-cell reconstruction, not a full-field reconstruction after unrestricted sampling. The stress test instead excludes complete 20° × 10° blocks, with no buffer. Neither the three years nor the 15 year–fold units are independent ESM replicates; direction counts are not formal significance tests.</p>
           <div class="section-heading compact">
-            <p class="step">The core result</p>
-            <h2>One estimate, four defensible questions.</h2>
+            <p class="step">A self-correction · keep the estimand visible</p>
+            <h2>Why did the signed offset shrink?</h2>
             <p>
               The number changes because weighting, evaluation domain and candidate support define
               different estimands—not because the underlying run was hidden.
@@ -259,44 +271,45 @@
               <fieldset>
                 <legend>Validation</legend>
                 <div class="choice-row">
-                  <label><input type="radio" name="scheme" value="hidden" /><span>Hidden cells</span></label>
-                  <label><input type="radio" name="scheme" value="block" checked /><span>Whole blocks</span></label>
+                  <label><input type="radio" name="scheme" value="hidden" checked /><span>Hidden cells · primary</span></label>
+                  <label><input type="radio" name="scheme" value="block" /><span>Whole blocks · stress</span></label>
                 </div>
               </fieldset>
-              <button class="button replay" id="replay-journey" type="button">Replay the estimand journey</button>
+              <button class="button replay" id="replay-journey" type="button">Replay the whole-block estimand journey</button>
             </form>
 
             <div class="result-console" aria-live="polite">
               <div class="console-topline">
-                <span id="estimand-status" class="status default">Default estimand</span>
-                <span>Historical density − random</span>
+                <span id="estimand-status" class="status default">Primary · hidden cells</span>
+                <span>Historical-density − random</span>
               </div>
               <p class="metric-name">Mean signed error difference</p>
-              <p class="big-number" id="bias-value">−0.473 <span>µatm</span></p>
+              <p class="big-number" id="bias-value">−0.835 <span>µatm</span></p>
               <p class="estimand-label" id="estimand-label"></p>
 
               <div class="metric-grid">
                 <article class="metric-card">
                   <p>MAE</p>
-                  <strong id="mae-value">+1.855</strong>
-                  <span id="mae-relative">+15.67%</span>
-                  <small id="mae-direction">15/15 worse</small>
+                  <strong id="mae-value">+2.466</strong>
+                  <span id="mae-relative">+25.94%</span>
+                  <small id="mae-direction">3/3 worse</small>
                 </article>
                 <article class="metric-card">
                   <p>RMSE</p>
-                  <strong id="rmse-value">+1.310</strong>
-                  <span id="rmse-relative">+5.15%</span>
-                  <small id="rmse-direction">12/15 worse</small>
+                  <strong id="rmse-value">+4.224</strong>
+                  <span id="rmse-relative">+20.34%</span>
+                  <small id="rmse-direction">3/3 worse</small>
                 </article>
                 <article class="metric-card">
                   <p>Bias direction</p>
-                  <strong id="bias-direction">12/15</strong>
+                  <strong id="bias-direction">3/3</strong>
                   <span>negative units</span>
                   <small>Descriptive consistency</small>
                 </article>
               </div>
 
-              <div class="journey" aria-label="Four-stage estimand sensitivity">
+              <p class="interpretation">Whole-block stress-test history, not four independent confirmations. All four values are signed-bias differences in µatm.</p>
+              <div class="journey" aria-label="Four-stage whole-block estimand sensitivity">
                 <button type="button" data-journey="equal|global|block">
                   <span>01</span><strong>−4.954</strong><small>Equal · global</small>
                 </button>
@@ -306,13 +319,13 @@
                 <button type="button" data-journey="area|eval60|block">
                   <span>03</span><strong>−0.631</strong><small>Area · eval &lt;60°N</small>
                 </button>
-                <button type="button" class="active" data-journey="area|both60|block">
+                <button type="button" data-journey="area|both60|block">
                   <span>04</span><strong>−0.473</strong><small>Aligned &lt;60°N</small>
                 </button>
               </div>
               <p class="interpretation" id="estimand-note">
-                The large original signed offset is estimand-sensitive. The stable default finding is
-                the historical MAE penalty, not a universal global bias.
+                Historical-density has higher MAE in the three hidden-cell year-level means.
+                The magnitude depends on the learner and evaluation; no universal global bias is claimed.
               </p>
             </div>
           </div>
@@ -393,13 +406,14 @@
               <div class="detail-body" id="regrid-audit"></div>
             </details>
             <details>
-              <summary><span>15 year–fold distributions</span><small>Descriptive consistency, not formal significance</small></summary>
+              <summary><span>Replication &amp; stress-test distributions</span><small>3 primary units; 15 stress-test units</small></summary>
               <div class="detail-body">
                 <p>
-                  Three prespecified years × five exhaustive spatial folds. Each unit averages 20 paired
-                  sampling seeds. The units share one ESM run and are not independent Earth-system replicates.
+                  Primary: three year-level means, with one fixed hidden set per year and 20 paired seeds.
+                  Stress test: three years × five spatial folds, also with 20 paired seeds per unit.
+                  All share one ESM run. These are descriptive consistency units, not independent Earth-system replicates or formal significance tests.
                 </p>
-                <a href="data/site-data.json">Inspect the frozen JSON contract →</a>
+                <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/results/public/osse_latitude_cap_paired.csv">Inspect the year-level and year–fold effects →</a>
               </div>
             </details>
             <details>
@@ -414,11 +428,24 @@
               </div>
             </details>
             <details>
+              <summary><span>Four design boundaries</span><small>Idealized observations; conditional results</small></summary>
+              <div class="detail-body">
+                <ul>
+                  <li><strong>No observation error.</strong> Targets are monthly model-grid truth with no added measurement or point-to-grid representation error. SST and salinity come from the same simulation. Real-world errors and strategy rankings need not match.</li>
+                  <li><strong>One fixed learner.</strong> HistGradientBoosting hyperparameters are locked across strategies and sample counts. The sample-count response reflects this learner as well as sampling geometry, not geometry alone.</li>
+                  <li><strong>Limited predictors and one ESM.</strong> SST, salinity, latitude, cyclic longitude, year and cyclic month are used. MLD, chlorophyll and atmospheric CO₂ are not. No feature-ablation or cross-model claim is made.</li>
+                  <li><strong>Separate yearly fits.</strong> All 12 months are fitted jointly within each selected year. This does not test continuous interannual reconstruction, trends or decadal carbon-sink variability.</li>
+                </ul>
+              </div>
+            </details>
+            <details>
               <summary><span>Not yet supported</span><small>Explicit project boundary</small></summary>
               <div class="detail-body">
                 <p>
                   Sea-ice-aware accessibility, cross-model robustness, buffered extrapolation, integrated-flux
                   effects, cost-aware routing and direct real-ocean performance remain outside the present claim.
+                  Cross-learner and cross-ESM tests are needed before generalizing either the magnitude penalty or its signed bias.
+                  A full-field reconstruction after sampling from the complete candidate domain has not been run.
                 </p>
               </div>
             </details>
@@ -432,7 +459,7 @@
             <p class="step">The complete method · plain-language version</p>
             <h2>How the experiment works.</h2>
             <p>
-              Imagine planning a fleet of research ships in a virtual ocean where the true
+              Imagine choosing measurement locations in a virtual ocean where the true
               monthly CO₂ field is already known. We can hide that truth, sample only a few
               places, reconstruct the rest, and check exactly how much each sampling plan missed.
             </p>
@@ -471,7 +498,7 @@
               <span class="workflow-number">03</span>
               <h3>Simulate three sampling plans</h3>
               <p>
-                Random samples candidates equally. Historical repeats the SOCAT pattern.
+                Random samples candidates equally. Historical-density uses SOCAT density weights, not real cruise tracks.
                 Coverage prioritizes sparse month–space blocks. The sample count stays fixed, so
                 only the placement rule changes.
               </p>
@@ -482,11 +509,11 @@
                 <svg viewBox="0 0 48 48"><path d="M8 35l9-9 7 5 15-17"></path><path d="M31 14h8v8"></path><circle cx="12" cy="14" r="4"></circle><circle cx="36" cy="34" r="4"></circle><path d="M16 14h11M21 34h11"></path></svg>
               </div>
               <span class="workflow-number">04</span>
-              <h3>Teach one model, then hide places</h3>
+              <h3>Hide places before training</h3>
               <p>
-                The same gradient-boosting model learns from each selected sample. It then predicts
-                places it did not see. Whole-region holdouts are the main test because they are
-                harder than hiding scattered cells.
+                First reserve scattered month-cells. Then sample from the remaining candidates,
+                train the same gradient-boosting learner and predict the hidden cells. A separate
+                stress test reserves whole blocks before sampling instead.
               </p>
             </article>
 
@@ -497,9 +524,9 @@
               <span class="workflow-number">05</span>
               <h3>Make the comparison fair</h3>
               <p>
-                Plans share paired random seeds, three years and five spatial folds. The default
-                result also weights cells by spherical area and aligns both sampling and evaluation
-                below 60°N.
+                Each test gives all plans the same evaluation cells and 20 paired seeds per year.
+                The block stress test adds five folds. Both headline comparisons weight cells by
+                spherical area and align sampling and evaluation below 60°N.
               </p>
             </article>
 
@@ -532,10 +559,37 @@
             </p>
           </aside>
           <aside class="workflow-boundary">
-            <strong>What could this change in practice?</strong>
+            <strong>Broader coverage is not a universal fix. Where should observations be added next?</strong>
             <p>A practical next step is to compare feasible additions to ship routes or float deployments using this framework, asking which placements reduce held-out reconstruction error. That would require platform-specific measurements, access and cost constraints, and another reconstruction model before making deployment recommendations.</p>
           </aside>
         </div>
+      </section>
+      <section class="section shell" id="related-work">
+        <div class="section-heading">
+          <p class="step">Related work &amp; project provenance</p>
+          <h2>Building on an established testbed idea.</h2>
+          <p>This is a compact, independently extended evaluation framework, not a new claim that uneven ocean sampling matters or a reproduction of a published observing-network design.</p>
+        </div>
+        <div class="related-grid">
+          <article class="reference-card">
+            <h3>Gloege et al. (2021)</h3>
+            <p>The Large Ensemble Testbed assesses ocean-carbon reconstruction against known model truth, including seasonal-to-decadal variability. Our three separate yearly fits do not assess that temporal skill.</p>
+            <a href="https://doi.org/10.1029/2020GB006788">Quantifying Errors in Observationally Based Estimates of Ocean Carbon Sink Variability ↗</a>
+          </article>
+          <article class="reference-card">
+            <h3>Heimdal et al. (2024)</h3>
+            <p>Evaluates SOCAT plus Southern Ocean autonomous sampling using pCO₂-Residual, multiple ESMs and full-field evaluation. Here we compare fixed-count density and coverage rules with one direct-pCO₂ learner, using hidden-cell evaluation and a block stress test. This does not reproduce their routes or flux results.</p>
+            <a href="https://doi.org/10.5194/bg-21-2159-2024">Assessing improvements in global ocean pCO₂ machine learning reconstructions with Southern Ocean autonomous sampling ↗</a>
+          </article>
+        </div>
+        <aside class="workflow-boundary project-credits">
+          <strong>Course foundation and independent extension</strong>
+          <p>This project is an independent extension of a Spring 2025 EESC/STAT 4243 course project taught by <strong>Galen A. McKinley</strong>. This credit refers to the course foundation, not supervision or endorsement of all subsequent extensions.</p>
+          <p>The original team was <strong>Azam Khan, Bokai He, Sarah Pariser and Zhi Wang</strong>. Its public contribution statement credits Bokai He with statistical significance analysis (p-values and t-tests) and the NGBoost/XGBoost comparison; Azam with the training pipeline, visualization and analysis; Sarah with masks and narrative/code integration; and Zhi with seasonality analysis and visualization. These are course-project contributions, not claims about the present OSSE's statistical tests.</p>
+          <p>The present repository separately develops the fixed-count experiments, evaluation audits and interactive brief. The original collaborative work is not presented as sole-authored work.</p>
+          <a href="https://github.com/spariser/ReconstructOceanCarbonP3G1">Original course project &amp; contribution statement ↗</a>
+          <p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/project_positioning.md">Read the positioning, source notes and presentation revision →</a></p>
+        </aside>
       </section>
     </main>
 
