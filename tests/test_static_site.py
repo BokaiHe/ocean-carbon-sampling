@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import json
 import re
+import runpy
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,7 +49,9 @@ def test_sensitivity_journey_and_sample_sweep_are_complete() -> None:
         "area|eval60|block",
         "area|both60|block",
     ]
-    assert [data["estimands"][key]["metrics"]["bias"]["difference"] for key in journey] == [
+    assert [
+        data["estimands"][key]["metrics"]["bias"]["difference"] for key in journey
+    ] == [
         -4.954,
         -1.884,
         -0.631,
@@ -82,8 +85,9 @@ def test_site_is_english_only_and_workflow_is_complete() -> None:
     html = (SITE / "index.html").read_text(encoding="utf-8")
     assert re.search(r"[\u3400-\u9fff]", html) is None
     assert 'id="workflow"' in html
-    assert html.count('class="workflow-card"') == 6
-    assert html.count('class="workflow-icon"') == 6
+    flow = html.split('class="workflow-flow"', 1)[1].split("</ol>", 1)[0]
+    assert flow.count("<li>") == 5
+    assert flow.count("<svg ") == 5
 
 
 def test_headline_evaluations_match_frozen_source_tables() -> None:
@@ -92,14 +96,21 @@ def test_headline_evaluations_match_frozen_source_tables() -> None:
         encoding="utf-8", newline=""
     ) as source:
         rows = list(csv.DictReader(source))
-    for scheme, source_scheme in (("hidden", "hidden_cells"), ("block", "whole_blocks")):
-        selected = [r for r in rows if (
-            r["validation_scheme"] == f"{source_scheme}_latitude_cap"
-            and r["domain"] == "south_of_60n"
-            and r["weighting"] == "spherical_cell_area"
-            and r["comparison"] == "historical_density_minus_random"
-            and r["budget"] == "5000"
-        )]
+    for scheme, source_scheme in (
+        ("hidden", "hidden_cells"),
+        ("block", "whole_blocks"),
+    ):
+        selected = [
+            r
+            for r in rows
+            if (
+                r["validation_scheme"] == f"{source_scheme}_latitude_cap"
+                and r["domain"] == "south_of_60n"
+                and r["weighting"] == "spherical_cell_area"
+                and r["comparison"] == "historical_density_minus_random"
+                and r["budget"] == "5000"
+            )
+        ]
         assert len(selected) == 1
         row = selected[0]
         record = data["estimands"][f"area|both60|{scheme}"]
@@ -117,14 +128,12 @@ def test_presentation_scope_credit_and_working_repository_links() -> None:
     html = (SITE / "index.html").read_text(encoding="utf-8")
     js = (SITE / "app.js").read_text(encoding="utf-8")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    assert 'id="validation-comparison"' in html
-    assert "renderValidationComparison();" in js
-    assert "state.data.metadata.default_estimand.split" in js
-    assert "+25.94<span>%" in html
-    assert "3/3" in html and "15/15" in html
+    assert 'id="paired-chart"' in html
+    assert '"data/chart-data.json"' in js
+    assert "3 year means" in html and "15 year–fold means" in html
     assert "approximately 20%" in readme and "about 20%" in html
     assert "<span>Historical</span>" not in html
-    assert "<span>Historical-density</span>" in html
+    assert ">Historical-density</button>" in html
     for text in (html, readme):
         assert "Galen A. McKinley" in text
         assert "10.1029/2020GB006788" in text
@@ -132,7 +141,10 @@ def test_presentation_scope_credit_and_working_repository_links() -> None:
         assert "https://github.com/spariser/ReconstructOceanCarbonP3G1" in text
     assert "mailto:bh2954@columbia.edu" in html
     assert "../docs/" not in js
-    assert "https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/osse_regrid_audit_results.md" in js
+    assert (
+        "https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/osse_regrid_audit_results.md"
+        in js
+    )
     assert "before training" in html
     assert "because they are" not in html
 
@@ -154,3 +166,41 @@ def test_story_order_and_archived_map_scope() -> None:
     assert "reversal threshold cannot be transferred" in html
     assert '<details class="mobile-navigation" id="mobile-navigation">' in html
     assert "Escape" in (SITE / "app.js").read_text(encoding="utf-8")
+
+
+def test_chart_export_matches_sources_without_new_model_fits() -> None:
+    exporter = ROOT / "scripts/export_site_chart_data.py"
+    build = runpy.run_path(str(exporter))["build_chart_data"]
+    frozen = json.loads((SITE / "data/chart-data.json").read_text(encoding="utf-8"))
+    assert build(ROOT / "results/public") == frozen
+    assert frozen["provenance"]["no_new_fits"] is True
+    assert ".fit(" not in exporter.read_text(encoding="utf-8")
+    for scheme, n in (("hidden", 3), ("block", 15)):
+        rows = frozen["pairs"][scheme]
+        assert len(rows) == n
+        assert all(r["historical"] > r["random"] for r in rows)
+        for field, metric in (("random", "random"), ("historical", "comparator")):
+            mean = sum(r[field] for r in rows) / n
+            expected = load_site_data()["estimands"][f"area|both60|{scheme}"][
+                "metrics"
+            ]["mae"][metric]
+            assert round(mean, 3) == expected
+    assert [r["blocks"] for r in frozen["sampling"]["blocks"]] == [955, 622, 1026]
+    assert all(r["sample_count"] == 5000 for r in frozen["sampling"]["blocks"])
+    assert frozen["error_map_availability"]["primary_domain_map_available"] is False
+
+
+def test_visual_brief_charts_retain_scopes_and_accessible_values() -> None:
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    js = (SITE / "app.js").read_text(encoding="utf-8")
+    for name in ("paired", "block", "robustness", "sweep", "bias"):
+        assert f'id="{name}-chart"' in html
+        assert f'id="{name}-table"' in html
+    assert "correlated evaluation variants" in html
+    assert "not confidence intervals" in html
+    assert "not an estimated continuous learning curve" in html
+    assert "not a time series" in html
+    assert "not per-cell predictions" in html
+    assert 'id="budget-slider"' not in html
+    assert '"aria-labelledby"' in js
+    assert '"mouseenter","focus","click"' in js

@@ -133,6 +133,30 @@ published methodology and new implementation is kept distinct.
 
 ## Stop rule
 
+### Visual brief revision (2026-09-23)
+
+The public page now shows paired MAE (3 primary year means and 15 stress-test
+year–fold means), all 12 evaluation variants, the four-count coverage sweep,
+occupied sampling blocks, and the four-step signed-bias sensitivity audit.
+SVG marks expose exact values on hover, tap or keyboard focus; expandable
+tables preserve the numerical record. Scope captions remain visible. The
+variants are correlated, paired lines are not confidence intervals, and the
+sample-count curve connects tested settings rather than estimating a continuous
+response. A five-step diagram replaces the longer workflow cards.
+
+No experiment was rerun. The paired and occupied-block chart export reads the
+curated CSV/parquet outputs; the other charts use the unchanged frozen result
+JSON. The map and occupied-block bars describe one original full-domain
+selection (2005, seed 0), not the primary aligned-domain experiments.
+
+Archived full-domain per-cell mean absolute errors would permit a supporting
+historical-density-minus-random error map without retraining. Aligned-domain
+caches retain aggregate scores rather than per-cell predictions. Clipping the
+archived map would not reproduce the aligned training domain, so it cannot
+serve as the primary-scope penalty map requested for a future presentation.
+
+### No additional experiment in this revision
+
 No new experiment is required for this presentation revision. The only
 optional next experiment discussed here is a protocol-frozen reconstruction
 sampled from the complete candidate domain, with explicit full-field and

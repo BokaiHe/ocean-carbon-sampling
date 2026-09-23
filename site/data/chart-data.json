@@ -1,0 +1,153 @@
+{
+  "provenance": {
+    "pairs": "results/public/osse_latitude_cap_paired.csv",
+    "sampling": "results/public/osse_visual_demo_sampling.parquet",
+    "sampling_metadata": "results/public/osse_visual_demo_metadata.csv",
+    "pair_scope": "5,000 samples; spherical area; candidates and evaluation <60N; 20-seed unit means",
+    "no_new_fits": true
+  },
+  "pairs": {
+    "hidden": [
+      {
+        "year": 2005,
+        "fold": -1,
+        "random": 9.328888687301385,
+        "historical": 11.522527648767202
+      },
+      {
+        "year": 2010,
+        "fold": -1,
+        "random": 9.431333192158244,
+        "historical": 11.873835511452054
+      },
+      {
+        "year": 2014,
+        "fold": -1,
+        "random": 9.764903084558757,
+        "historical": 12.527620773365514
+      }
+    ],
+    "block": [
+      {
+        "year": 2005,
+        "fold": 0,
+        "random": 11.47558142699268,
+        "historical": 13.02956565872071
+      },
+      {
+        "year": 2005,
+        "fold": 1,
+        "random": 11.244336887468766,
+        "historical": 12.150654666737392
+      },
+      {
+        "year": 2005,
+        "fold": 2,
+        "random": 12.801692428247884,
+        "historical": 15.189940684875314
+      },
+      {
+        "year": 2005,
+        "fold": 3,
+        "random": 11.0398058648378,
+        "historical": 13.395494754957753
+      },
+      {
+        "year": 2005,
+        "fold": 4,
+        "random": 11.656371196809678,
+        "historical": 12.680312356958911
+      },
+      {
+        "year": 2010,
+        "fold": 0,
+        "random": 11.732710670972375,
+        "historical": 13.469836306461476
+      },
+      {
+        "year": 2010,
+        "fold": 1,
+        "random": 11.645671169446294,
+        "historical": 12.863102754136005
+      },
+      {
+        "year": 2010,
+        "fold": 2,
+        "random": 12.159383667460352,
+        "historical": 14.926127458264189
+      },
+      {
+        "year": 2010,
+        "fold": 3,
+        "random": 11.08092809312196,
+        "historical": 13.058465657470665
+      },
+      {
+        "year": 2010,
+        "fold": 4,
+        "random": 11.729074958636485,
+        "historical": 13.365836944022604
+      },
+      {
+        "year": 2014,
+        "fold": 0,
+        "random": 12.160702726148886,
+        "historical": 13.96651190526516
+      },
+      {
+        "year": 2014,
+        "fold": 1,
+        "random": 11.718580503904716,
+        "historical": 13.416869574308786
+      },
+      {
+        "year": 2014,
+        "fold": 2,
+        "random": 13.811317527536747,
+        "historical": 16.278266882905257
+      },
+      {
+        "year": 2014,
+        "fold": 3,
+        "random": 11.44979128074463,
+        "historical": 13.87510757441937
+      },
+      {
+        "year": 2014,
+        "fold": 4,
+        "random": 11.83719542955988,
+        "historical": 13.70014760162348
+      }
+    ]
+  },
+  "sampling": {
+    "year": 2005,
+    "seed": 0,
+    "longitude_degrees": 10.0,
+    "latitude_degrees": 5.0,
+    "scope": "Original full-domain hidden-cell illustrative selection; not the primary aligned-domain runs",
+    "blocks": [
+      {
+        "strategy": "random",
+        "blocks": 955,
+        "sample_count": 5000
+      },
+      {
+        "strategy": "historical",
+        "blocks": 622,
+        "sample_count": 5000
+      },
+      {
+        "strategy": "coverage",
+        "blocks": 1026,
+        "sample_count": 5000
+      }
+    ]
+  },
+  "error_map_availability": {
+    "source": "results/public/osse_visual_demo_fields.parquet",
+    "available": "2005 full-domain per-cell mean absolute errors for random and historical-density, averaged across 20 seeds and available hidden months",
+    "primary_domain_map_available": false,
+    "boundary": "Clipping the saved full-domain map cannot reproduce candidate-domain alignment. Current latitude-cap caches contain aggregate scores, not per-cell predictions."
+  }
+}
