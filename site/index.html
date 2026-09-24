@@ -6,8 +6,8 @@
   <meta name="description" content="A visual, reproducible OSSE of ocean-carbon sampling: historical-density costs, coverage trade-offs and evaluation sensitivity." />
   <title>Ocean Carbon Sampling · Visual research brief</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=visual-brief-2" />
-  <script src="app.js?v=visual-brief-2" defer></script>
+  <link rel="stylesheet" href="styles.css?v=ocean-editorial-1" />
+  <script src="app.js?v=ocean-editorial-1" defer></script>
 </head>
 <body>
   <header id="top">
@@ -19,20 +19,37 @@
       <details class="mobile-navigation" id="mobile-navigation">
         <summary>Menu</summary>
         <div class="mobile-nav-links">
-          <a href="#top">Paired results</a><a href="#sampling">Sampling plans</a><a href="#results">Evaluation variants</a><a href="#sample-count">Coverage &amp; sample count</a><a href="#estimand">Signed-bias audit</a><a href="#workflow">Workflow</a><a href="#technical">Methods &amp; boundaries</a><a href="#related-work">Related work &amp; credits</a>
+          <a href="#validation">Paired results</a><a href="#sampling">Sampling plans</a><a href="#results">Evaluation variants</a><a href="#error-map">Error map</a><a href="#sample-count">Coverage &amp; sample count</a><a href="#estimand">Signed-bias audit</a><a href="#workflow">Workflow</a><a href="#technical">Methods &amp; boundaries</a><a href="#related-work">Related work &amp; credits</a>
         </div>
       </details>
     </nav>
     <div class="publication-strip shell"><span>Research note 01</span><span>Observing-system simulation experiment</span><span>Frozen analysis · 2026</span></div>
     <div class="hero shell">
       <div class="hero-copy">
-        <p class="eyebrow">A visual research brief</p>
+        <p class="eyebrow">Ocean carbon / A visual research story</p>
         <h1>Where we sample changes what we can reconstruct.</h1>
         <p class="lede">Same number of observations. Different sampling rules. A controlled test of monthly ocean pCO₂ reconstruction.</p>
         <p class="scope">One IPSL-CM6A-LR simulation · one fixed HistGradientBoosting learner · 2005, 2010, 2014.</p>
-        <div class="hero-actions"><a class="button primary" href="#sampling">Explore the evidence ↓</a><a class="button" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a></div>
+        <div class="hero-actions"><a class="button primary" href="#validation">Explore the evidence ↓</a><a class="button" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a></div>
         <p class="byline">Bokai He · Columbia EEE<br />Independent extension of Galen A. McKinley’s course project.</p>
       </div>
+      <div class="hero-image-credit"><span>Seen from orbit</span><a href="https://science.nasa.gov/image-detail/phytoplanktonbloom-france-amo-20240510-lrg/">Celtic Sea bloom · NASA Earth Observatory / Michala Garrison ↗</a><small>Context imagery, not model output.</small></div>
+    </div>
+    <div class="story-rail shell" aria-label="Explore the study">
+      <a href="#sampling"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c12 12 12 24 0 36-12-12-12-24 0-36M9 15h30M9 33h30"/></svg><span><small>01 / OBSERVE</small>Choose where to sample</span><b aria-hidden="true">↗</b></a>
+      <a href="#results"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 39h34M12 35V22M24 35V10M36 35V17"/><circle cx="12" cy="22" r="3"/><circle cx="24" cy="10" r="3"/><circle cx="36" cy="17" r="3"/></svg><span><small>02 / RECONSTRUCT</small>Compare what we recover</span><b aria-hidden="true">↗</b></a>
+      <a href="#technical"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 7h30v34H9zM16 16h16M16 24h9M16 32l4 3 10-10"/></svg><span><small>03 / QUESTION</small>Keep the boundaries visible</span><b aria-hidden="true">↗</b></a>
+    </div>
+  </header>
+  <main>
+    <section class="section shell evidence-layout" id="paired-evidence" aria-label="Observation context and paired reconstruction results">
+      <aside class="field-note">
+        <p class="eyebrow">The question behind the maps</p>
+        <h2>We cannot observe every month, everywhere.</h2>
+        <p>This experiment asks a focused question: with the same number of idealized observations, how much does their placement change reconstruction error?</p>
+        <figure class="field-photo"><img src="assets/context/noaa-ctd-launch.jpg" width="1536" height="1025" alt="A CTD rosette being lowered from a research vessel into the sea" loading="lazy" /><figcaption><span>Measured from ships</span><a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA Ocean Exploration ↗</a></figcaption></figure>
+        <p class="chart-note">A real CTD deployment, shown for context—not the specific surface pCO₂ system represented by our SOCAT-derived weights.</p>
+      </aside>
       <figure class="chart-panel hero-chart" id="validation">
         <figcaption><p class="eyebrow">Paired MAE · lower is better</p><h2>Historical-density is worse in every displayed unit.</h2></figcaption>
         <div class="legend"><span><i class="key random"></i>Random</span><span><i class="key historical"></i>Historical-density</span></div>
@@ -44,9 +61,7 @@
           <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/results/public/osse_latitude_cap_paired.csv">Source: paired unit results ↗</a>
         </details>
       </figure>
-    </div>
-  </header>
-  <main>
+    </section>
     <section class="section shell" id="sampling">
       <div class="section-heading"><p class="eyebrow">01 · The sampling plans</p><h2>Equal counts do not give equal coverage.</h2></div>
       <div class="sampling-layout">

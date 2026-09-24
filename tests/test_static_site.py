@@ -25,6 +25,23 @@ def test_static_site_entry_points_exist() -> None:
         assert path.stat().st_size > 0
 
 
+def test_ocean_editorial_layout_keeps_context_separate_from_evidence() -> None:
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    css = (SITE / "styles.css").read_text(encoding="utf-8")
+    header = html.split("</header>", 1)[0]
+    assert 'id="paired-chart"' not in header
+    assert 'class="story-rail shell"' in header
+    assert 'id="paired-evidence"' in html
+    assert "NASA Earth Observatory / Michala Garrison" in html
+    assert "NOAA Ocean Exploration" in html
+    assert "Context imagery, not model output." in html
+    assert "not the specific surface pCO₂ system" in html
+    assert "nasa-celtic-sea-phytoplankton.jpg" in css
+    assert "prefers-reduced-motion" in css
+    for name in ("nasa-celtic-sea-phytoplankton.jpg", "noaa-ctd-launch.jpg"):
+        assert (SITE / "assets" / "context" / name).is_file()
+
+
 def test_estimand_contract_is_complete_and_defaults_are_locked() -> None:
     data = load_site_data()
     assert len(data["estimands"]) == 12

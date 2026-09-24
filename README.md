@@ -22,6 +22,13 @@ surface-ocean pCO2 reconstruction error under a specified learner and domain?
 The website reads frozen JSON and pre-rendered maps. It does not fit models,
 optimize ship routes or estimate deployment benefits in the browser.
 
+The presentation combines an ocean-image opening and field photography with
+interactive evidence charts. NASA Earth Observatory / Michala Garrison and
+NOAA Ocean Exploration photographs are credited at their point of use and
+identified as context, not experiment outputs. The visual refresh changes
+layout and styling only; frozen scores, chart logic and scientific maps remain
+unchanged.
+
 ## Two evaluations, two questions
 
 Both headline comparisons use **5,000 samples, spherical cell-area weighting,
