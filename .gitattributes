@@ -2,3 +2,4 @@
 site/data/PS103-track.tab -text
 # The reproducibility test compares the generated JSON byte-for-byte.
 site/data/voyage-track.json text eol=lf
+site/data/observed-co2.json text eol=lf

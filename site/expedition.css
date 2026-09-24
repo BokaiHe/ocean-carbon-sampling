@@ -1,4 +1,32 @@
 /* Seasats-inspired chapter structure; original imagery, research and components. */
+.observation-explorer { display:grid; grid-template-columns:300px minmax(0,1fr); border-radius:12px; overflow:hidden; background:radial-gradient(ellipse at 85% 25%,#426e7b,#153a49 70%); color:#eef5f4; }
+.observation-sidebar { padding:28px 24px; background:#102e3a66; }
+.observation-sidebar .eyebrow { color:#bfd5da; font-size:12px; }
+.observation-sidebar h3 { font:400 33px/1.1 Georgia,serif; margin:18px 0; }
+.observation-sidebar>p { font:15px/1.65 Arial,sans-serif; color:#dce8eb; }
+.observation-filters label { display:block; font:700 14px Arial,sans-serif; margin:18px 0 8px; }
+.observation-filters select { width:100%; min-height:46px; padding:9px; border:1px solid #90aeb7; border-radius:5px; background:#f3f5ef; color:#1e3b46; font:15px Arial,sans-serif; }
+.observation-legend { margin-top:24px; font:14px/1.6 Arial,sans-serif; }
+.observation-legend p { margin-top:8px; color:#dce8eb; }
+.observation-sidebar .observation-status { font-size:14px; }
+.observation-view { min-width:0; display:flex; flex-direction:column; justify-content:center; padding:24px 12px; }
+#observation-globe { width:100%; max-width:660px; aspect-ratio:1; display:block; margin-inline:auto; cursor:grab; touch-action:pan-y; }
+#observation-globe:active { cursor:grabbing; }
+#observation-point { display:block; width:100%; max-width:580px; min-height:44px; font:15px Arial,sans-serif; margin-top:10px; padding:8px; }
+@media(max-width:800px) {
+ .observation-explorer { display:flex; flex-direction:column; }
+ .observation-sidebar { display:contents; }
+ .observation-sidebar>.eyebrow { order:0; margin:24px 20px 0; }
+ .observation-sidebar h3 { order:1; font-size:29px; margin:16px 20px; }
+ .observation-sidebar h3 br { display:none; }
+ .observation-sidebar>p:not([class]) { order:2; margin:0 20px 12px; }
+ .observation-filters { order:3; margin:0 20px; }
+ .observation-view { order:4; padding:18px 8px; }
+ .observation-legend { order:5; margin:0 20px 14px; }
+ .observation-sidebar .observation-status { order:6; margin:0 20px 14px; }
+ .observation-selection { order:7; margin:0 20px 18px; }
+ .observation-explorer>.globe-footnote { order:8; }
+}
 .background-layout { display:grid; grid-template-columns:1.2fr .8fr; gap:48px; align-items:center; }
 .background-layout p,.section-heading>p:not(.eyebrow) { font-size:17px; line-height:1.7; }
 .background-layout .chart-note { font-size:14px; }

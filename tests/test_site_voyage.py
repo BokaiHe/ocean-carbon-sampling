@@ -29,10 +29,10 @@ def test_story_introduces_problem_and_method_before_results():
         sections.index(name) for name in expected
     )
     assert sections.count("workflow") == 1
-    assert "not necessarily a CO₂ sample" in html
-    assert "These data do not train or score our experiment" in html
+    assert "not exact ship positions" in html
+    assert "not used as the OSSE truth" in html
     assert "not the historical-density sampling mask" in html
-    assert "CC BY 3.0" in html
+    assert "SOCAT data-use statement" in html
     assert re.search(r"[\u3400-\u9fff]", html) is None
     ids = re.findall(r'\bid="([^"]+)"', html)
     assert len(ids) == len(set(ids))

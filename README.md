@@ -22,16 +22,26 @@ surface-ocean pCO2 reconstruction error under a specified learner and domain?
 The website reads frozen JSON and pre-rendered maps. It does not fit models,
 optimize ship routes or estimate deployment benefits in the browser.
 
-The reading order is **background/question → recorded research voyage → method →
-experimental maps → results → limitations and sources**. The separate introductory
-voyage globe uses all 6,997 navigation records from Polarstern PS103 (Boebel, 2017,
-AWI/PANGAEA, [doi:10.1594/PANGAEA.875075](https://doi.org/10.1594/PANGAEA.875075),
-CC BY 3.0). It is a navigation example, **not CO₂ sample positions**, not the
-SOCAT historical-density mask and not an input to training or evaluation. The
-time slider selects an actual recorded position; no artificial route is inferred.
-Lines are disconnected across gaps longer than 30 minutes. The original credited
-table is retained at `site/data/PS103-track.tab`; the JSON includes its SHA-256.
-Rebuild it with `python scripts/export_site_voyage.py` (no network or model fitting).
+The reading order is **background/question → observed CO₂ globe → method →
+experimental maps → results → limitations and sources**. The introductory globe
+colours observed 1° SOCAT grid cells by surface-water **fCO₂ (µatm)**, not dissolved
+concentration, sampling counts or model error. It retains the 2005, 2010 and 2014
+monthly per-cruise-weighted means from the existing local SOCAT v2025 gridded CSV.
+The default 2014 all-month view has 7,784 grid cells. All-month values equally
+average only available monthly means, **not a complete annual mean**. The year
+and month selectors use one fixed 200–600 µatm colour scale; only colours clip,
+while inspection and downloads retain actual values, including extremes.
+
+Source: [SOCAT v2025](https://doi.org/10.25921/648f-fv35), with the data providers,
+quality controllers and methods credited beside the globe. These are observed
+grid-cell centres, not exact ship positions or reconstructed routes. This view is
+separate from the 1990–2004 density weights and from all frozen OSSE scores.
+Rebuild `site/data/observed-co2.json` using `python scripts/export_site_observations.py`
+with the original local monthly CSV. Missing cells are not filled; white land is
+only a visual overlay. No new model fitting or raw-data download is required.
+
+The earlier Polarstern PS103 navigation source and exporter remain archived in the
+repository, with their PANGAEA attribution, but are no longer loaded by the page.
 
 The presentation combines an ocean-image opening and field photography with
 interactive evidence charts. NASA Earth Observatory / Michala Garrison and
