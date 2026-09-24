@@ -6,10 +6,24 @@
   <meta name="description" content="A visual, reproducible OSSE of ocean-carbon sampling: historical-density costs, coverage trade-offs and evaluation sensitivity." />
   <title>Ocean Carbon Sampling · Visual research brief</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=image-viewer-1" />
-  <script src="app.js?v=image-viewer-1" defer></script>
+  <link rel="stylesheet" href="styles.css?v=expedition-1" />
+  <link rel="stylesheet" href="expedition.css?v=expedition-1" />
+  <script src="app.js?v=expedition-1" defer></script>
+  <script src="vendor/d3-7.9.0.min.js" defer></script>
+  <script src="globe.js?v=expedition-1" defer></script>
 </head>
 <body>
+  <nav class="chapter-nav" aria-label="Research chapters">
+    <a href="#top" class="chapter-home"><small>OCEAN CARBON</small><strong>A sampling<br />experiment.</strong><span>Research note / 01</span></a>
+    <a href="#sampling"><span>01</span> Explore the globe <b>↗</b></a>
+    <a href="#validation"><span>02</span> The evidence <b>↗</b></a>
+    <a href="#results"><span>03</span> Different lenses <b>↗</b></a>
+    <a href="#sample-count"><span>04</span> Coverage limits <b>↗</b></a>
+    <a href="#workflow"><span>05</span> How it works <b>↗</b></a>
+    <a href="#technical"><span>06</span> The boundaries <b>↗</b></a>
+    <a href="#related-work"><span>07</span> Sources &amp; credits <b>↗</b></a>
+    <a class="chapter-contact" href="mailto:bh2954@columbia.edu">Bokai He · Columbia EEE<br />Get in touch ↗</a>
+  </nav>
   <header id="top">
     <nav class="nav shell" aria-label="Primary navigation">
       <a class="brand" href="#top"><span aria-hidden="true">◉</span> Ocean Carbon Sampling</a>
@@ -30,7 +44,7 @@
         <h1>Where we sample changes what we can reconstruct.</h1>
         <p class="lede">Same number of observations. Different sampling rules. A controlled test of monthly ocean pCO₂ reconstruction.</p>
         <p class="scope">One IPSL-CM6A-LR simulation · one fixed HistGradientBoosting learner · 2005, 2010, 2014.</p>
-        <div class="hero-actions"><a class="button primary" href="#validation">Explore the evidence ↓</a><a class="button" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a></div>
+        <div class="hero-actions"><a class="button primary" href="#sampling">Explore the globe <span>↗</span></a><a class="button" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a></div>
         <p class="byline">Bokai He · Columbia EEE<br />Independent extension of Galen A. McKinley’s course project.</p>
       </div>
       <div class="hero-image-credit"><span>Seen from orbit</span><a href="https://science.nasa.gov/image-detail/phytoplanktonbloom-france-amo-20240510-lrg/">Celtic Sea bloom · NASA Earth Observatory / Michala Garrison ↗</a><small>Context imagery, not model output.</small></div>
@@ -42,28 +56,37 @@
     </div>
   </header>
   <main>
-    <section class="section shell evidence-layout" id="paired-evidence" aria-label="Observation context and paired reconstruction results">
-      <aside class="field-note">
-        <p class="eyebrow">The question behind the maps</p>
-        <h2>We cannot observe every month, everywhere.</h2>
-        <p>This experiment asks a focused question: with the same number of idealized observations, how much does their placement change reconstruction error?</p>
-        <figure class="field-photo"><img src="assets/context/noaa-ctd-launch.jpg" width="1536" height="1025" alt="A CTD rosette being lowered from a research vessel into the sea" loading="lazy" /><figcaption><span>Measured from ships</span><a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA Ocean Exploration ↗</a></figcaption></figure>
-        <p class="chart-note">A real CTD deployment, shown for context—not the specific surface pCO₂ system represented by our SOCAT-derived weights.</p>
-      </aside>
-      <figure class="chart-panel hero-chart" id="validation">
-        <figcaption><p class="eyebrow">Paired MAE · lower is better</p><h2>Historical-density is worse in every displayed unit.</h2></figcaption>
-        <div class="legend"><span><i class="key random"></i>Random</span><span><i class="key historical"></i>Historical-density</span></div>
-        <div id="paired-chart" class="chart" aria-live="polite"></div>
-        <p class="chart-note">MAE = average absolute error. 5,000 samples · area-weighted · both domains &lt;60°N. Each row averages 20 paired seeds; rows are not independent ESM replicates.</p>
-        <details class="chart-about"><summary>About this chart &amp; exact values</summary>
-          <p>Primary: 3 year means on one fixed, month-stratified hidden set per year. Stress test: 15 year–fold means with complete blocks held out. Connecting lines pair two strategies on the same test set; they are not confidence intervals. The horizontal axis is zoomed, not zero-based. Larger MAE means larger typical absolute error. These magnitudes are conditional on this learner and model truth.</p>
-          <div id="paired-table" class="table-scroll"></div>
-          <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/results/public/osse_latitude_cap_paired.csv">Source: paired unit results ↗</a>
-        </details>
-      </figure>
-    </section>
     <section class="section shell" id="sampling">
       <div class="section-heading"><p class="eyebrow">01 · The sampling plans</p><h2>Equal counts do not give equal coverage.</h2></div>
+      <div class="globe-explorer" id="globe-explorer">
+        <div class="globe-sidebar">
+          <p class="eyebrow">A world to explore / 2005</p>
+          <h3>Same ocean.<br /> Different views.</h3>
+          <p>Turn the globe. Compare where we sample, then where reconstruction error remains.</p>
+          <label class="globe-label" for="globe-layer">01 / Choose a layer</label>
+          <select id="globe-layer"><option value="sampling">Sampling distribution</option><option value="mae">Reconstruction error (MAE)</option><option value="delta">Error difference vs random</option></select>
+          <p class="globe-label">02 / Choose a strategy</p>
+          <div class="globe-strategies" role="group" aria-label="Globe sampling strategy"><button data-globe-strategy="random" aria-pressed="true">Random</button><button data-globe-strategy="historical" aria-pressed="false">Historical-density</button><button data-globe-strategy="coverage" aria-pressed="false">Coverage</button></div>
+          <div class="globe-legend" id="globe-legend"></div>
+          <p id="globe-scope" class="globe-scope">Loading frozen map data… The flat maps below remain available.</p>
+          <div class="globe-selection" aria-live="polite"><span>Point inspection</span><p id="globe-readout">Tap a point to inspect its value.</p></div>
+        </div>
+        <div class="globe-view">
+          <div class="globe-view-top"><span id="globe-role">DESIGN MAP · NOT MODEL ERROR</span><span>DRAG TO EXPLORE ↔</span></div>
+          <canvas id="ocean-globe" tabindex="0" role="img" aria-label="Interactive globe. Arrow keys rotate; plus and minus zoom; Home resets. Use the point selector below for keyboard inspection." aria-describedby="globe-scope">The flat maps below show the same frozen data.</canvas>
+          <div class="globe-controls" role="group" aria-label="Globe view controls"><button id="globe-left" aria-label="Rotate globe left">←</button><button id="globe-right" aria-label="Rotate globe right">→</button><button id="globe-in" aria-label="Zoom into globe">＋</button><button id="globe-out" aria-label="Zoom out of globe">−</button><button id="globe-reset">Reset</button><button id="globe-spin" aria-pressed="false">Rotate</button></div>
+          <div class="globe-regions" role="group" aria-label="Jump to an ocean"><button data-ocean="atlantic">Atlantic</button><button data-ocean="pacific">Pacific</button><button data-ocean="indian">Indian</button><button data-ocean="southern">Southern Ocean</button></div>
+        </div>
+        <div class="globe-footnote"><span>Frozen OSSE / not live vessel tracking</span><span>Full-domain supporting view · not the aligned &lt;60°N primary evaluation</span></div>
+      </div>
+      <details class="chart-about"><summary>About the globe, accessible point inspection &amp; downloads</summary>
+        <p>The globe uses real geographic coordinates, not real ship tracks. Sampling dots mark 5° × 10° block centres from one seed. Error dots show saved local MAE averaged over 20 seeds and available hidden months, without smoothing or new predictions. These are different aggregations: a sampling dot and an error dot are not a paired observation. No route or marginal benefit of adding a sample is inferred.</p>
+        <p>Error layers retain missing locations in grey. The MAE colour scale clips at 60 µatm and the difference scale at ±30 µatm; inspected values are not clipped. The dotted 60°N line is a reference, not a domain mask. Land is from <a href="https://www.naturalearthdata.com/about/terms-of-use/">Natural Earth</a>, rendered using <a href="https://d3js.org/d3-geo/azimuthal">D3 orthographic projection</a>.</p>
+        <label for="globe-point">Choose a sampling block (keyboard alternative to tapping)</label><select id="globe-point"><option value="">Select a block…</option></select>
+        <form id="globe-coordinate-form" class="globe-coordinate-form"><label>Latitude <input id="globe-latitude" type="number" min="-90" max="90" step="any" value="30" required /></label><label>Longitude <input id="globe-longitude" type="number" min="-180" max="180" step="any" value="-40" required /></label><button type="submit">Inspect nearest point</button></form>
+        <p>Coordinate inspection selects the nearest saved location or sampling block, which may not be at the coordinates entered. Its actual position is shown in the readout. <a href="data/globe-data.json" download>Globe values and provenance (JSON)</a> · <a href="data/supporting-error-map.csv" download>Full-precision historical-minus-random values (CSV)</a> · <a href="vendor/D3-LICENSE.txt">D3 license</a>. All original flat maps remain below.</p>
+      </details>
+      <details class="flat-map-details" id="flat-maps"><summary class="flat-map-heading">Open the original flat maps &amp; coverage counts</summary>
       <div class="sampling-layout">
         <div class="panel map-panel">
           <div class="panel-toolbar">
@@ -93,8 +116,29 @@
         <p>Dots summarize 5° × 10° blocks, while shading uses the finer mapped grid. A historical-density dot can overlap a grey cell even though its observations lie in supported cells elsewhere in that block. Random and coverage are not restricted to historical support. The bar chart counts distinct occupied spatial blocks, not month-space blocks or the share of samples in zero-support cells.</p>
         <div id="block-table" class="table-scroll"></div>
       </details>
+      </details>
     </section>
 
+    <section class="section shell evidence-layout" id="paired-evidence" aria-label="Observation context and paired reconstruction results">
+      <aside class="field-note">
+        <p class="eyebrow">The question behind the maps</p>
+        <h2>We cannot observe every month, everywhere.</h2>
+        <p>This experiment asks a focused question: with the same number of idealized observations, how much does their placement change reconstruction error?</p>
+        <figure class="field-photo"><img src="assets/context/noaa-ctd-launch.jpg" width="1536" height="1025" alt="A CTD rosette being lowered from a research vessel into the sea" loading="lazy" /><figcaption><span>Measured from ships</span><a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA Ocean Exploration ↗</a></figcaption></figure>
+        <p class="chart-note">A real CTD deployment, shown for context—not the specific surface pCO₂ system represented by our SOCAT-derived weights.</p>
+      </aside>
+      <figure class="chart-panel hero-chart" id="validation">
+        <figcaption><p class="eyebrow">Paired MAE · lower is better</p><h2>Historical-density is worse in every displayed unit.</h2></figcaption>
+        <div class="legend"><span><i class="key random"></i>Random</span><span><i class="key historical"></i>Historical-density</span></div>
+        <div id="paired-chart" class="chart" aria-live="polite"></div>
+        <p class="chart-note">MAE = average absolute error. 5,000 samples · area-weighted · both domains &lt;60°N. Each row averages 20 paired seeds; rows are not independent ESM replicates.</p>
+        <details class="chart-about"><summary>About this chart &amp; exact values</summary>
+          <p>Primary: 3 year means on one fixed, month-stratified hidden set per year. Stress test: 15 year–fold means with complete blocks held out. Connecting lines pair two strategies on the same test set; they are not confidence intervals. The horizontal axis is zoomed, not zero-based. Larger MAE means larger typical absolute error. These magnitudes are conditional on this learner and model truth.</p>
+          <div id="paired-table" class="table-scroll"></div>
+          <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/results/public/osse_latitude_cap_paired.csv">Source: paired unit results ↗</a>
+        </details>
+      </figure>
+    </section>
     <section class="section tinted" id="results"><div class="shell">
       <div class="section-heading"><p class="eyebrow">02 · Evaluation sensitivity</p><h2>MAE stays higher across all 12 tested variants.</h2></div>
       <figure class="chart-panel">

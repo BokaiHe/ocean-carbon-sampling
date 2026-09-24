@@ -25,9 +25,27 @@ optimize ship routes or estimate deployment benefits in the browser.
 The presentation combines an ocean-image opening and field photography with
 interactive evidence charts. NASA Earth Observatory / Michala Garrison and
 NOAA Ocean Exploration photographs are credited at their point of use and
-identified as context, not experiment outputs. The visual refresh changes
-layout and styling only; frozen scores, chart logic and scientific maps remain
-unchanged.
+identified as context, not experiment outputs. The chapter navigation and large
+globe layout draw visual inspiration from [Seasats](https://www.seasats.com/),
+without copying its assets, fonts, code or vessel tracks.
+
+The interactive globe reads the existing 2005 full-domain sampling and error
+fields: drag or use arrow keys to rotate, use +/− to zoom, switch strategies and
+select sampling counts, local MAE, or MAE differences from random. It shows
+supporting results, **not the aligned-domain headline evaluation**. Sampling
+points are block centres, not ship positions; no real or simulated routes are
+displayed. Coastlines use public-domain Natural Earth data and locally vendored
+D3 7.9.0 (ISC). Data load only near the globe; original flat maps are retained.
+
+Rebuild its data from saved results (no model fitting):
+
+```powershell
+python scripts/export_site_globe_data.py
+```
+
+The exporter retains all locations and missing errors, rounding display values
+to four decimal places. The original Parquet/CSV outputs retain full precision.
+Frozen headline scores and experiment protocols remain unchanged.
 
 ## Two evaluations, two questions
 

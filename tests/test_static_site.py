@@ -25,6 +25,60 @@ def test_static_site_entry_points_exist() -> None:
         assert path.stat().st_size > 0
 
 
+def test_globe_values_are_frozen_source_exports_not_new_predictions() -> None:
+    data = json.loads((SITE / "data/globe-data.json").read_text(encoding="utf-8"))
+    assert data["metadata"]["no_new_fits"] is True
+    assert data["metadata"]["sampling_seed"] == 0
+    assert data["metadata"]["error_seeds"] == 20
+    samples = pd.read_parquet(ROOT / "results/public/osse_visual_demo_sampling.parquet")
+    for key, strategy in (
+        ("random", "random"),
+        ("historical", "historical_density"),
+        ("coverage", "spatial_coverage"),
+    ):
+        expected = samples.loc[
+            samples.strategy == strategy, ["longitude", "latitude", "observations"]
+        ].to_numpy()
+        np.testing.assert_array_equal(data["sampling"][key], expected)
+        assert sum(row[2] for row in data["sampling"][key]) == 5000
+    fields = pd.read_parquet(ROOT / "results/public/osse_visual_demo_fields.parquet")
+    expected = fields[
+        [
+            "longitude",
+            "latitude",
+            "absolute_error_random",
+            "absolute_error_historical_density",
+            "absolute_error_spatial_coverage",
+        ]
+    ].to_numpy()
+    actual = np.asarray(data["fields"], dtype=float)
+    np.testing.assert_allclose(actual, expected, atol=0.000051, rtol=0, equal_nan=True)
+    assert len(actual) == 40624
+    np.testing.assert_array_equal(np.isnan(actual), np.isnan(expected))
+    assert "not vessel locations" in data["metadata"]["coordinates"]
+
+
+def test_globe_retains_scope_fallback_and_local_dependencies() -> None:
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    js = (SITE / "globe.js").read_text(encoding="utf-8")
+    assert 'aria-label="Research chapters"' in html
+    assert 'id="ocean-globe"' in html
+    assert 'id="globe-coordinate-form"' in html
+    assert "not live vessel tracking" in html
+    assert "not the aligned &lt;60°N primary evaluation" in html
+    assert "not real ship tracks" in html
+    assert "No route or marginal benefit" in html
+    assert "prefers-reduced-motion" in js
+    assert "pointercancel" in js
+    assert "document.hidden" in js
+    assert "flat maps and result charts below are still available" in js
+    assert (SITE / "vendor/d3-7.9.0.min.js").stat().st_size > 100000
+    assert (SITE / "vendor/D3-LICENSE.txt").is_file()
+    land = json.loads((SITE / "data/globe-land.json").read_text(encoding="utf-8"))
+    assert land["type"] == "MultiPolygon"
+    assert len(land["coordinates"]) > 100
+
+
 def test_image_enlargement_stays_on_page_with_accessible_exit() -> None:
     js = (SITE / "app.js").read_text(encoding="utf-8")
     css = (SITE / "styles.css").read_text(encoding="utf-8")

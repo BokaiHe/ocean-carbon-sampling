@@ -88,7 +88,7 @@ function robustnessChart() {
   const {svg,width}=chart,L=width<500?141:205,R=26;
   const x=n=>L+n/60*(width-L-R), rows=[];
   (width<300?[0,30,60]:[0,20,40,60]).forEach(t=>{line(svg,x(t),32,x(t),400,{stroke:t===0?"#617986":"#dbe3e7","stroke-dasharray":t===0?"4 4":"none"});label(svg,x(t),423,(t===0?"0":"+"+t)+"%",{"text-anchor":"middle"});});
-  label(svg,(L+width-R)/2,447,"Relative MAE change",{"text-anchor":"middle"});
+  label(svg,width/2,447,"Relative MAE change",{"text-anchor":"middle"});
   let y=20;
   const domains={global:"Full",eval60:"Eval <60°N",both60:"Both <60°N"};
   for(const scheme of ["hidden","block"]){
