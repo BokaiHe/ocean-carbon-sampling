@@ -1,0 +1,117 @@
+/* Original static-site implementation inspired by the Hero 9 interaction concept.
+   No React Bits Pro source or dependencies. Satellite photograph, not video. */
+.cinematic-hero {
+  min-height:calc(100svh - 20px);
+  display:flex;
+  flex-direction:column;
+  background:#102d3b;
+}
+.cinematic-hero::before {
+  inset:-4%;
+  background:url("assets/context/nasa-celtic-sea-phytoplankton.jpg") center 48% / cover no-repeat;
+  transform:scale(1.03);
+  opacity:.85;
+}
+.cinematic-hero::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(180deg,#0b26394d 0%,#102b3d99 40%,#0b2539ed 100%);
+}
+.cinematic-hero .nav {
+  position:relative;
+  z-index:5;
+  min-height:64px;
+  margin-top:20px;
+  padding:10px 22px;
+  border:1px solid #e3f2ff40;
+  border-radius:14px;
+  background:#153849b8;
+  box-shadow:0 8px 32px #071c2926,inset 0 1px 0 #ffffff0d;
+}
+.cinematic-hero .publication-strip {
+  border:0;
+  padding:18px 2px 0;
+  font-size:12px;
+  color:#e0ecf3;
+}
+.cinematic-hero .hero {
+  flex:1;
+  min-height:540px;
+  padding:60px 0 36px;
+}
+.cinematic-hero .hero-copy { width:100%; max-width:980px; }
+.cinematic-hero .hero h1 {
+  font-size:clamp(48px,6.5vw,100px);
+  line-height:1.08;
+  letter-spacing:-.045em;
+  text-shadow:0 4px 34px #041d365c;
+}
+.hero-reveal-line { display:inline-block; }
+.cinematic-hero .hero .eyebrow { color:#daecf5; margin-bottom:24px; }
+.cinematic-hero .hero .lede { color:#f4f8fb; max-width:640px; }
+.cinematic-hero .hero .scope,.cinematic-hero .hero .byline { color:#dce9f0; }
+.cinematic-hero .hero .button {
+  min-height:50px;
+  padding:12px 22px;
+  border:1px solid #dcecfb80;
+  border-radius:10px;
+  background:#193e53b3;
+  box-shadow:inset 0 1px 0 #ffffff1a,0 8px 24px #071c2933;
+  transition:background .2s,transform .2s;
+}
+.cinematic-hero .hero .button.primary { background:#e4f0f5ed; color:#193e53; }
+.cinematic-hero .hero .button:hover { transform:translateY(-2px); background:#fff; color:#193e53; }
+.cinematic-hero .hero-image-credit { font-size:12px; line-height:1.5; margin-top:26px; }
+.cinematic-hero .hero-image-credit small { font-size:12px; color:#cadde7; }
+.hero-motion-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:12px; }
+.hero-motion-row>span { font:12px/1.5 Arial,sans-serif; letter-spacing:.12em; color:#d7e6ef; }
+#hero-motion { min-height:44px; padding:8px 14px; border:1px solid #b9d3e35c; border-radius:8px; background:#1c4156b3; color:#edf6fc; font:13px/1.5 Arial,sans-serif; cursor:pointer; }
+#hero-motion:hover { background:#365b71; }
+.cinematic-hero :focus-visible { outline:3px solid #f0d497; outline-offset:4px; }
+.cinematic-hero .story-rail { border:1px solid #d4e8f440; border-radius:14px; background:#153849b8; gap:0; padding:0; margin-bottom:24px; }
+.cinematic-hero .story-rail a { padding:20px; border:0; border-right:1px solid #d4e8f430; }
+.cinematic-hero .story-rail a:last-child { border:0; }
+.cinematic-hero .story-rail a:hover { background:#d6eafa12; }
+.cinematic-hero .story-rail small { color:#d2e4ee; }
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  .cinematic-hero .nav,.cinematic-hero .story-rail {
+    background:#18384c73;
+    -webkit-backdrop-filter:blur(20px) saturate(120%);
+    backdrop-filter:blur(20px) saturate(120%);
+  }
+  .cinematic-hero .hero .button,#hero-motion {
+    -webkit-backdrop-filter:blur(12px);
+    backdrop-filter:blur(12px);
+  }
+}
+@media(prefers-reduced-motion:no-preference) {
+  .hero-motion-enabled::before { animation:ocean-drift 28s ease-in-out infinite alternate; }
+  .hero-motion-enabled.hero-motion-paused::before { animation-play-state:paused; }
+  .hero-enter .hero-reveal-line { animation:ocean-reveal 1.2s cubic-bezier(.2,.65,.3,1) both; }
+  .hero-enter .hero-reveal-line:nth-of-type(2) { animation-delay:.2s; }
+  .hero-enter .hero .eyebrow { animation:ocean-reveal .9s ease-out both; }
+  .hero-enter .hero .lede { animation:ocean-reveal 1s .35s ease-out both; }
+  .hero-enter .hero .scope { animation:ocean-reveal 1s .45s ease-out both; }
+  .hero-enter .hero-actions { animation:ocean-reveal 1s .55s ease-out both; }
+  @keyframes ocean-reveal { from { opacity:0; filter:blur(10px); transform:translateY(16px); } to { opacity:1; filter:blur(0); transform:translateY(0); } }
+  @keyframes ocean-drift { from { transform:scale(1.03) translate(-.6%,0); } to { transform:scale(1.12) translate(.6%,-1%); } }
+}
+@media(max-width:800px) {
+  .cinematic-hero .nav { margin-top:14px; padding:10px 14px; gap:12px; }
+  .cinematic-hero .brand { font-size:14px; }
+  .cinematic-hero .publication-strip { font-size:12px; gap:4px 12px; }
+  .cinematic-hero .hero { min-height:0; padding:52px 0 30px; }
+  .cinematic-hero .hero h1 { font-size:clamp(42px,8vw,64px); }
+  .cinematic-hero .hero .eyebrow { font-size:12px; }
+  .cinematic-hero .hero .lede { font-size:17px; }
+  .cinematic-hero .story-rail { grid-template-columns:1fr; margin-bottom:18px; }
+  .cinematic-hero .story-rail a { padding:15px 18px; border:0; border-bottom:1px solid #d4e8f430; }
+  .hero-motion-row>span { font-size:11px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .cinematic-hero::before,.cinematic-hero .hero * { animation:none!important; transition:none!important; }
+  .cinematic-hero .hero .button:hover { transform:none; }
+}
