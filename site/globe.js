@@ -42,7 +42,7 @@
     ctx.beginPath();path({type:'Sphere'});ctx.fillStyle=ocean;ctx.fill();ctx.strokeStyle='#8bb6c1';ctx.lineWidth=1;ctx.stroke();
     ctx.save();ctx.beginPath();path({type:'Sphere'});ctx.clip();
     ctx.beginPath();path(d3.geoGraticule10());ctx.strokeStyle='#9ec3c62c';ctx.lineWidth=.65;ctx.stroke();
-    ctx.beginPath();path(land);ctx.fillStyle='#e2e5d7';ctx.fill();ctx.strokeStyle='#6e9399';ctx.lineWidth=.75;ctx.stroke();
+    ctx.beginPath();path(land);ctx.fillStyle='#ffffff';ctx.fill();
     const center=projection.invert([width/2,height/2]);
     const front=[Math.cos(center[1]*degree)*Math.cos(center[0]*degree),Math.cos(center[1]*degree)*Math.sin(center[0]*degree),Math.sin(center[1]*degree)];
     visible=[];
@@ -64,6 +64,8 @@
     }
     const latitudeLine={type:'LineString',coordinates:d3.range(-180,181,3).map(lon=>[lon,60])};
     ctx.beginPath();path(latitudeLine);ctx.setLineDash([3,4]);ctx.strokeStyle='#fff8';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+    // Outline above data for legibility; do not refill or hide inland values.
+    ctx.beginPath();path(land);ctx.strokeStyle='#000000';ctx.lineWidth=1.35;ctx.lineJoin='round';ctx.stroke();
     if(selected){const hit=visible.find(p=>p.item===selected);if(hit){ctx.beginPath();ctx.arc(hit.x,hit.y,8,0,Math.PI*2);ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();}}
     ctx.restore();root.dataset.ready='true';canvas.dataset.visiblePoints=visible.length;
   }

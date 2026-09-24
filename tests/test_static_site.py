@@ -25,6 +25,15 @@ def test_static_site_entry_points_exist() -> None:
         assert path.stat().st_size > 0
 
 
+def test_globe_white_land_and_black_outline_do_not_hide_inland_data() -> None:
+    js = (SITE / "globe.js").read_text(encoding="utf-8")
+    fill = "path(land);ctx.fillStyle='#ffffff';ctx.fill();"
+    outline = "path(land);ctx.strokeStyle='#000000';ctx.lineWidth=1.35"
+    assert js.index(fill) < js.index("for(const item of rows)")
+    assert js.index(outline) > js.index("visible.push({x,y,item})")
+    assert js.count("path(land)") == 2
+
+
 def test_globe_values_are_frozen_source_exports_not_new_predictions() -> None:
     data = json.loads((SITE / "data/globe-data.json").read_text(encoding="utf-8"))
     assert data["metadata"]["no_new_fits"] is True
