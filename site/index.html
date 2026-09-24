@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="expedition.css?v=expedition-1" />
   <script src="app.js?v=expedition-1" defer></script>
   <script src="vendor/d3-7.9.0.min.js" defer></script>
-  <script src="globe.js?v=white-land-1" defer></script>
+  <script src="globe.js?v=land-overlay-1" defer></script>
 </head>
 <body>
   <nav class="chapter-nav" aria-label="Research chapters">
@@ -77,9 +77,10 @@
           <div class="globe-controls" role="group" aria-label="Globe view controls"><button id="globe-left" aria-label="Rotate globe left">←</button><button id="globe-right" aria-label="Rotate globe right">→</button><button id="globe-in" aria-label="Zoom into globe">＋</button><button id="globe-out" aria-label="Zoom out of globe">−</button><button id="globe-reset">Reset</button><button id="globe-spin" aria-pressed="false">Rotate</button></div>
           <div class="globe-regions" role="group" aria-label="Jump to an ocean"><button data-ocean="atlantic">Atlantic</button><button data-ocean="pacific">Pacific</button><button data-ocean="indian">Indian</button><button data-ocean="southern">Southern Ocean</button></div>
         </div>
-        <div class="globe-footnote"><span>Frozen OSSE / not live vessel tracking</span><span>Full-domain supporting view · not the aligned &lt;60°N primary evaluation</span></div>
+        <div class="globe-footnote"><span>Frozen OSSE / not live vessel tracking</span><span>Full-domain supporting view · not the aligned &lt;60°N primary evaluation</span><span>White land overlays data symbols for display only. Source values and scores are unchanged; the ocean-domain audit remains unresolved.</span></div>
       </div>
       <details class="chart-about"><summary>About the globe, accessible point inspection &amp; downloads</summary>
+        <p>The white land layer is drawn above all data symbols. It can cover coastal block centres and inland-water values because the simplified land basemap does not distinguish every water body. This is a cartographic overlay, not a scientific exclusion mask or a correction to the experimental domain. Covered values remain in downloads and coordinate inspection; visible dots alone do not sum to the full sample count. The inland-water eligibility issue remains under review.</p>
         <p>The globe uses real geographic coordinates, not real ship tracks. Sampling dots mark 5° × 10° block centres from one seed. Error dots show saved local MAE averaged over 20 seeds and available hidden months, without smoothing or new predictions. These are different aggregations: a sampling dot and an error dot are not a paired observation. No route or marginal benefit of adding a sample is inferred.</p>
         <p>Error layers retain missing locations in grey. The MAE colour scale clips at 60 µatm and the difference scale at ±30 µatm; inspected values are not clipped. The dotted 60°N line is a reference, not a domain mask. Land is from <a href="https://www.naturalearthdata.com/about/terms-of-use/">Natural Earth</a>, rendered using <a href="https://d3js.org/d3-geo/azimuthal">D3 orthographic projection</a>.</p>
         <label for="globe-point">Choose a sampling block (keyboard alternative to tapping)</label><select id="globe-point"><option value="">Select a block…</option></select>

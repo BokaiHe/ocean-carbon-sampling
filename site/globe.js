@@ -42,7 +42,6 @@
     ctx.beginPath();path({type:'Sphere'});ctx.fillStyle=ocean;ctx.fill();ctx.strokeStyle='#8bb6c1';ctx.lineWidth=1;ctx.stroke();
     ctx.save();ctx.beginPath();path({type:'Sphere'});ctx.clip();
     ctx.beginPath();path(d3.geoGraticule10());ctx.strokeStyle='#9ec3c62c';ctx.lineWidth=.65;ctx.stroke();
-    ctx.beginPath();path(land);ctx.fillStyle='#ffffff';ctx.fill();
     const center=projection.invert([width/2,height/2]);
     const front=[Math.cos(center[1]*degree)*Math.cos(center[0]*degree),Math.cos(center[1]*degree)*Math.sin(center[0]*degree),Math.sin(center[1]*degree)];
     visible=[];
@@ -64,9 +63,10 @@
     }
     const latitudeLine={type:'LineString',coordinates:d3.range(-180,181,3).map(lon=>[lon,60])};
     ctx.beginPath();path(latitudeLine);ctx.setLineDash([3,4]);ctx.strokeStyle='#fff8';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
-    // Outline above data for legibility; do not refill or hide inland values.
-    ctx.beginPath();path(land);ctx.strokeStyle='#000000';ctx.lineWidth=1.35;ctx.lineJoin='round';ctx.stroke();
     if(selected){const hit=visible.find(p=>p.item===selected);if(hit){ctx.beginPath();ctx.arc(hit.x,hit.y,8,0,Math.PI*2);ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();}}
+    // Cartographic overlay only: source data and experimental metrics are unchanged.
+    // Draw last so neither data symbols nor selection rings paint over land.
+    ctx.beginPath();path(land);ctx.fillStyle='#ffffff';ctx.fill();ctx.strokeStyle='#000000';ctx.lineWidth=1.35;ctx.lineJoin='round';ctx.stroke();
     ctx.restore();root.dataset.ready='true';canvas.dataset.visiblePoints=visible.length;
   }
   function inspect(item,move=false){
@@ -74,12 +74,16 @@
     const row=item.row,where=`${coord(row[1],'N','S')}, ${coord(row[0],'E','W')}`;
     if(model.layer==='sampling')readout.textContent=`${where} · ${names[model.strategy]}: ${row[2]} observations in this 5° × 10° block (all months).`;
     else {const v=value(item);readout.textContent=`${where} · ${names[model.strategy]}: ${v===null?'no saved error':(model.layer==='delta'&&v>=0?'+':'')+v.toFixed(2)+' µatm '+(model.layer==='delta'?'MAE vs random':'MAE')}.`;}
+    if(d3.geoContains(land,row))readout.textContent+=' Covered by the land overlay; retained in source data. This is not a corrected ocean mask.';
     if(move){model.rotation=[-row[0],-row[1],0];stopSpin();}
     updateView();
   }
   function inspectPixel(x,y){
+    const location=projection.invert([x,y]);
+    if(!location||!location.every(Number.isFinite)||Math.hypot(x-width/2,y-width/2)>projection.scale()){selected=null;readout.textContent='Outside the globe. Tap a visible ocean point.';requestDraw();return;}
+    if(d3.geoContains(land,location)){selected=null;readout.textContent='Land overlay. Underlying values remain in the download and coordinate inspector; the ocean-domain audit is unresolved.';requestDraw();return;}
     let nearest=null,best=196;
-    for(const p of visible){const ds=(p.x-x)**2+(p.y-y)**2;if(ds<best){best=ds;nearest=p.item;}}
+    for(const p of visible){const ds=(p.x-x)**2+(p.y-y)**2;if(ds<best&&!d3.geoContains(land,p.item.row)){best=ds;nearest=p.item;}}
     if(nearest)inspect(nearest);else{selected=null;readout.textContent='No displayed point here. Try a coloured point or zoom in.';requestDraw();}
   }
   function controls(){

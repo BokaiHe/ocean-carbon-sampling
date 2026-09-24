@@ -25,13 +25,18 @@ def test_static_site_entry_points_exist() -> None:
         assert path.stat().st_size > 0
 
 
-def test_globe_white_land_and_black_outline_do_not_hide_inland_data() -> None:
+def test_globe_land_overlay_is_last_and_disclosed_as_display_only() -> None:
     js = (SITE / "globe.js").read_text(encoding="utf-8")
     fill = "path(land);ctx.fillStyle='#ffffff';ctx.fill();"
-    outline = "path(land);ctx.strokeStyle='#000000';ctx.lineWidth=1.35"
-    assert js.index(fill) < js.index("for(const item of rows)")
-    assert js.index(outline) > js.index("visible.push({x,y,item})")
-    assert js.count("path(land)") == 2
+    outline = "ctx.strokeStyle='#000000';ctx.lineWidth=1.35"
+    assert js.index(fill) > js.index("if(selected){const hit=visible.find")
+    assert js.index(outline) > js.index(fill)
+    assert js.count("path(land)") == 1
+    assert "d3.geoContains(land,location)" in js
+    assert "Covered by the land overlay; retained in source data" in js
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    assert "White land overlays data symbols for display only" in html
+    assert "not a scientific exclusion mask" in html
 
 
 def test_globe_values_are_frozen_source_exports_not_new_predictions() -> None:
