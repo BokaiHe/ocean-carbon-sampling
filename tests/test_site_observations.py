@@ -6,6 +6,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+
 from ocean_carbon_sampling.data import read_socat_monthly
 
 ROOT = Path(__file__).resolve().parents[1]

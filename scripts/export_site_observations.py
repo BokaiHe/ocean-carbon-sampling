@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+
 from ocean_carbon_sampling.data import read_socat_monthly
 
 YEARS = (2005, 2010, 2014)
