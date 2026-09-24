@@ -22,6 +22,17 @@ surface-ocean pCO2 reconstruction error under a specified learner and domain?
 The website reads frozen JSON and pre-rendered maps. It does not fit models,
 optimize ship routes or estimate deployment benefits in the browser.
 
+The reading order is **background/question → recorded research voyage → method →
+experimental maps → results → limitations and sources**. The separate introductory
+voyage globe uses all 6,997 navigation records from Polarstern PS103 (Boebel, 2017,
+AWI/PANGAEA, [doi:10.1594/PANGAEA.875075](https://doi.org/10.1594/PANGAEA.875075),
+CC BY 3.0). It is a navigation example, **not CO₂ sample positions**, not the
+SOCAT historical-density mask and not an input to training or evaluation. The
+time slider selects an actual recorded position; no artificial route is inferred.
+Lines are disconnected across gaps longer than 30 minutes. The original credited
+table is retained at `site/data/PS103-track.tab`; the JSON includes its SHA-256.
+Rebuild it with `python scripts/export_site_voyage.py` (no network or model fitting).
+
 The presentation combines an ocean-image opening and field photography with
 interactive evidence charts. NASA Earth Observatory / Michala Garrison and
 NOAA Ocean Exploration photographs are credited at their point of use and

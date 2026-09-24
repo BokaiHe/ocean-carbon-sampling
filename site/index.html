@@ -7,19 +7,20 @@
   <title>Ocean Carbon Sampling · Visual research brief</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css?v=expedition-1" />
-  <link rel="stylesheet" href="expedition.css?v=expedition-1" />
+  <link rel="stylesheet" href="expedition.css?v=story-2" />
   <script src="app.js?v=expedition-1" defer></script>
   <script src="vendor/d3-7.9.0.min.js" defer></script>
   <script src="globe.js?v=land-overlay-1" defer></script>
+  <script src="voyage.js?v=story-2" defer></script>
 </head>
 <body>
   <nav class="chapter-nav" aria-label="Research chapters">
     <a href="#top" class="chapter-home"><small>OCEAN CARBON</small><strong>A sampling<br />experiment.</strong><span>Research note / 01</span></a>
-    <a href="#sampling"><span>01</span> Explore the globe <b>↗</b></a>
-    <a href="#validation"><span>02</span> The evidence <b>↗</b></a>
-    <a href="#results"><span>03</span> Different lenses <b>↗</b></a>
-    <a href="#sample-count"><span>04</span> Coverage limits <b>↗</b></a>
-    <a href="#workflow"><span>05</span> How it works <b>↗</b></a>
+    <a href="#background"><span>01</span> Why this question? <b>↗</b></a>
+    <a href="#voyage"><span>02</span> Follow a real ship <b>↗</b></a>
+    <a href="#workflow"><span>03</span> How we test it <b>↗</b></a>
+    <a href="#sampling"><span>04</span> Explore the experiment <b>↗</b></a>
+    <a href="#validation"><span>05</span> What we found <b>↗</b></a>
     <a href="#technical"><span>06</span> The boundaries <b>↗</b></a>
     <a href="#related-work"><span>07</span> Sources &amp; credits <b>↗</b></a>
     <a class="chapter-contact" href="mailto:bh2954@columbia.edu">Bokai He · Columbia EEE<br />Get in touch ↗</a>
@@ -28,12 +29,12 @@
     <nav class="nav shell" aria-label="Primary navigation">
       <a class="brand" href="#top"><span aria-hidden="true">◉</span> Ocean Carbon Sampling</a>
       <div class="nav-links">
-        <a href="#sampling">Sampling</a><a href="#results">Results</a><a href="#sample-count">Coverage</a><a href="#workflow">Method</a><a href="#related-work">Sources</a>
+        <a href="#background">Why</a><a href="#voyage">Real voyage</a><a href="#workflow">Method</a><a href="#validation">Results</a><a href="#related-work">Sources</a>
       </div>
       <details class="mobile-navigation" id="mobile-navigation">
         <summary>Menu</summary>
         <div class="mobile-nav-links">
-          <a href="#validation">Paired results</a><a href="#sampling">Sampling plans</a><a href="#results">Evaluation variants</a><a href="#error-map">Error map</a><a href="#sample-count">Coverage &amp; sample count</a><a href="#estimand">Signed-bias audit</a><a href="#workflow">Workflow</a><a href="#technical">Methods &amp; boundaries</a><a href="#related-work">Related work &amp; credits</a>
+          <a href="#background">Why this question?</a><a href="#voyage">Follow a real ship</a><a href="#workflow">How we test it</a><a href="#sampling">Explore the experiment</a><a href="#validation">What we found</a><a href="#results">Evaluation variants</a><a href="#error-map">Error map</a><a href="#sample-count">Coverage limits</a><a href="#estimand">Signed-bias audit</a><a href="#technical">Methods &amp; boundaries</a><a href="#related-work">Sources &amp; credits</a>
         </div>
       </details>
     </nav>
@@ -41,31 +42,83 @@
     <div class="hero shell">
       <div class="hero-copy">
         <p class="eyebrow">Ocean carbon / A visual research story</p>
-        <h1>Where we sample changes what we can reconstruct.</h1>
-        <p class="lede">Same number of observations. Different sampling rules. A controlled test of monthly ocean pCO₂ reconstruction.</p>
-        <p class="scope">One IPSL-CM6A-LR simulation · one fixed HistGradientBoosting learner · 2005, 2010, 2014.</p>
-        <div class="hero-actions"><a class="button primary" href="#sampling">Explore the globe <span>↗</span></a><a class="button" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a></div>
+        <h1>A vast ocean.<br />A few paths through it.</h1>
+        <p class="lede">We cannot measure everywhere. If we can take the same number of measurements, how much does choosing different places change the map we build?</p>
+        <p class="scope">A research story about ocean carbon, missing observations and a controlled computer experiment.</p>
+        <div class="hero-actions"><a class="button primary" href="#background">Start the story <span>↓</span></a><a class="button" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a></div>
         <p class="byline">Bokai He · Columbia EEE<br />Independent extension of Galen A. McKinley’s course project.</p>
       </div>
       <div class="hero-image-credit"><span>Seen from orbit</span><a href="https://science.nasa.gov/image-detail/phytoplanktonbloom-france-amo-20240510-lrg/">Celtic Sea bloom · NASA Earth Observatory / Michala Garrison ↗</a><small>Context imagery, not model output.</small></div>
     </div>
     <div class="story-rail shell" aria-label="Explore the study">
-      <a href="#sampling"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c12 12 12 24 0 36-12-12-12-24 0-36M9 15h30M9 33h30"/></svg><span><small>01 / OBSERVE</small>Choose where to sample</span><b aria-hidden="true">↗</b></a>
-      <a href="#results"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 39h34M12 35V22M24 35V10M36 35V17"/><circle cx="12" cy="22" r="3"/><circle cx="24" cy="10" r="3"/><circle cx="36" cy="17" r="3"/></svg><span><small>02 / RECONSTRUCT</small>Compare what we recover</span><b aria-hidden="true">↗</b></a>
-      <a href="#technical"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 7h30v34H9zM16 16h16M16 24h9M16 32l4 3 10-10"/></svg><span><small>03 / QUESTION</small>Keep the boundaries visible</span><b aria-hidden="true">↗</b></a>
+      <a href="#background"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c12 12 12 24 0 36-12-12-12-24 0-36M9 15h30M9 33h30"/></svg><span><small>01 / THE QUESTION</small>Why location matters</span><b aria-hidden="true">↗</b></a>
+      <a href="#workflow"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 7h30v34H9zM16 16h16M16 24h9M16 32l4 3 10-10"/></svg><span><small>02 / THE EXPERIMENT</small>Test with a known answer</span><b aria-hidden="true">↗</b></a>
+      <a href="#validation"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 39h34M12 35V22M24 35V10M36 35V17"/><circle cx="12" cy="22" r="3"/><circle cx="24" cy="10" r="3"/><circle cx="36" cy="17" r="3"/></svg><span><small>03 / THE RESULTS</small>See what changes</span><b aria-hidden="true">↗</b></a>
     </div>
   </header>
   <main>
+    <section class="section shell" id="background">
+      <div class="background-layout">
+        <div>
+          <p class="eyebrow">01 · Start with the real problem</p>
+          <h2>The ocean exchanges carbon with the air. We only measure pieces of the picture.</h2>
+          <p>Ships can measure surface-water CO₂ as they travel. But a ship visits a route, not the whole ocean—and one trip cannot tell us what happens everywhere, every month.</p>
+          <p>We use a computer model to estimate the missing places. That is <strong>reconstruction</strong>: turning scattered measurements into a more complete map.</p>
+          <p class="chart-note">The quantity here is pCO₂, a measure of CO₂ pressure in seawater—not a direct map of carbon uptake. <a href="https://www.aoml.noaa.gov/ocd/ocdweb/brown/brown_introduction.html">How shipboard CO₂ measurements work · NOAA ↗</a></p>
+        </div>
+        <figure class="field-photo"><img src="assets/context/noaa-ctd-launch.jpg" width="1536" height="1025" alt="A research ship lowers instruments into the sea" loading="lazy" /><figcaption><span>Ocean science starts with measurements</span><a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA Ocean Exploration ↗</a></figcaption><p class="chart-note">A CTD deployment, not the specific surface pCO₂ system used in the study. This photo is not from the voyage below.</p></figure>
+      </div>
+      <div class="research-question"><span>The question we test</span><p>With 5,000 measurements either way, does <em>where we measure</em> change how well we estimate the places we did not see?</p></div>
+    </section>
+
+    <section class="section shell" id="voyage">
+      <div class="section-heading"><p class="eyebrow">02 · A real voyage, before the simulation</p><h2>A ship leaves a path—not a complete map.</h2><p>Follow a recorded Polarstern research voyage across the Southern Ocean. The empty space around the line is the point: this one ship did not visit everywhere.</p></div>
+      <div class="voyage-explorer" id="voyage-explorer">
+        <div class="voyage-story">
+          <p class="eyebrow">Polarstern / PS103 / 2016–17</p>
+          <h3>From Cape Town<br /> towards South America.</h3>
+          <p>Move the time slider to follow the ship. Drag the globe to look around.</p>
+          <div class="voyage-key"><span class="route-key"></span>Travelled so far <span class="route-key future"></span>Full recorded route</div>
+          <label for="voyage-time">Move through the voyage</label>
+          <input type="range" id="voyage-time" min="0" max="1" value="0" step="1" disabled />
+          <output id="voyage-readout" for="voyage-time" aria-live="polite">Loading recorded navigation positions…</output>
+          <div class="voyage-actions"><button id="voyage-start" disabled>Start</button><button id="voyage-middle" disabled>Midway</button><button id="voyage-end" disabled>End</button></div>
+          <p class="voyage-caveat">The boat marks the selected recorded position. Real navigation, not a simulation: a position is not necessarily a CO₂ sample. Background example only.</p>
+        </div>
+        <div class="voyage-view">
+          <div class="globe-view-top"><span>REAL VOYAGE · NOT EXPERIMENT RESULTS</span><span>DRAG TO EXPLORE ↔</span></div>
+          <canvas id="voyage-globe" tabindex="0" role="img" aria-label="Recorded Polarstern voyage on a globe. Arrow keys turn the globe; Home resets. Use the time slider to inspect recorded positions." aria-describedby="voyage-readout">The route runs from Cape Town through the Southern Ocean towards Punta Arenas. Download the recorded positions below.</canvas>
+          <div class="globe-controls"><button id="voyage-left" disabled aria-label="Turn voyage globe left">←</button><button id="voyage-right" disabled aria-label="Turn voyage globe right">→</button><button id="voyage-reset" disabled>Reset view</button><button id="voyage-locate" disabled>Find ship</button></div>
+        </div>
+      </div>
+      <p class="chart-note">Navigation record: 16 Dec 2016–2 Feb 2017. Boebel (2017), AWI / <a href="https://doi.org/10.1594/PANGAEA.875075">PANGAEA ↗</a> · <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. This is not the historical-density sampling mask used below.</p>
+      <details class="chart-about"><summary>Route source, limitations &amp; downloads</summary><p>Boebel, Olaf (2017): Station list and links to master tracks in different resolutions of POLARSTERN cruise PS103 (ANT-XXXII/2), Cape Town - Punta Arenas, 2016-12-16 - 2017-02-03. Alfred Wegener Institute, PANGAEA, doi:10.1594/PANGAEA.875075.</p><p>All positions and timestamps in the downloaded, approximately 10-minute navigation record are retained. Lines connect adjacent recorded positions, not a measured continuous path; gaps longer than 30 minutes are left disconnected. Speed and course are omitted. The ship symbol is illustrative, not a heading or live position. Navigation alone does not show which instruments were operating. These data do not train or score our experiment.</p><p><a href="data/voyage-track.json" download>Route &amp; provenance (JSON)</a> · <a href="data/PS103-track.tab" download>Original navigation table</a> · <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/export_site_voyage.py">Reproduce the export ↗</a></p></details>
+    </section>
+
+    <section class="section shell" id="workflow">
+      <div class="section-heading"><p class="eyebrow">03 · How we test the question</p><h2>Practice on an ocean where we know the answer.</h2><p>In the real ocean, we cannot check every missing place. In a simulated ocean, we can hide known values, predict them, and check how wrong we were.</p></div>
+      <ol class="workflow-flow" aria-label="Experiment sequence">
+        <li><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c12 12 12 24 0 36-12-12-12-24 0-36M9 15h30M9 33h30"/></svg><strong>1. Keep the answers</strong><span>Start with monthly CO₂ maps from an ocean simulation.</span></li>
+        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 8h34v32H7zM18 8v32M30 8v32M7 19h34M7 29h34"/><circle cx="13" cy="14" r="3"/><circle cx="25" cy="24" r="3"/></svg><strong>2. Set a test aside</strong><span>Hide the same places and months from all three sampling plans.</span></li>
+        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7v12M10 19h28M10 19v12M38 19v12M5 31h10v10H5zM33 31h10v10H33z"/><circle cx="24" cy="7" r="4"/></svg><strong>3. Choose 5,000</strong><span>From the remaining pool, choose measurements using each plan.</span></li>
+        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 8h32v32H8zM14 27l7 6 13-18"/></svg><strong>4. Fill the gaps</strong><span>Train the same type of model to predict the hidden values.</span></li>
+        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 39h34M12 35V22M24 35V10M36 35V17"/></svg><strong>5. Check the error</strong><span>Compare predictions with the answers we kept. Smaller errors are better.</span></li>
+      </ol>
+      <div class="method-plans" aria-label="The three sampling rules"><p><strong>Random</strong>Give each eligible location-month an equal chance.</p><p><strong>Historical-density</strong>Prefer places and months with more past SOCAT observations—not actual ship routes.</p><p><strong>Coverage</strong>Spread measurements across space and months by prioritizing underrepresented blocks.</p></div>
+      <p class="chart-note">One IPSL-CM6A-LR simulation · one fixed HistGradientBoosting learner · 2005, 2010, 2014 · 20 paired seeds. Each observation is one location in one month, not one ship or one voyage.</p>
+      <details class="chart-about"><summary>What makes the comparison fair—and what does it not test?</summary><p>Holdout happens before training. Strategies share the same test set, sample count, model settings and paired seeds. The primary evaluation hides scattered month-cells; the stress test hides entire blocks. In the primary and aligned stress-test comparisons, both sampling and evaluation are restricted to &lt;60°N and errors are area-weighted.</p><p>The simulated observations have no added measurement error. The experiment compares idealized placement rules, not feasible ship routes, deployment costs or a universally best observing network. The full-domain supporting maps below use a different, clearly labelled scope.</p></details>
+    </section>
+
     <section class="section shell" id="sampling">
-      <div class="section-heading"><p class="eyebrow">01 · The sampling plans</p><h2>Equal counts do not give equal coverage.</h2></div>
+      <div class="section-heading"><p class="eyebrow">04 · Now explore the experiment</p><h2>First see where we sample. Then see where predictions fail.</h2><p>Choose a plan to see its measurements. Switch the view to see its errors. Unlike the real voyage above, this globe shows simulated experiments—not ship movements.</p></div>
       <div class="globe-explorer" id="globe-explorer">
         <div class="globe-sidebar">
           <p class="eyebrow">A world to explore / 2005</p>
           <h3>Same ocean.<br /> Different views.</h3>
           <p>Turn the globe. Compare where we sample, then where reconstruction error remains.</p>
-          <label class="globe-label" for="globe-layer">01 / Choose a layer</label>
-          <select id="globe-layer"><option value="sampling">Sampling distribution</option><option value="mae">Reconstruction error (MAE)</option><option value="delta">Error difference vs random</option></select>
-          <p class="globe-label">02 / Choose a strategy</p>
+          <label class="globe-label" for="globe-layer">What do you want to see?</label>
+          <select id="globe-layer"><option value="sampling">Where did we measure?</option><option value="mae">How wrong were the predictions?</option><option value="delta">Better or worse than random?</option></select>
+          <p class="globe-label">Which sampling plan?</p>
           <div class="globe-strategies" role="group" aria-label="Globe sampling strategy"><button data-globe-strategy="random" aria-pressed="true">Random</button><button data-globe-strategy="historical" aria-pressed="false">Historical-density</button><button data-globe-strategy="coverage" aria-pressed="false">Coverage</button></div>
           <div class="globe-legend" id="globe-legend"></div>
           <p id="globe-scope" class="globe-scope">Loading frozen map data… The flat maps below remain available.</p>
@@ -122,14 +175,14 @@
 
     <section class="section shell evidence-layout" id="paired-evidence" aria-label="Observation context and paired reconstruction results">
       <aside class="field-note">
-        <p class="eyebrow">The question behind the maps</p>
-        <h2>We cannot observe every month, everywhere.</h2>
-        <p>This experiment asks a focused question: with the same number of idealized observations, how much does their placement change reconstruction error?</p>
-        <figure class="field-photo"><img src="assets/context/noaa-ctd-launch.jpg" width="1536" height="1025" alt="A CTD rosette being lowered from a research vessel into the sea" loading="lazy" /><figcaption><span>Measured from ships</span><a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA Ocean Exploration ↗</a></figcaption></figure>
-        <p class="chart-note">A real CTD deployment, shown for context—not the specific surface pCO₂ system represented by our SOCAT-derived weights.</p>
+        <p class="eyebrow">Results / Read the first comparison</p>
+        <h2>The same count can leave us with different errors.</h2>
+        <p>Each row on this chart compares two plans on the same hidden test. The historical-density point is farther right in every displayed row: its average error is larger.</p>
+        <p>That is a result of this particular simulation and learner—not a verdict on every real ship-based observing network.</p>
+        <p class="chart-note">Read next: does the result change when we score it differently? And does spreading observations more evenly help every kind of error?</p>
       </aside>
       <figure class="chart-panel hero-chart" id="validation">
-        <figcaption><p class="eyebrow">Paired MAE · lower is better</p><h2>Historical-density is worse in every displayed unit.</h2></figcaption>
+        <figcaption><p class="eyebrow">05 · What we found · lower error is better</p><h2>Historical-density is worse in every displayed unit.</h2></figcaption>
         <div class="legend"><span><i class="key random"></i>Random</span><span><i class="key historical"></i>Historical-density</span></div>
         <div id="paired-chart" class="chart" aria-live="polite"></div>
         <p class="chart-note">MAE = average absolute error. 5,000 samples · area-weighted · both domains &lt;60°N. Each row averages 20 paired seeds; rows are not independent ESM replicates.</p>
@@ -141,7 +194,7 @@
       </figure>
     </section>
     <section class="section tinted" id="results"><div class="shell">
-      <div class="section-heading"><p class="eyebrow">02 · Evaluation sensitivity</p><h2>MAE stays higher across all 12 tested variants.</h2></div>
+      <div class="section-heading"><p class="eyebrow">Results / Does the scoring choice change the answer?</p><h2>MAE stays higher across all 12 tested variants.</h2></div>
       <figure class="chart-panel">
         <div class="legend"><span><i class="key hidden"></i>Hidden cells · primary protocol</span><span><i class="key block"></i>Whole blocks · stress protocol</span><span>Outlined points: aligned, area-weighted scope</span></div>
         <div id="robustness-chart" class="chart"></div>
@@ -171,7 +224,7 @@
     </section>
 
     <section class="section shell" id="sample-count">
-      <div class="section-heading"><p class="eyebrow">03 · Coverage is not a universal fix</p><h2>Coverage can reduce tail error while raising median error.</h2></div>
+      <div class="section-heading"><p class="eyebrow">Results / Is spreading out always better?</p><h2>Coverage can reduce tail error while raising median error.</h2></div>
       <figure class="chart-panel">
         <div class="legend"><span><i class="key median"></i>Median absolute error</span><span><i class="key p99"></i>p99 absolute error</span><span><i class="key rmse"></i>RMSE</span></div>
         <div id="sweep-chart" class="chart"></div>
@@ -195,19 +248,6 @@
         </details>
       </figure>
     </div></section>
-
-    <section class="section shell" id="workflow">
-      <div class="section-heading"><p class="eyebrow">The experiment, at a glance</p><h2>Known truth makes the comparison checkable.</h2></div>
-      <ol class="workflow-flow" aria-label="Experiment sequence">
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c12 12 12 24 0 36-12-12-12-24 0-36M9 15h30M9 33h30"/></svg><strong>Model truth</strong><span>Monthly pCO₂, SST &amp; salinity</span></li>
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 8h34v32H7zM18 8v32M30 8v32M7 19h34M7 29h34"/><circle cx="13" cy="14" r="3"/><circle cx="25" cy="24" r="3"/></svg><strong>Hide, then sample</strong><span>Shared test set; fixed count</span></li>
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7v12M10 19h28M10 19v12M38 19v12M5 31h10v10H5zM33 31h10v10H33z"/><circle cx="24" cy="7" r="4"/></svg><strong>Train</strong><span>The same locked learner</span></li>
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 8h32v32H8zM14 27l7 6 13-18"/></svg><strong>Evaluate</strong><span>Predict the withheld cells</span></li>
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 39h34M12 35V22M24 35V10M36 35V17"/></svg><strong>Compare</strong><span>Magnitude, bias &amp; sensitivity</span></li>
-      </ol>
-      <p class="chart-note">In the primary and aligned stress-test comparisons, sampling and evaluation use the same domain, with a shared test set across strategies. Holdout happens before training.</p>
-      <aside class="next-question"><strong>Next question: where should observations be added?</strong><p>That requires an add-observation experiment with access and cost constraints. The present replacement-design comparison does not identify optimal routes or marginal gains.</p></aside>
-    </section>
 
     <section class="section dark" id="technical"><div class="shell">
       <div class="section-heading"><p class="eyebrow">Methods &amp; evidence</p><h2>The boundaries remain visible.</h2></div>
@@ -240,6 +280,7 @@
     </div></section>
 
     <section class="section shell" id="related-work">
+      <aside class="next-question"><strong>Next question: where should observations be added?</strong><p>That requires an add-observation experiment with access and cost constraints. The present replacement-design comparison does not identify optimal routes or marginal gains.</p></aside>
       <div class="section-heading"><p class="eyebrow">Related work &amp; provenance</p><h2>A focused extension, not a new testbed paradigm.</h2></div>
       <div class="reference-grid">
         <article><h3><a href="https://doi.org/10.1029/2020GB006788">Gloege et al. (2021) ↗</a></h3><p>Large Ensemble Testbed, model truth and temporal reconstruction skill. Our three yearly fits do not test that temporal scope.</p></article>

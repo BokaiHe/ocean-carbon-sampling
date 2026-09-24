@@ -1,0 +1,4 @@
+# Preserve the original downloaded bytes for source checksum verification.
+site/data/PS103-track.tab -text
+# The reproducibility test compares the generated JSON byte-for-byte.
+site/data/voyage-track.json text eol=lf
