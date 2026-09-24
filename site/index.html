@@ -8,8 +8,8 @@
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css?v=expedition-1" />
   <link rel="stylesheet" href="expedition.css?v=month-squares-1" />
-  <link rel="stylesheet" href="hero.css?v=glass-1" />
-  <script src="hero.js?v=glass-1" defer></script>
+  <link rel="stylesheet" href="hero.css?v=video-2" />
+  <script src="hero.js?v=video-2" defer></script>
   <script src="app.js?v=expedition-1" defer></script>
   <script src="vendor/d3-7.9.0.min.js" defer></script>
   <script src="globe.js?v=land-overlay-1" defer></script>
@@ -28,6 +28,7 @@
     <a class="chapter-contact" href="mailto:bh2954@columbia.edu">Bokai He · Columbia EEE<br />Get in touch ↗</a>
   </nav>
   <header id="top" class="cinematic-hero">
+    <video id="hero-video" class="hero-video" muted loop playsinline preload="none" poster="assets/context/ocean-waves-poster.jpg" data-src="assets/context/ocean-waves.mp4" aria-hidden="true" tabindex="-1"></video>
     <nav class="nav shell" aria-label="Primary navigation">
       <a class="brand" href="#top"><span aria-hidden="true">◉</span> Ocean Carbon Sampling</a>
       <div class="nav-links">
@@ -50,9 +51,9 @@
         <div class="hero-actions"><a class="button primary" href="#background">Start the story <span>↓</span></a><a class="button" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a></div>
         <p class="byline">Bokai He · Columbia EEE<br />Independent extension of Galen A. McKinley’s course project.</p>
       </div>
-      <div class="hero-image-credit"><span>Seen from orbit</span><a href="https://science.nasa.gov/image-detail/phytoplanktonbloom-france-amo-20240510-lrg/">Celtic Sea bloom · NASA Earth Observatory / Michala Garrison ↗</a><small>Animated satellite photograph. Context imagery, not model output.</small></div>
+      <div class="hero-image-credit"><span>Ocean in motion</span><a href="https://www.pexels.com/video/aerial-view-of-ocean-waves-4631568/">Ocean waves · ArtHouse Studio / Pexels ↗</a><small>Real ocean footage. Context imagery, not model output.</small></div>
     </div>
-    <div class="hero-motion-row shell"><span>OBSERVE / RECONSTRUCT / QUESTION</span><button id="hero-motion" type="button" aria-pressed="false" hidden>Pause background motion</button></div>
+    <div class="hero-motion-row shell"><span>OBSERVE / RECONSTRUCT / QUESTION</span><button id="hero-motion" type="button" aria-controls="hero-video" aria-pressed="false" hidden>Pause background video</button></div>
     <div class="story-rail shell" aria-label="Explore the study">
       <a href="#background"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c12 12 12 24 0 36-12-12-12-24 0-36M9 15h30M9 33h30"/></svg><span><small>01 / THE QUESTION</small>Why location matters</span><b aria-hidden="true">↗</b></a>
       <a href="#workflow"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 7h30v34H9zM16 16h16M16 24h9M16 32l4 3 10-10"/></svg><span><small>02 / THE EXPERIMENT</small>Test with a known answer</span><b aria-hidden="true">↗</b></a>

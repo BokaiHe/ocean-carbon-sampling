@@ -115,7 +115,7 @@ def test_ocean_editorial_layout_keeps_context_separate_from_evidence() -> None:
     assert 'id="paired-chart"' not in header
     assert 'class="story-rail shell"' in header
     assert 'id="paired-evidence"' in html
-    assert "NASA Earth Observatory / Michala Garrison" in html
+    assert "ArtHouse Studio / Pexels" in html
     assert "NOAA Ocean Exploration" in html
     assert "Context imagery, not model output." in html
     assert "not the specific surface pCO₂ system" in html

@@ -1,5 +1,5 @@
 /* Original static-site implementation inspired by the Hero 9 interaction concept.
-   No React Bits Pro source or dependencies. Satellite photograph, not video. */
+   No React Bits Pro source or dependencies. Locally hosted, licensed ocean footage. */
 .cinematic-hero {
   min-height:calc(100svh - 20px);
   display:flex;
@@ -7,10 +7,19 @@
   background:#102d3b;
 }
 .cinematic-hero::before {
-  inset:-4%;
-  background:url("assets/context/nasa-celtic-sea-phytoplankton.jpg") center 48% / cover no-repeat;
-  transform:scale(1.03);
-  opacity:.85;
+  inset:0;
+  z-index:-3;
+  background:url("assets/context/ocean-waves-poster.jpg") center / cover no-repeat;
+}
+.hero-video {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  z-index:-2;
+  pointer-events:none;
 }
 .cinematic-hero::after {
   content:"";
@@ -18,7 +27,7 @@
   inset:0;
   z-index:-1;
   pointer-events:none;
-  background:linear-gradient(180deg,#0b26394d 0%,#102b3d99 40%,#0b2539ed 100%);
+  background:linear-gradient(180deg,#0b2639b8 0%,#102b3db3 40%,#0b2539de 100%);
 }
 .cinematic-hero .nav {
   position:relative;
@@ -88,8 +97,6 @@
   }
 }
 @media(prefers-reduced-motion:no-preference) {
-  .hero-motion-enabled::before { animation:ocean-drift 28s ease-in-out infinite alternate; }
-  .hero-motion-enabled.hero-motion-paused::before { animation-play-state:paused; }
   .hero-enter .hero-reveal-line { animation:ocean-reveal 1.2s cubic-bezier(.2,.65,.3,1) both; }
   .hero-enter .hero-reveal-line:nth-of-type(2) { animation-delay:.2s; }
   .hero-enter .hero .eyebrow { animation:ocean-reveal .9s ease-out both; }
@@ -97,7 +104,6 @@
   .hero-enter .hero .scope { animation:ocean-reveal 1s .45s ease-out both; }
   .hero-enter .hero-actions { animation:ocean-reveal 1s .55s ease-out both; }
   @keyframes ocean-reveal { from { opacity:0; filter:blur(10px); transform:translateY(16px); } to { opacity:1; filter:blur(0); transform:translateY(0); } }
-  @keyframes ocean-drift { from { transform:scale(1.03) translate(-.6%,0); } to { transform:scale(1.12) translate(.6%,-1%); } }
 }
 @media(max-width:800px) {
   .cinematic-hero .nav { margin-top:14px; padding:10px 14px; gap:12px; }
