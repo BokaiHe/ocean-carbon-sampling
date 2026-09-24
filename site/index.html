@@ -9,11 +9,11 @@
   <link rel="stylesheet" href="styles.css?v=expedition-1" />
   <link rel="stylesheet" href="expedition.css?v=neutral-globes-1" />
   <link rel="stylesheet" href="hero.css?v=video-2" />
-  <script src="hero.js?v=video-2" defer></script>
-  <script src="app.js?v=expedition-1" defer></script>
-  <script src="vendor/d3-7.9.0.min.js" defer></script>
-  <script src="globe.js?v=neutral-globes-1" defer></script>
-  <script src="observations.js?v=neutral-globes-1" defer></script>
+  <script type="module" src="/src/main.jsx"></script>
+  <script vite-ignore src="app.js?v=expedition-1" defer></script>
+  <script vite-ignore src="vendor/d3-7.9.0.min.js" defer></script>
+  <script vite-ignore src="globe.js?v=neutral-globes-1" defer></script>
+  <script vite-ignore src="observations.js?v=neutral-globes-1" defer></script>
 </head>
 <body>
   <nav class="chapter-nav" aria-label="Research chapters">
@@ -27,39 +27,9 @@
     <a href="#related-work"><span>07</span> Sources &amp; credits <b>↗</b></a>
     <a class="chapter-contact" href="mailto:bh2954@columbia.edu">Bokai He · Columbia EEE<br />Get in touch ↗</a>
   </nav>
-  <header id="top" class="cinematic-hero">
-    <video id="hero-video" class="hero-video" muted loop playsinline preload="none" poster="assets/context/ocean-waves-poster.jpg" data-src="assets/context/ocean-waves.mp4" aria-hidden="true" tabindex="-1"></video>
-    <nav class="nav shell" aria-label="Primary navigation">
-      <a class="brand" href="#top"><span aria-hidden="true">◉</span> Ocean Carbon Sampling</a>
-      <div class="nav-links">
-        <a href="#background">Why</a><a href="#voyage">Observed CO₂</a><a href="#workflow">Method</a><a href="#validation">Results</a><a href="#related-work">Sources</a>
-      </div>
-      <details class="mobile-navigation" id="mobile-navigation">
-        <summary>Menu</summary>
-        <div class="mobile-nav-links">
-          <a href="#background">Why this question?</a><a href="#voyage">See observed CO₂</a><a href="#workflow">How we test it</a><a href="#sampling">Explore the experiment</a><a href="#validation">What we found</a><a href="#results">Evaluation variants</a><a href="#error-map">Error map</a><a href="#sample-count">Coverage limits</a><a href="#estimand">Signed-bias audit</a><a href="#technical">Methods &amp; boundaries</a><a href="#related-work">Sources &amp; credits</a>
-        </div>
-      </details>
-    </nav>
-    <div class="publication-strip shell"><span>Research note 01</span><span>Observing-system simulation experiment</span><span>Frozen analysis · 2026</span></div>
-    <div class="hero shell">
-      <div class="hero-copy">
-        <p class="eyebrow">Ocean carbon / A visual research story</p>
-        <h1><span class="hero-reveal-line">A vast ocean.</span><br /><span class="hero-reveal-line">A few paths through it.</span></h1>
-        <p class="lede">We cannot measure everywhere. If we can take the same number of measurements, how much does choosing different places change the map we build?</p>
-        <p class="scope">A research story about ocean carbon, missing observations and a controlled computer experiment.</p>
-        <div class="hero-actions"><a class="button primary" href="#background">Start the story <span>↓</span></a><a class="button" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data ↗</a></div>
-        <p class="byline">Bokai He · Columbia EEE<br />Independent extension of Galen A. McKinley’s course project.</p>
-      </div>
-      <div class="hero-image-credit"><span>Ocean in motion</span><a href="https://www.pexels.com/video/aerial-view-of-ocean-waves-4631568/">Ocean waves · ArtHouse Studio / Pexels ↗</a><small>Real ocean footage. Context imagery, not model output.</small></div>
-    </div>
-    <div class="hero-motion-row shell"><span>OBSERVE / RECONSTRUCT / QUESTION</span><button id="hero-motion" type="button" aria-controls="hero-video" aria-pressed="false" hidden>Pause background video</button></div>
-    <div class="story-rail shell" aria-label="Explore the study">
-      <a href="#background"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c12 12 12 24 0 36-12-12-12-24 0-36M9 15h30M9 33h30"/></svg><span><small>01 / THE QUESTION</small>Why location matters</span><b aria-hidden="true">↗</b></a>
-      <a href="#workflow"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 7h30v34H9zM16 16h16M16 24h9M16 32l4 3 10-10"/></svg><span><small>02 / THE EXPERIMENT</small>Test with a known answer</span><b aria-hidden="true">↗</b></a>
-      <a href="#validation"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 39h34M12 35V22M24 35V10M36 35V17"/><circle cx="12" cy="22" r="3"/><circle cx="24" cy="10" r="3"/><circle cx="36" cy="17" r="3"/></svg><span><small>03 / THE RESULTS</small>See what changes</span><b aria-hidden="true">↗</b></a>
-    </div>
-  </header>
+  <!-- react-hero:start -->
+<div id="hero-root"><header id="top" class="cinematic-hero"><video vite-ignore id="hero-video" class="hero-video" muted="" loop="" playsInline="" preload="none" poster="assets/context/ocean-waves-poster.jpg" data-src="assets/context/ocean-waves.mp4" aria-hidden="true" tabindex="-1"></video><a class="skip-link" href="#background">Skip to the research</a><nav class="nav shell" aria-label="Primary navigation"><a class="brand" href="#top"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"></circle><path d="M4 17c5-6 9 6 14 0s9 6 14 0M5 23c5-6 8 6 13 0s8 6 13 0"></path><path d="M18 3v5M3 18h5M28 18h5"></path></svg><span>OCEAN CARBON<span class="brand-subtitle">A sampling experiment</span></span></a><div class="nav-links"><a href="#background">The question</a><a href="#voyage">Observed ocean</a><a href="#workflow">The method</a><a href="#validation">Findings</a></div><a class="hero-contact" href="mailto:bh2954@columbia.edu">Let’s talk <span aria-hidden="true">↗</span></a><details class="mobile-navigation" id="mobile-navigation"><summary>Menu <span aria-hidden="true">＋</span></summary><div class="mobile-nav-links"><a href="#background">The question<span aria-hidden="true">↗</span></a><a href="#voyage">Observed ocean<span aria-hidden="true">↗</span></a><a href="#workflow">The method<span aria-hidden="true">↗</span></a><a href="#validation">Findings<span aria-hidden="true">↗</span></a><a href="#sampling">Explore the experiment<span aria-hidden="true">↗</span></a><a href="#technical">Boundaries<span aria-hidden="true">↗</span></a><a href="#related-work">Sources &amp; credits<span aria-hidden="true">↗</span></a></div></details></nav><div class="publication-strip shell"><span><i aria-hidden="true"></i>Independent research / 01</span><span>Ocean observation &amp; machine learning</span></div><div class="hero shell"><div class="hero-copy"><p class="eyebrow">How much can a few observations tell us?</p><h1><span class="hero-reveal-line">A vast ocean.</span><br/><span class="hero-reveal-line hero-line-soft">A few paths through it.</span></h1><div class="hero-intro"><p class="lede">We cannot measure everywhere.<br/>With the same number of observations, how much does <em>where we look</em> change what we know?</p><div class="hero-actions"><a class="button primary" href="#background">Explore the research <span aria-hidden="true">↘</span></a><a class="hero-code" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data <span aria-hidden="true">↗</span></a></div></div></div></div><div class="hero-footer shell"><p class="byline"><strong>Bokai He</strong><span>Columbia EEE · Independent course-project extension</span><a href="#related-work">Course foundation &amp; credits ↗</a></p><div class="hero-footer-right"><button id="hero-motion" type="button" aria-controls="hero-video" aria-pressed="false" hidden=""><span aria-hidden="true">Ⅱ</span>Pause background video</button><a class="hero-image-credit" href="https://www.pexels.com/video/aerial-view-of-ocean-waves-4631568/">ArtHouse Studio / Pexels ↗<small>Context imagery, not model output.</small></a></div></div><div class="story-rail shell" aria-label="Explore the study"><a href="#background"><small>01</small><span>Why location matters</span><b aria-hidden="true">↗</b></a><a href="#workflow"><small>02</small><span>Test with a known answer</span><b aria-hidden="true">↗</b></a><a href="#validation"><small>03</small><span>See what changes</span><b aria-hidden="true">↗</b></a></div></header></div>
+<!-- react-hero:end -->
   <main>
     <section class="section shell" id="background">
       <div class="background-layout">

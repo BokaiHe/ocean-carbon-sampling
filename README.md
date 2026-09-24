@@ -208,10 +208,24 @@ are not evidence of formal significance in the present OSSE.
 python -m venv .venv
 pip install -e ".[dev,model,osse,app,notebook]"
 pytest
-python -m http.server 8000 --directory site
 ```
 
-Open `http://localhost:8000/`, not `site/index.html` via `file://`.
+For the website (Node.js 22.12+; deployment uses Node.js 24):
+
+```bash
+npm ci
+npm run dev
+# Production preview:
+npm run build
+npm run preview
+```
+
+Open the localhost URL printed by Vite, not `site/index.html` via `file://`.
+The React hero is pre-rendered for readable no-JavaScript fallback, then hydrated
+for video and navigation controls. The existing research visualizations remain
+independent; their frozen data and calculations are unchanged. Vite builds `dist/`,
+which GitHub Pages deploys. Edit `site/src/Hero.jsx`, not its generated header in
+`site/index.html`; `npm run render:hero` updates that checked-in fallback.
 No model run or raw-data download is required to preview the checked-in site.
 The paired MAE chart foregrounds `area|both60|hidden`, alongside the whole-block
 stress test. The separate signed-bias dot chart uses whole-block results only.

@@ -168,9 +168,7 @@ function renderAudits() {
   $("#regrid-audit").innerHTML=`<p>Native-cell-area regridding preserved ${r.direction_checks_passed}/${r.direction_checks} prespecified directions. Correlated metrics are not independent tests. This checks regridding, not evaluation-area weighting.</p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/osse_regrid_audit_results.md">Read the full regridding audit ↗</a>`;
 }
 function renderCharts() {pairedChart();blockChart();robustnessChart();sweepChart();biasChart();}
-const menu=$("#mobile-navigation");
-menu.addEventListener("click",e=>{if(e.target.closest("a"))menu.open=false;});
-menu.addEventListener("keydown",e=>{if(e.key==="Escape"){menu.open=false;$("summary",menu).focus();}});
+// The React hero owns mobile navigation (including Escape and focus handling).
 async function initialize() {
   try{
     const responses=await Promise.all(["data/site-data.json","data/chart-data.json"].map(path=>fetch(path)));
