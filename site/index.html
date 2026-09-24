@@ -7,11 +7,11 @@
   <title>Ocean Carbon Sampling · Visual research brief</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css?v=expedition-1" />
-  <link rel="stylesheet" href="expedition.css?v=observations-1" />
+  <link rel="stylesheet" href="expedition.css?v=month-tabs-1" />
   <script src="app.js?v=expedition-1" defer></script>
   <script src="vendor/d3-7.9.0.min.js" defer></script>
   <script src="globe.js?v=land-overlay-1" defer></script>
-  <script src="observations.js?v=observations-1" defer></script>
+  <script src="observations.js?v=month-tabs-1" defer></script>
 </head>
 <body>
   <nav class="chapter-nav" aria-label="Research chapters">
@@ -78,12 +78,16 @@
           <p class="eyebrow">SOCAT v2025 / Observed ocean</p>
           <h3>Real measurements.<br /> An incomplete picture.</h3>
           <p>Each dot represents an observed 1° grid cell, not a ship. Turn the globe and tap a dot to inspect its value.</p>
-          <div class="observation-filters"><label for="observation-year">Year</label><select id="observation-year" disabled><option>Loading…</option></select><label for="observation-month">Month</label><select id="observation-month" disabled><option>Loading…</option></select></div>
           <div class="observation-legend"><strong>Surface-water fCO₂ · µatm</strong><div id="observation-scale" class="globe-colour-scale"></div><div class="globe-ticks"><span>≤200</span><span>400</span><span>≥600</span></div><p>Lower ← → Higher<br />Same colour scale for every date.</p></div>
           <p class="observation-status" id="observation-status" aria-live="polite">Loading observed grid cells…</p>
           <div class="globe-selection observation-selection"><span>Selected grid cell</span><p id="observation-readout" aria-live="polite">Tap a dot to see its value, position and observation count.</p></div>
         </div>
         <div class="observation-view">
+          <div class="observation-filters">
+            <div class="observation-year-row"><label for="observation-year">Year</label><select id="observation-year" disabled><option>Loading…</option></select></div>
+            <span id="observation-month-label" class="observation-filter-label">Month</span>
+            <div id="observation-month" class="observation-month-buttons" role="group" aria-labelledby="observation-month-label"><button disabled>Loading months…</button></div>
+          </div>
           <div class="globe-view-top"><span>OBSERVED fCO₂ · NOT MODEL ERROR</span><span>DRAG TO EXPLORE ↔</span></div>
           <canvas id="observation-globe" tabindex="0" role="img" aria-label="SOCAT observed fCO2 globe. Drag or use arrow keys to rotate, plus and minus to zoom, Home to reset. A grid-cell selector below offers keyboard inspection." aria-describedby="observation-status">Observed monthly grid values are available in the JSON download below.</canvas>
           <div class="globe-controls"><button id="observation-left" disabled aria-label="Turn observed globe left">←</button><button id="observation-right" disabled aria-label="Turn observed globe right">→</button><button id="observation-in" disabled aria-label="Zoom observed globe in">＋</button><button id="observation-out" disabled aria-label="Zoom observed globe out">−</button><button id="observation-reset" disabled>Reset</button></div>

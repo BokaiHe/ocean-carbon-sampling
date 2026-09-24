@@ -16,7 +16,7 @@ function aggregateObservedCells(rows, month) {
   if (!root) return;
   const canvas = document.querySelector('#observation-globe');
   const yearSelect = document.querySelector('#observation-year');
-  const monthSelect = document.querySelector('#observation-month');
+  const monthButtons = document.querySelector('#observation-month');
   const pointSelect = document.querySelector('#observation-point');
   const status = document.querySelector('#observation-status');
   const readout = document.querySelector('#observation-readout');
@@ -50,6 +50,7 @@ function aggregateObservedCells(rows, month) {
         status.textContent = `${year} · ${months[month]} · ${cells.length.toLocaleString('en-US')} observed grid cells · ${count.toLocaleString('en-US')} underlying measurements. ${month?'Monthly grid means.':'Mean of available months only; not a complete annual mean.'}`;
         readout.textContent = 'Tap a dot to see its value, position and observation count.';
         root.dataset.year=String(year);root.dataset.month=String(month);root.dataset.cells=String(cells.length);
+        monthButtons.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.observationMonth)===month)));
         requestDraw();
       }
       function draw() {
@@ -95,8 +96,13 @@ function aggregateObservedCells(rows, month) {
       function changeZoom(step){zoom=Math.max(.8,Math.min(2.2,Math.round((zoom+step)*10)/10));requestDraw();}
       function reset(){rotation=[35,-15,0];zoom=1;requestDraw();}
       yearSelect.replaceChildren(...data.metadata.years.map(y=>new Option(String(y),String(y))));yearSelect.value=String(year);
-      monthSelect.replaceChildren(...months.map((name,i)=>new Option(name,String(i))));
-      yearSelect.onchange=()=>{year=Number(yearSelect.value);rebuild();};monthSelect.onchange=()=>{month=Number(monthSelect.value);rebuild();};
+      monthButtons.replaceChildren(...months.map((name,i)=>{
+        const button=document.createElement('button');button.type='button';
+        button.textContent=i?name.slice(0,3):'All months';button.setAttribute('aria-label',name);
+        button.dataset.observationMonth=String(i);button.setAttribute('aria-pressed',String(i===month));
+        button.onclick=()=>{month=i;rebuild();};return button;
+      }));
+      yearSelect.onchange=()=>{year=Number(yearSelect.value);rebuild();};
       pointSelect.onchange=()=>{if(pointSelect.value!=='')inspect(Number(pointSelect.value),true);};
       document.querySelector('#observation-left').onclick=()=>turn(-20);document.querySelector('#observation-right').onclick=()=>turn(20);
       document.querySelector('#observation-in').onclick=()=>changeZoom(.2);document.querySelector('#observation-out').onclick=()=>changeZoom(-.2);

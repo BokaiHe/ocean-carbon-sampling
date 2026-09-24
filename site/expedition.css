@@ -4,12 +4,19 @@
 .observation-sidebar .eyebrow { color:#bfd5da; font-size:12px; }
 .observation-sidebar h3 { font:400 33px/1.1 Georgia,serif; margin:18px 0; }
 .observation-sidebar>p { font:15px/1.65 Arial,sans-serif; color:#dce8eb; }
-.observation-filters label { display:block; font:700 14px Arial,sans-serif; margin:18px 0 8px; }
-.observation-filters select { width:100%; min-height:46px; padding:9px; border:1px solid #90aeb7; border-radius:5px; background:#f3f5ef; color:#1e3b46; font:15px Arial,sans-serif; }
+.observation-filters { width:100%; max-width:660px; margin:0 auto 22px; padding:16px; border:1px solid #789aa5; border-radius:8px; background:#112f3d66; }
+.observation-filters label,.observation-filter-label { display:block; font:700 14px Arial,sans-serif; margin:0; }
+.observation-year-row { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+.observation-filters select { width:126px; min-height:44px; padding:9px; border:1px solid #90aeb7; border-radius:5px; background:#f3f5ef; color:#1e3b46; font:15px Arial,sans-serif; }
+.observation-month-buttons { display:flex; flex-wrap:wrap; gap:6px; margin-top:9px; }
+.observation-month-buttons button { flex:0 0 auto; min-width:46px; min-height:44px; padding:8px 11px; border:1px solid #90aeb7; border-radius:5px; background:#244c5b; color:#f4f9fa; font:15px Arial,sans-serif; cursor:pointer; }
+.observation-month-buttons button:hover { background:#496d7c; }
+.observation-month-buttons button[aria-pressed=true] { background:#e4eee7; color:#173b46; border-color:#e4eee7; font-weight:700; box-shadow:inset 0 -3px #426c7c; }
+.observation-month-buttons button:focus-visible { outline:3px solid #f3cb88; outline-offset:3px; }
 .observation-legend { margin-top:24px; font:14px/1.6 Arial,sans-serif; }
 .observation-legend p { margin-top:8px; color:#dce8eb; }
 .observation-sidebar .observation-status { font-size:14px; }
-.observation-view { min-width:0; display:flex; flex-direction:column; justify-content:center; padding:24px 12px; }
+.observation-view { min-width:0; display:flex; flex-direction:column; justify-content:flex-start; padding:24px 12px; }
 #observation-globe { width:100%; max-width:660px; aspect-ratio:1; display:block; margin-inline:auto; cursor:grab; touch-action:pan-y; }
 #observation-globe:active { cursor:grabbing; }
 #observation-point { display:block; width:100%; max-width:580px; min-height:44px; font:15px Arial,sans-serif; margin-top:10px; padding:8px; }
@@ -20,7 +27,7 @@
  .observation-sidebar h3 { order:1; font-size:29px; margin:16px 20px; }
  .observation-sidebar h3 br { display:none; }
  .observation-sidebar>p:not([class]) { order:2; margin:0 20px 12px; }
- .observation-filters { order:3; margin:0 20px; }
+ .observation-filters { padding:12px; margin:0 auto 18px; }
  .observation-view { order:4; padding:18px 8px; }
  .observation-legend { order:5; margin:0 20px 14px; }
  .observation-sidebar .observation-status { order:6; margin:0 20px 14px; }
