@@ -82,6 +82,9 @@ def test_observation_date_controls_are_above_globe_with_visible_month_buttons():
     assert 'class="observation-month-buttons" role="group"' in html
     assert "button.dataset.observationMonth" in js
     assert "aria-pressed" in js
+    assert "months.slice(1)" in js
+    assert "button.textContent=String(i)" in js
+    assert 'id="observation-all-months"' in html
 
 
 def test_observation_globe_has_no_routes_or_model_data_dependency():

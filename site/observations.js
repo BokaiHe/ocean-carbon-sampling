@@ -50,7 +50,7 @@ function aggregateObservedCells(rows, month) {
         status.textContent = `${year} · ${months[month]} · ${cells.length.toLocaleString('en-US')} observed grid cells · ${count.toLocaleString('en-US')} underlying measurements. ${month?'Monthly grid means.':'Mean of available months only; not a complete annual mean.'}`;
         readout.textContent = 'Tap a dot to see its value, position and observation count.';
         root.dataset.year=String(year);root.dataset.month=String(month);root.dataset.cells=String(cells.length);
-        monthButtons.querySelectorAll('button').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.observationMonth)===month)));
+        root.querySelectorAll('[data-observation-month]').forEach(button=>button.setAttribute('aria-pressed',String(Number(button.dataset.observationMonth)===month)));
         requestDraw();
       }
       function draw() {
@@ -96,12 +96,14 @@ function aggregateObservedCells(rows, month) {
       function changeZoom(step){zoom=Math.max(.8,Math.min(2.2,Math.round((zoom+step)*10)/10));requestDraw();}
       function reset(){rotation=[35,-15,0];zoom=1;requestDraw();}
       yearSelect.replaceChildren(...data.metadata.years.map(y=>new Option(String(y),String(y))));yearSelect.value=String(year);
-      monthButtons.replaceChildren(...months.map((name,i)=>{
+      monthButtons.replaceChildren(...months.slice(1).map((name,index)=>{
+        const i=index+1;
         const button=document.createElement('button');button.type='button';
-        button.textContent=i?name.slice(0,3):'All months';button.setAttribute('aria-label',name);
+        button.textContent=String(i);button.title=name;button.setAttribute('aria-label',name);
         button.dataset.observationMonth=String(i);button.setAttribute('aria-pressed',String(i===month));
         button.onclick=()=>{month=i;rebuild();};return button;
       }));
+      document.querySelector('#observation-all-months').onclick=()=>{month=0;rebuild();};
       yearSelect.onchange=()=>{year=Number(yearSelect.value);rebuild();};
       pointSelect.onchange=()=>{if(pointSelect.value!=='')inspect(Number(pointSelect.value),true);};
       document.querySelector('#observation-left').onclick=()=>turn(-20);document.querySelector('#observation-right').onclick=()=>turn(20);
