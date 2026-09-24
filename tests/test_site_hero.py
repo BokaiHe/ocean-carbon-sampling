@@ -4,12 +4,14 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parents[1] / "site"
 
 
-def test_hero_keeps_local_video_and_discloses_context_footage():
+def test_hero_keeps_local_video_and_retains_source_record():
     html = (SITE / "index.html").read_text(encoding="utf-8")
     assert 'href="hero.css?' in html
     assert 'src="/src/main.jsx"' in html
     assert 'id="hero-motion"' in html
-    assert "Context imagery, not model output." in html
+    header = html.split("</header>", 1)[0]
+    assert "hero-image-credit" not in header
+    assert "ArtHouse Studio / Pexels" not in header
     assert 'preload="none"' in html
     assert 'loop=""' in html
     assert 'data-src="assets/context/ocean-waves.mp4"' in html

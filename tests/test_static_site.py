@@ -115,9 +115,10 @@ def test_ocean_editorial_layout_keeps_context_separate_from_evidence() -> None:
     assert 'id="paired-chart"' not in header
     assert 'class="story-rail shell"' in header
     assert 'id="paired-evidence"' in html
-    assert "ArtHouse Studio / Pexels" in html
+    source = (SITE / "assets/context/ocean-waves-source.md").read_text(encoding="utf-8")
+    assert "ArtHouse Studio" in source
     assert "NOAA Ocean Exploration" in html
-    assert "Context imagery, not model output." in html
+    assert "Context imagery, not a source of the values below." in html
     assert "not the specific surface pCO₂ system" in html
     assert "nasa-celtic-sea-phytoplankton.jpg" in css
     assert "prefers-reduced-motion" in css

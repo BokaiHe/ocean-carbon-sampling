@@ -33,7 +33,7 @@ export default function Hero(){
     </div>
     <div className="hero-footer shell">
       <p className="byline"><strong>Bokai He</strong><span>Columbia EEE · Independent course-project extension</span><a href="#related-work">Course foundation &amp; credits ↗</a></p>
-      <div className="hero-footer-right"><button id="hero-motion" type="button" aria-controls="hero-video" aria-pressed={paused} hidden={!media.allowed} onClick={media.toggle}><span aria-hidden="true">{paused?'▷':'Ⅱ'}</span>{media.mode==='error'?'Retry background video':paused?'Play background video':'Pause background video'}</button><a className="hero-image-credit" href="https://www.pexels.com/video/aerial-view-of-ocean-waves-4631568/">ArtHouse Studio / Pexels ↗<small>Context imagery, not model output.</small></a></div>
+      <div className="hero-footer-right"><button id="hero-motion" type="button" aria-controls="hero-video" aria-pressed={paused} hidden={!media.allowed} onClick={media.toggle}><span aria-hidden="true">{paused?'▷':'Ⅱ'}</span>{media.mode==='error'?'Retry background video':paused?'Play background video':'Pause background video'}</button></div>
     </div>
     <div className="story-rail shell" aria-label="Explore the study">{[['01','#background','Why location matters'],['02','#workflow','Test with a known answer'],['03','#validation','See what changes']].map(([number,href,label])=><a key={number} href={href}><small>{number}</small><span>{label}</span><b aria-hidden="true">↗</b></a>)}</div>
   </header>;
