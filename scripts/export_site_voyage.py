@@ -56,6 +56,7 @@ def export(source: Path, destination: Path) -> dict:
     destination.write_text(
         json.dumps(result, ensure_ascii=False, separators=(",", ":")) + "\n",
         encoding="utf-8",
+        newline="\n",
     )
     return result
 
