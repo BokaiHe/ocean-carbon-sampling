@@ -192,4 +192,32 @@ async function initialize() {
     document.body.prepend(message);console.error(error);
   }
 }
+// Keep image enlargement on this page, including in embedded browsers.
+const imageViewer=document.createElement("dialog");
+imageViewer.className="image-viewer";
+imageViewer.setAttribute("aria-label","Enlarged map");
+imageViewer.innerHTML='<div class="image-viewer-toolbar"><span>Enlarged map</span><button type="button" autofocus aria-label="Close enlarged map">Close ×</button></div><div class="image-viewer-body"><img alt="" /></div>';
+document.body.append(imageViewer);
+let imageOpener=null,imageScroll=0;
+$("button",imageViewer).addEventListener("click",()=>imageViewer.close());
+imageViewer.addEventListener("click",e=>{if(e.target===imageViewer||e.target.classList.contains("image-viewer-body"))imageViewer.close();});
+imageViewer.addEventListener("close",()=>{
+  document.documentElement.classList.remove("image-viewer-open");
+  imageOpener?.focus({preventScroll:true});
+  window.scrollTo({top:imageScroll,behavior:"instant"});
+  $("img",imageViewer).removeAttribute("src");
+});
+document.addEventListener("click",e=>{
+  const link=e.target.closest("a[href]");
+  if(!link||e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey||link.hasAttribute("download"))return;
+  const url=new URL(link.href);
+  if(url.origin!==location.origin||!url.pathname.endsWith(".png")||typeof imageViewer.showModal!=="function")return;
+  e.preventDefault();
+  imageOpener=link;imageScroll=window.scrollY;
+  const source=$("img",link)||$("img",link.closest("figure")||link);
+  $("img",imageViewer).alt=source?.alt||link.getAttribute("aria-label")||"Enlarged map";
+  $("img",imageViewer).src=link.href;
+  imageViewer.showModal();
+  document.documentElement.classList.add("image-viewer-open");
+});
 initialize();

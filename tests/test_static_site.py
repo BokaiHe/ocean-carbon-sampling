@@ -25,6 +25,21 @@ def test_static_site_entry_points_exist() -> None:
         assert path.stat().st_size > 0
 
 
+def test_image_enlargement_stays_on_page_with_accessible_exit() -> None:
+    js = (SITE / "app.js").read_text(encoding="utf-8")
+    css = (SITE / "styles.css").read_text(encoding="utf-8")
+    assert 'document.createElement("dialog")' in js
+    assert 'aria-label="Close enlarged map"' in js
+    assert "imageViewer.showModal()" in js
+    assert "imageViewer.close()" in js
+    assert 'imageViewer.addEventListener("close"' in js
+    assert "focus({preventScroll:true})" in js
+    assert "top:imageScroll" in js
+    assert 'link.hasAttribute("download")' in js
+    assert ".image-viewer::backdrop" in css
+    assert ".image-viewer-toolbar button:focus-visible" in css
+
+
 def test_ocean_editorial_layout_keeps_context_separate_from_evidence() -> None:
     html = (SITE / "index.html").read_text(encoding="utf-8")
     css = (SITE / "styles.css").read_text(encoding="utf-8")
