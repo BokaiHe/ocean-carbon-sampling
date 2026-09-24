@@ -1,4 +1,9 @@
 /* Seasats-inspired chapter structure; original imagery, research and components. */
+.globe-surface-key { display:flex; flex-wrap:wrap; gap:8px 16px; margin-top:14px; color:#eef5f4; font:13px/1.5 Arial,sans-serif; }
+.globe-surface-key span { display:inline-flex; align-items:center; gap:7px; }
+.globe-surface-key i { display:inline-block; width:13px; height:13px; border-radius:3px; border:1px solid #152d3e; flex:none; }
+.globe-surface-key .land-key { background:#ffffff; }
+.globe-surface-key .missing-key { background:#9ca3af; }
 .observation-explorer { display:grid; grid-template-columns:300px minmax(0,1fr); border-radius:12px; overflow:hidden; background:radial-gradient(ellipse at 85% 25%,#426e7b,#153a49 70%); color:#eef5f4; }
 .observation-sidebar { padding:28px 24px; background:#102e3a66; }
 .observation-sidebar .eyebrow { color:#bfd5da; font-size:12px; }

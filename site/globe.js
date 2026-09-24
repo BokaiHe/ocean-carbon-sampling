@@ -16,6 +16,8 @@
   const enrich=row=>({row,xyz:[Math.cos(row[1]*degree)*Math.cos(row[0]*degree),Math.cos(row[1]*degree)*Math.sin(row[0]*degree),Math.sin(row[1]*degree)]});
   let samples={},fields=[];
   const palettes={};
+  const noDataColour='#9ca3af';
+  const colourStops={sampling:['#63baf0','#276bb5','#163b79'],mae:['#ffd578','#ec8753','#9d2846'],delta:['#2265b5','#fff2ce','#b74830']};
   function requestDraw(){if(!frame)frame=requestAnimationFrame(()=>{frame=0;draw();});}
   function updateView(){
     model.rotation[0]=((model.rotation[0]+180)%360+360)%360-180;
@@ -37,11 +39,11 @@
     ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);
     const radius=width*.435*model.zoom;
     projection.rotate(model.rotation).translate([width/2,height/2]).scale(radius);
-    const ocean=ctx.createRadialGradient(width*.35,height*.27,5,width*.5,height*.5,radius);
-    ocean.addColorStop(0,'#59838b');ocean.addColorStop(.7,'#264f60');ocean.addColorStop(1,'#173848');
-    ctx.beginPath();path({type:'Sphere'});ctx.fillStyle=ocean;ctx.fill();ctx.strokeStyle='#8bb6c1';ctx.lineWidth=1;ctx.stroke();
+    // Neutral ocean is a display backdrop, not an interpolated coverage mask.
+    ctx.save();ctx.shadowColor='#b8d8f066';ctx.shadowBlur=14;
+    ctx.beginPath();path({type:'Sphere'});ctx.fillStyle=noDataColour;ctx.fill();ctx.strokeStyle='#d3e4ef';ctx.lineWidth=1;ctx.stroke();ctx.restore();
     ctx.save();ctx.beginPath();path({type:'Sphere'});ctx.clip();
-    ctx.beginPath();path(d3.geoGraticule10());ctx.strokeStyle='#9ec3c62c';ctx.lineWidth=.65;ctx.stroke();
+    ctx.beginPath();path(d3.geoGraticule10());ctx.strokeStyle='#ffffff18';ctx.lineWidth=.65;ctx.stroke();
     const center=projection.invert([width/2,height/2]);
     const front=[Math.cos(center[1]*degree)*Math.cos(center[0]*degree),Math.cos(center[1]*degree)*Math.sin(center[0]*degree),Math.sin(center[1]*degree)];
     visible=[];
@@ -51,10 +53,10 @@
       const [x,y]=projection(item.row);if(x<0||y<0||x>width||y>height)continue;
       let colour,size;
       if(model.layer==='sampling'){
-        const count=item.row[2];colour=palettes.sampling[Math.round(clamp(count/20,0,1)*63)];size=1.4+Math.sqrt(count)*.5;
+        const count=item.row[2];colour=count===0?noDataColour:palettes.sampling[Math.round(clamp(count/20,0,1)*63)];size=1.4+Math.sqrt(count)*.5;
       }else{
         const v=value(item);const t=model.layer==='mae'?v/60:(v+30)/60;
-        colour=v===null?'#7d929a':palettes[model.layer][Math.round(clamp(t,0,1)*63)];size=Math.max(.9,radius*.010);
+        colour=v===null?noDataColour:palettes[model.layer][Math.round(clamp(t,0,1)*63)];size=Math.max(.9,radius*.010);
       }
       ctx.fillStyle=colour;
       if(model.layer==='sampling'){ctx.beginPath();ctx.arc(x,y,size,0,Math.PI*2);ctx.fill();}
@@ -62,7 +64,7 @@
       visible.push({x,y,item});
     }
     const latitudeLine={type:'LineString',coordinates:d3.range(-180,181,3).map(lon=>[lon,60])};
-    ctx.beginPath();path(latitudeLine);ctx.setLineDash([3,4]);ctx.strokeStyle='#fff8';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();path(latitudeLine);ctx.setLineDash([3,4]);ctx.strokeStyle='#203b5277';ctx.lineWidth=1;ctx.stroke();ctx.setLineDash([]);
     if(selected){const hit=visible.find(p=>p.item===selected);if(hit){ctx.beginPath();ctx.arc(hit.x,hit.y,8,0,Math.PI*2);ctx.strokeStyle='white';ctx.lineWidth=2;ctx.stroke();}}
     // Cartographic overlay only: source data and experimental metrics are unchanged.
     // Draw last so neither data symbols nor selection rings paint over land.
@@ -92,15 +94,16 @@
     root.dataset.layer=model.layer;root.dataset.strategy=model.strategy;
     const sampling=model.layer==='sampling';
     document.querySelector('#globe-role').textContent=sampling?'DESIGN MAP · NOT MODEL ERROR':'OUTCOME DIAGNOSTIC · SUPPORTING SCOPE';
-    scope.textContent=sampling?'2005 · seed 0 · 5,000 observations. Points are 5° × 10° block centres, not vessels. Colour saturates at 20; inspected counts are exact.':'2005 · 20 paired seeds · available hidden months. Grey = missing. No smoothing. Dotted line = 60°N reference, not a mask.';
+    scope.textContent=sampling?'2005 · seed 0 · 5,000 observations. Points are 5° × 10° block centres, not vessels. Colour saturates at 20; inspected counts are exact. Grey background is not a fine-grid coverage mask.':'2005 · 20 paired seeds · available hidden months. Grey = no displayed error value, not zero error. No smoothing. Dotted line = 60°N reference, not a mask.';
     const title=sampling?'Selected observations per block':model.layer==='mae'?'Local mean absolute error · µatm':'Local MAE minus random · µatm';
-    const gradient=sampling?'#b9d8dd,#f7f3c5,#e89861':model.layer==='mae'?'#f7f3df,#d78859,#773e34':'#4c91b0,#f0efe4,#b05f48';
+    const gradient=colourStops[model.layer].join(',');
     const ticks=sampling?['0','10','20+']:model.layer==='mae'?['0','30','60+']:['−30 or lower','0','+30 or higher'];
     const legend=document.querySelector('#globe-legend');
     legend.replaceChildren();const text=document.createElement('div');text.textContent=title;
     const bar=document.createElement('div');bar.className='globe-colour-scale';bar.style.background=`linear-gradient(90deg,${gradient})`;
     const scale=document.createElement('div');scale.className='globe-ticks';ticks.forEach(t=>{const span=document.createElement('span');span.textContent=t;scale.append(span);});legend.append(text,bar,scale);
-    if(!sampling){const direction=document.createElement('p');direction.textContent=model.layer==='delta'?'Blue: lower error · Rust: higher error':'Lighter: lower error · Darker: higher error';legend.append(direction);}
+    const direction=document.createElement('p');direction.textContent=sampling?'Light blue: fewer samples · Deep blue: more samples':model.layer==='delta'?'Blue: lower error · Cream: near zero difference · Rust: higher error':'Gold: lower error · Burgundy: higher error';legend.append(direction);
+    const key=document.createElement('div');key.className='globe-surface-key';key.innerHTML='<span><i class="land-key"></i>Land</span><span><i class="missing-key"></i>No displayed value</span>';legend.append(key);
     pointSelect.replaceChildren(new Option(sampling?'Select a sampling block…':'Use the coordinate inspector below for error layers.',''));
     pointSelect.disabled=!sampling;
     // A native selector provides the same exact values without pointer interaction.
@@ -116,9 +119,10 @@
       if(responses.some(r=>!r.ok))throw Error('Globe data unavailable');
       [data,land]=await Promise.all(responses.map(r=>r.json()));
       Object.entries(data.sampling).forEach(([k,rows])=>samples[k]=rows.map(enrich));fields=data.fields.map(enrich);
-      palettes.sampling=d3.range(64).map(i=>d3.interpolateRgbBasis(['#b9d8dd','#f7f3c5','#e89861'])(i/63));
-      palettes.mae=d3.range(64).map(i=>d3.interpolateRgbBasis(['#f7f3df','#d78859','#773e34'])(i/63));
-      palettes.delta=d3.range(64).map(i=>i<32?d3.interpolateRgb('#4c91b0','#f0efe4')(i/31):d3.interpolateRgb('#f0efe4','#b05f48')((i-32)/31));
+      for(const layer of Object.keys(colourStops)){
+        const [low,mid,high]=colourStops[layer];
+        palettes[layer]=d3.range(64).map(i=>i<32?d3.interpolateRgb(low,mid)(i/31):d3.interpolateRgb(mid,high)((i-32)/31));
+      }
       projection=d3.geoOrthographic().clipAngle(90);path=d3.geoPath(projection,ctx);
       new ResizeObserver(()=>{width=canvas.clientWidth;const ratio=Math.min(devicePixelRatio||1,2);canvas.width=Math.round(width*ratio);canvas.height=Math.round(width*ratio);requestDraw();}).observe(canvas);
       document.querySelector('#globe-layer').addEventListener('change',e=>{model.layer=e.target.value;controls();});

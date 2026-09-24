@@ -7,13 +7,13 @@
   <title>Ocean Carbon Sampling · Visual research brief</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css?v=expedition-1" />
-  <link rel="stylesheet" href="expedition.css?v=month-squares-1" />
+  <link rel="stylesheet" href="expedition.css?v=neutral-globes-1" />
   <link rel="stylesheet" href="hero.css?v=video-2" />
   <script src="hero.js?v=video-2" defer></script>
   <script src="app.js?v=expedition-1" defer></script>
   <script src="vendor/d3-7.9.0.min.js" defer></script>
-  <script src="globe.js?v=land-overlay-1" defer></script>
-  <script src="observations.js?v=month-squares-1" defer></script>
+  <script src="globe.js?v=neutral-globes-1" defer></script>
+  <script src="observations.js?v=neutral-globes-1" defer></script>
 </head>
 <body>
   <nav class="chapter-nav" aria-label="Research chapters">
@@ -76,13 +76,13 @@
     </section>
 
     <section class="section shell" id="voyage">
-      <div class="section-heading"><p class="eyebrow">02 · What has actually been observed?</p><h2>Dots show where we measured. Colour shows the CO₂ level.</h2><p>Explore SOCAT observations before looking at the experiment. Yellow means higher surface-water fCO₂; purple means lower. Empty water means no displayed observation—not zero CO₂.</p></div>
+      <div class="section-heading"><p class="eyebrow">02 · What has actually been observed?</p><h2>Dots show where we measured. Colour shows the CO₂ level.</h2><p>Explore SOCAT observations before looking at the experiment. Gold means higher surface-water fCO₂; blue means lower. Grey water means no displayed observation—not zero CO₂. White is land.</p></div>
       <div class="observation-explorer" id="observation-explorer">
         <div class="observation-sidebar">
           <p class="eyebrow">SOCAT v2025 / Observed ocean</p>
           <h3>Real measurements.<br /> An incomplete picture.</h3>
           <p>Each dot represents an observed 1° grid cell, not a ship. Turn the globe and tap a dot to inspect its value.</p>
-          <div class="observation-legend"><strong>Surface-water fCO₂ · µatm</strong><div id="observation-scale" class="globe-colour-scale"></div><div class="globe-ticks"><span>≤200</span><span>400</span><span>≥600</span></div><p>Lower ← → Higher<br />Same colour scale for every date.</p></div>
+          <div class="observation-legend"><strong>Surface-water fCO₂ · µatm</strong><div id="observation-scale" class="globe-colour-scale"></div><div class="globe-ticks"><span>≤200</span><span>400</span><span>≥600</span></div><p>Blue: lower · Gold: higher<br />Same colour scale for every date.</p><div class="globe-surface-key"><span><i class="land-key"></i>Land</span><span><i class="missing-key"></i>No displayed observation</span></div></div>
           <p class="observation-status" id="observation-status" aria-live="polite">Loading observed grid cells…</p>
           <div class="globe-selection observation-selection"><span>Selected grid cell</span><p id="observation-readout" aria-live="polite">Tap a dot to see its value, position and observation count.</p></div>
         </div>

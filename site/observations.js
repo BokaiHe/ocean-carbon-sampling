@@ -32,7 +32,11 @@ function aggregateObservedCells(rows, month) {
       if (!ctx) throw new Error('Canvas unavailable');
       const projection = d3.geoOrthographic().clipAngle(90).precision(.3), path = d3.geoPath(projection,ctx);
       const grid = d3.geoGraticule().step([30,15])();
-      const colour = value => d3.interpolateViridis(Math.max(0,Math.min(1,(value-200)/400)));
+      const noDataColour='#9ca3af';
+      const colour = value => {
+        const t=Math.max(0,Math.min(1,(value-200)/400));
+        return t<=.5?d3.interpolateRgb('#2455a4','#008b95')(t*2):d3.interpolateRgb('#008b95','#f0b74b')((t-.5)*2);
+      };
       document.querySelector('#observation-scale').style.background = `linear-gradient(90deg,${Array.from({length:11},(_,i)=>colour(200+i*40)).join(',')})`;
       let year = data.metadata.default_year, month = 0, rotation = [35,-15,0], zoom = 1;
       let cells = [], visible = [], selected = null, frame = 0, pointer = null;
@@ -60,8 +64,9 @@ function aggregateObservedCells(rows, month) {
         if(canvas.width!==pixels){canvas.width=pixels;canvas.height=pixels;}
         ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,width);
         projection.translate([width/2,width/2]).scale(width*.45*zoom).rotate(rotation);
-        ctx.beginPath();path({type:'Sphere'});ctx.fillStyle='#234c5c';ctx.fill();
-        ctx.beginPath();path(grid);ctx.strokeStyle='#afc7d026';ctx.lineWidth=.6;ctx.stroke();
+        ctx.save();ctx.shadowColor='#b8d8f066';ctx.shadowBlur=14;
+        ctx.beginPath();path({type:'Sphere'});ctx.fillStyle=noDataColour;ctx.fill();ctx.strokeStyle='#d3e4ef';ctx.lineWidth=1;ctx.stroke();ctx.restore();
+        ctx.beginPath();path(grid);ctx.strokeStyle='#ffffff18';ctx.lineWidth=.6;ctx.stroke();
         const lon=-rotation[0]*radians,lat=-rotation[1]*radians;
         const centre=[Math.cos(lat)*Math.cos(lon),Math.cos(lat)*Math.sin(lon),Math.sin(lat)];
         visible=[];
