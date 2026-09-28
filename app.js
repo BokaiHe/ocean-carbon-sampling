@@ -37,6 +37,7 @@ function table(id,headers,rows) {
   $("#"+id).innerHTML="<table><thead><tr>"+headers.map(v=>"<th scope='col'>"+escapeHTML(v)+"</th>").join("")+"</tr></thead><tbody>"+rows.map(row=>"<tr>"+row.map(v=>"<td>"+escapeHTML(v)+"</td>").join("")+"</tr>").join("")+"</tbody></table>";
 }
 function pairedChart() {
+  if (!$("#paired-chart").getClientRects().length) return;
   const key=state.pairedProtocol, primary=key==="hidden", height=primary?285:600;
   const chart=makeChart("paired-chart",height,primary?"Three primary-year comparisons":"15 whole-block stress-test units","Each row compares random and historical-density mean absolute error on the same evaluation set. Lines pair strategies, not confidence intervals.");
   const {svg,width}=chart,L=primary?53:77,R=22;
@@ -64,10 +65,13 @@ function pairedChart() {
       y+=primary?70:34;
     }
   $$("[data-paired-protocol]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.pairedProtocol===key)));
-  $("#primary-effect").innerHTML="+"+state.data.estimands["area|both60|hidden"].metrics.mae.relative_pct.toFixed(2)+"%<span>higher average error than random · primary test</span>";
+  const primaryPercent=state.data.estimands["area|both60|hidden"].metrics.mae.relative_pct;
+  const percent=primary?primaryPercent:state.data.estimands["area|both60|block"].metrics.mae.relative_pct;
+  $("#primary-effect").innerHTML="+"+percent.toFixed(2)+"%<span>higher MAE than random · "+(primary?"primary test":"stress test")+"</span>";
   table("paired-table",["Protocol","Unit","Random MAE","Historical-density MAE","ΔMAE (µatm)"],rows);
 }
 function robustnessChart() {
+  if (!$("#robustness-chart").getClientRects().length) return;
   const chart=makeChart("robustness-chart",450,"Historical-density MAE change across 12 evaluation variants","All displayed relative MAE changes are positive; these variants share data and are not independent tests.");
   const {svg,width}=chart,L=width<500?141:205,R=26;
   const x=n=>L+n/60*(width-L-R), rows=[];
@@ -94,6 +98,7 @@ function robustnessChart() {
   table("robustness-table",["Protocol","Weights","Domain","Random MAE","Historical MAE","Change"],rows);
 }
 function sweepChart() {
+  if (!$("#sweep-chart").getClientRects().length) return;
   const narrow=$("#sweep-chart").clientWidth<760;
   const chart=makeChart("sweep-chart",narrow?960:330,"Coverage trade-offs across four sample counts","Separate panels show median, p99 and RMSE differences relative to random. Each vertical scale differs. Below zero means lower error; lines connect tested counts only.");
   const {svg,width}=chart,counts=[500,1000,2500,5000];
@@ -147,6 +152,9 @@ function renderAudits() {
   $("#regrid-audit").innerHTML=`<p>Native-cell-area regridding preserved ${r.direction_checks_passed}/${r.direction_checks} prespecified directions. Correlated metrics are not independent tests. This checks regridding, not evaluation-area weighting.</p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/osse_regrid_audit_results.md">Read the full regridding audit ↗</a>`;
 }
 function renderCharts() {pairedChart();robustnessChart();sweepChart();biasChart();}
+// React owns chapter selection; scientific SVGs stay tied to frozen data.
+window.addEventListener("research:panelchange",()=>{if(state.data)renderCharts();});
+window.addEventListener("beforeprint",()=>{if(state.data)renderCharts();});
 // The React hero owns mobile navigation (including Escape and focus handling).
 async function initialize() {
   try{
@@ -177,6 +185,7 @@ imageViewer.innerHTML='<div class="image-viewer-toolbar"><span>Enlarged map</spa
 document.body.append(imageViewer);
 let imageOpener=null,imageScroll=0;
 $("button",imageViewer).addEventListener("click",()=>imageViewer.close());
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&imageViewer.open){event.preventDefault();imageViewer.close();}});
 imageViewer.addEventListener("click",e=>{if(e.target===imageViewer||e.target.classList.contains("image-viewer-body"))imageViewer.close();});
 imageViewer.addEventListener("close",()=>{
   document.documentElement.classList.remove("image-viewer-open");

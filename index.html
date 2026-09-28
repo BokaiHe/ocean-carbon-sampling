@@ -6,11 +6,11 @@
   <meta name="description" content="A visual, reproducible OSSE of ocean-carbon sampling: historical-density costs, coverage trade-offs and evaluation sensitivity." />
   <title>Ocean Carbon Sampling · Visual research brief</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
-  <script  src="app.js?v=focused-story-1" defer></script>
+  <script  src="app.js?v=story-panels-1" defer></script>
   <script  src="vendor/d3-7.9.0.min.js" defer></script>
   <script  src="globe.js?v=sampling-only-1" defer></script>
-  <script type="module" crossorigin src="./assets/index-rDVHnmdH.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DBahYDMn.css">
+  <script type="module" crossorigin src="./assets/index-BoLS9Eqi.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Ck_1H2xy.css">
 </head>
 <body>
   <nav class="chapter-nav" aria-label="Research chapters">
@@ -88,12 +88,17 @@
       <div data-mosaic-background></div>
       <div class="shell"><p class="eyebrow">04 / The findings</p><h2>Same ocean.<br />Different blind spots.</h2><p>Where observations go changes what the model can recover.</p></div>
     </section>
-    <section class="section shell evidence-layout" id="paired-evidence" aria-label="Observation context and paired reconstruction results">
+    <section class="evidence-story" id="evidence-story" aria-labelledby="evidence-story-title"><div class="shell">
+      <div class="story-intro"><h2 id="evidence-story-title">Follow the evidence.</h2><p>One question at a time.<br />The result, the check, and its limits.</p></div>
+      <div class="story-layout">
+        <aside class="story-navigation"><div id="results-navigation"></div></aside>
+        <div class="story-stage">
+    <section class="evidence-panel" id="paired-evidence" aria-label="Paired reconstruction results">
       <aside class="field-note">
         <span class="result-index">01</span>
         <h2>Following past density leaves larger errors.</h2>
         <div class="result-number" id="primary-effect">—<span>higher average error than random</span></div>
-        <p>The same direction in all three tested years. A finding from one simulated ocean and one learner—not a verdict on all real observing networks.</p>
+        <p>A finding from one simulated ocean and one learner—not a verdict on all real observing networks.</p>
       </aside>
       <figure class="chart-panel hero-chart" id="validation">
         <figcaption><h2>Two plans. The same test.</h2></figcaption>
@@ -108,7 +113,7 @@
         </details>
       </figure>
     </section>
-    <section class="section tinted" id="results"><div class="shell">
+    <section class="evidence-panel" id="results"><div class="shell">
       <div class="section-heading"><span class="result-index">02</span><h2>A different scorecard.<br />The same direction.</h2><p>Historical-density has higher average error in every tested weighting and domain combination.</p></div>
       <figure class="chart-panel">
         <div class="legend"><span><i class="key hidden"></i>Hidden cells · primary protocol</span><span><i class="key block"></i>Whole blocks · stress protocol</span><span>Outlined points: aligned, area-weighted scope</span></div>
@@ -122,7 +127,7 @@
       </figure>
     </div></section>
 
-    <section class="section shell" id="error-map">
+    <section class="evidence-panel" id="error-map">
       <div class="section-heading"><p class="eyebrow">A closer look / Supporting map</p><h2>The penalty is not everywhere.</h2><p>Blue: historical-density has less error. Rust: more. This 2005 full-domain map is supporting evidence, not the primary evaluation.</p></div>
       <figure class="chart-panel outcome-map">
         <div class="legend"><span><i class="key hidden"></i>Blue: lower error</span><span><i class="key historical"></i>Rust: higher error</span><span><i class="key missing"></i>Grey water: no mapped error</span></div>
@@ -139,7 +144,7 @@
       </figure>
     </section>
 
-    <section class="section shell" id="sample-count">
+    <section class="evidence-panel" id="sample-count">
       <div class="section-heading"><span class="result-index">03</span><h2>Spreading out is not a cure-all.</h2><p>Coverage can reduce the largest errors while increasing the median error. The sample count matters.</p></div>
       <figure class="chart-panel">
         <div id="sweep-chart" class="chart"></div>
@@ -153,6 +158,10 @@
       </figure>
       <p class="chart-note">Signed bias is sensitive to weighting and evaluation domain, so it is not a headline conclusion. <a href="#estimand">See the methods audit ↗</a></p>
     </section>
+
+        </div>
+      </div>
+    </div></section>
 
     <section class="section dark" id="technical"><div class="shell">
       <div class="section-heading"><p class="eyebrow">Behind the figures</p><h2>Want to look closer?</h2><p>Methods, checks and the questions this experiment cannot answer.</p></div>
@@ -191,7 +200,6 @@
     </div></section>
 
     <section class="section shell" id="related-work">
-      <aside class="next-question"><strong>Next question: where should observations be added?</strong><p>That requires an add-observation experiment with access and cost constraints. The present replacement-design comparison does not identify optimal routes or marginal gains.</p></aside>
       <div class="section-heading"><p class="eyebrow">Sources &amp; people</p><h2>Built on shared work.</h2></div>
       <div class="reference-grid">
         <article><h3><a href="https://doi.org/10.1029/2020GB006788">Gloege et al. (2021) ↗</a></h3><p>Large Ensemble Testbed, model truth and temporal reconstruction skill. Our three yearly fits do not test that temporal scope.</p></article>
@@ -206,7 +214,13 @@
       </details>
     </section>
   </main>
-  <footer><div class="shell footer-grid"><p><strong>Bokai He · Columbia EEE</strong><br />Frozen results. No browser-side model fitting.</p><div class="footer-links"><a href="mailto:bh2954@columbia.edu">bh2954@columbia.edu</a><a href="https://github.com/BokaiHe/ocean-carbon-sampling">GitHub ↗</a><a href="data/site-data.json">Results JSON</a><a href="data/chart-data.json">Chart JSON</a><a href="#top">Back to top ↑</a></div></div></footer>
+  <footer class="research-footer" id="contact"><div class="shell">
+    <div class="footer-story-grid">
+      <div class="footer-next"><p class="eyebrow">The next question</p><h2>Where should we<br /><span>look next?</span></h2><p class="footer-next-copy">Where should observations be added? That needs an add-observation experiment with access and cost constraints. This study compares replacement designs; it does not identify optimal routes or marginal gains.</p><nav class="footer-research-nav" aria-label="Research resources"><a href="https://github.com/BokaiHe/ocean-carbon-sampling">Explore the repository ↗</a><a href="#related-work">Sources &amp; credits ↗</a></nav></div>
+      <div class="contact-glass"><p class="eyebrow">Research &amp; conversation</p><p class="contact-name">Bokai He</p><p>Columbia EEE<br />Independent course-project extension</p><a class="contact-email" href="mailto:bh2954@columbia.edu"><span>bh2954@columbia.edu</span><span aria-hidden="true">↗</span></a></div>
+    </div>
+    <div class="footer-bottom"><p>Ocean Carbon Sampling · Frozen results.<br />No browser-side model fitting.</p><div class="footer-links"><a href="data/site-data.json">Results JSON ↗</a><a href="data/chart-data.json">Chart JSON ↗</a><a href="#top">Back to top ↑</a></div></div>
+  </div></footer>
   <noscript>This page requires JavaScript to draw the frozen-data charts. The source tables remain available through the repository and JSON links.</noscript>
 </body>
 </html>
