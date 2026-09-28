@@ -3,7 +3,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const NS = "http://www.w3.org/2000/svg";
 const colors = {random:"#456d87",historical:"#a35f4d",hidden:"#456d87",block:"#a35f4d",median:"#a35f4d",p99:"#456d87",rmse:"#687477"};
-const state = {data:null, charts:null, strategy:"random", showZero:false};
+const state = {data:null, charts:null, strategy:"random", showZero:false, pairedProtocol:"hidden"};
 const names = {random:"Random", historical:"Historical-density", coverage:"Coverage"};
 const signed = (n,d=3) => (n>0?"+":n<0?"−":"") + Math.abs(n).toFixed(d);
 const escapeHTML = text => String(text).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -25,7 +25,7 @@ function makeChart(id,height,title,description) {
   const svg=svgEl("svg",{viewBox:`0 0 ${width} ${height}`,width,height,role:"img","aria-labelledby":id+"-title "+id+"-desc"});
   const t=svgEl("title",{id:id+"-title"},svg);t.textContent=title;
   const d=svgEl("desc",{id:id+"-desc"},svg);d.textContent=description;
-  const output=document.createElement("p");output.className="chart-readout";output.setAttribute("aria-live","polite");output.textContent="Hover, tap or focus a mark for its exact values.";
+  const output=document.createElement("p");output.className="chart-readout";output.setAttribute("aria-live","polite");
   host.replaceChildren(svg,output);return {svg,width,output};
 }
 function mark(chart,description,draw) {
@@ -38,33 +38,34 @@ function table(id,headers,rows) {
   $("#"+id).innerHTML="<table><thead><tr>"+headers.map(v=>"<th scope='col'>"+escapeHTML(v)+"</th>").join("")+"</tr></thead><tbody>"+rows.map(row=>"<tr>"+row.map(v=>"<td>"+escapeHTML(v)+"</td>").join("")+"</tr>").join("")+"</tbody></table>";
 }
 function pairedChart() {
-  const groups=[["hidden","Hidden cells · primary"],["block","Whole blocks · stress test"]];
-  const chart=makeChart("paired-chart",548,"Paired MAE in three primary years and 15 stress-test units","Each row compares random and historical-density mean absolute error on the same evaluation set. Lines pair strategies, not confidence intervals.");
-  const {svg,width}=chart,L=86,R=22;
+  const key=state.pairedProtocol, primary=key==="hidden", height=primary?285:600;
+  const chart=makeChart("paired-chart",height,primary?"Three primary-year comparisons":"15 whole-block stress-test units","Each row compares random and historical-density mean absolute error on the same evaluation set. Lines pair strategies, not confidence intervals.");
+  const {svg,width}=chart,L=primary?53:77,R=22;
   const pairs=Object.values(state.charts.pairs).flat();
   const values=pairs.flatMap(r=>[r.random,r.historical]);
   const min=Math.floor(Math.min(...values)/2)*2, max=Math.ceil(Math.max(...values)/2)*2;
-  const x=n=>L+(n-min)/(max-min)*(width-L-R), bottom=510;
-  for(let tick=min;tick<=max;tick+=2){line(svg,x(tick),34,x(tick),bottom);label(svg,x(tick),bottom+22,tick,{"text-anchor":"middle"});}
-  label(svg,L+(width-L-R)/2,545,"MAE (µatm) · lower is better",{"text-anchor":"middle"});
-  let y=22;const rows=[];
-  for(const [key,title] of groups){
-    label(svg,2,y,title,{fill:"#243b49","font-weight":700});y+=27;
+  const x=n=>L+(n-min)/(max-min)*(width-L-R), bottom=height-55;
+  for(let tick=min;tick<=max;tick+=2){line(svg,x(tick),15,x(tick),bottom,{stroke:"#e8eef2"});label(svg,x(tick),bottom+22,tick,{"text-anchor":"middle"});}
+  label(svg,L+(width-L-R)/2,height-6,"MAE · µatm · lower is better",{"text-anchor":"middle","font-size":width<400?12:14});
+  let y=primary?55:27;const rows=[];
+  const title=primary?"Hidden cells · primary":"Whole blocks · stress test";
     for(const row of state.charts.pairs[key]){
       const unit=String(row.year)+(key==="block"?" · F"+row.fold:"");
-      label(svg,L-10,y+4,unit,{"text-anchor":"end","font-size":13});
+      label(svg,L-10,y+4,unit,{"text-anchor":"end","font-size":primary?14:12});
       const desc=`${title}, ${unit}: random ${row.random.toFixed(3)}, historical-density ${row.historical.toFixed(3)} µatm; difference ${signed(row.historical-row.random)}.`;
       mark(chart,desc,g=>{
-        line(g,x(row.random),y,x(row.historical),y,{stroke:"#8fa3b0","stroke-width":2.5});
-        svgEl("circle",{cx:x(row.random),cy:y,r:4.8,fill:colors.random},g);
-        svgEl("rect",{x:x(row.historical)-4.8,y:y-4.8,width:9.6,height:9.6,fill:colors.historical},g);
-        svgEl("rect",{x:L,y:y-9,width:width-L-R,height:18,fill:"transparent"},g);
+        line(g,x(row.random),y,x(row.historical),y,{stroke:"#b5c7d4","stroke-width":primary?4:2.5});
+        const r=primary?7:5;
+        svgEl("circle",{cx:x(row.random),cy:y,r,fill:colors.random},g);
+        svgEl("rect",{x:x(row.historical)-r,y:y-r,width:r*2,height:r*2,rx:2,fill:colors.historical},g);
+        if(primary){label(g,x(row.random),y-16,row.random.toFixed(2),{"text-anchor":"middle",fill:colors.random,"font-size":14});label(g,x(row.historical),y+29,row.historical.toFixed(2),{"text-anchor":"middle",fill:colors.historical,"font-size":14});}
+        svgEl("rect",{x:L,y:y-15,width:width-L-R,height:30,fill:"transparent"},g);
       });
       rows.push([key==="hidden"?"Primary":"Stress test",unit,row.random.toFixed(3),row.historical.toFixed(3),signed(row.historical-row.random)]);
-      y+=23;
+      y+=primary?70:34;
     }
-    y+=16;
-  }
+  $$("[data-paired-protocol]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.pairedProtocol===key)));
+  $("#primary-effect").innerHTML="+"+state.data.estimands["area|both60|hidden"].metrics.mae.relative_pct.toFixed(2)+"%<span>higher average error than random · primary test</span>";
   table("paired-table",["Protocol","Unit","Random MAE","Historical-density MAE","ΔMAE (µatm)"],rows);
 }
 function blockChart() {
@@ -110,16 +111,22 @@ function robustnessChart() {
   table("robustness-table",["Protocol","Weights","Domain","Random MAE","Historical MAE","Change"],rows);
 }
 function sweepChart() {
-  const chart=makeChart("sweep-chart",380,"Coverage error differences at four tested sample counts","Three curves show median absolute error, p99 absolute error and RMSE differences relative to random. Counts are equally spaced categories; lines only connect measured counts.");
-  const {svg,width}=chart,L=48,R=18,top=58,bottom=304;
-  const counts=[500,1000,2500,5000],x=n=>L+counts.indexOf(n)/3*(width-L-R),y=n=>top+(3-n)/11*(bottom-top);
-  [-8,-6,-4,-2,0,2].forEach(t=>{line(svg,L,y(t),width-R,y(t),{stroke:t===0?"#4b6271":"#dbe3e7","stroke-dasharray":t===0?"5 4":"none"});label(svg,L-10,y(t)+5,signed(t,0),{"text-anchor":"end"});});
-  counts.forEach((n,i)=>label(svg,x(n),330,n.toLocaleString("en-US"),{"text-anchor":i===3?"end":"middle","font-size":13}));
-  label(svg,L,16,"Δerror (µatm)",{fill:"#243b49"});label(svg,(L+width-R)/2,369,"Sample count · equally spaced",{"text-anchor":"middle","font-size":13});
-  label(svg,2,40,"Median: higher at all four counts",{fill:colors.median,"font-weight":700,"font-size":13});
+  const narrow=$("#sweep-chart").clientWidth<760;
+  const chart=makeChart("sweep-chart",narrow?960:330,"Coverage trade-offs across four sample counts","Separate panels show median, p99 and RMSE differences relative to random. Each vertical scale differs. Below zero means lower error; lines connect tested counts only.");
+  const {svg,width}=chart,counts=[500,1000,2500,5000];
   const metrics=[["median_absolute_error","median","Median"],["p99_absolute_error","p99","p99"],["rmse","rmse","RMSE"]];
   const rows=[];
-  for(const [key,color,name] of metrics){
+  metrics.forEach(([key,color,name],panel)=>{
+    const panelWidth=narrow?width:(width-64)/3,offsetX=narrow?0:panel*(panelWidth+32),offsetY=narrow?panel*320:0;
+    const L=offsetX+40,R=offsetX+panelWidth-17,top=offsetY+78,bottom=offsetY+263;
+    const differences=counts.map(n=>state.data.sample_sweep[String(n)].metrics[key].difference);
+    const low=Math.min(0,Math.floor(Math.min(...differences))),high=Math.max(1,Math.ceil(Math.max(...differences)));
+    const x=n=>L+counts.indexOf(n)/3*(R-L),y=n=>top+(high-n)/(high-low)*(bottom-top);
+    label(svg,offsetX+3,offsetY+24,name==="Median"?"Typical error":name==="p99"?"Extreme tail":"Large-error-sensitive",{fill:"#203d4d","font-size":18,"font-weight":600});
+    label(svg,offsetX+3,offsetY+49,name+" · Δµatm",{fill:colors[color],"font-size":14});
+    const ticks=[...new Set([low,0,high])];
+    ticks.forEach(t=>{line(svg,L,y(t),R,y(t),{stroke:t===0?"#7593a8":"#e1eaf0","stroke-dasharray":t===0?"4 4":"none"});label(svg,L-9,y(t)+4,signed(t,0),{"text-anchor":"end","font-size":13});});
+    counts.forEach((n,i)=>label(svg,x(n),offsetY+290,n===500?"500":n===1000?"1k":n===2500?"2.5k":"5k",{"text-anchor":i===3?"end":"middle","font-size":13}));
     const points=counts.map(n=>[x(n),y(state.data.sample_sweep[String(n)].metrics[key].difference)]);
     svgEl("polyline",{points:points.map(p=>p.join(",")).join(" "),fill:"none",stroke:colors[color],"stroke-width":2.5,"stroke-dasharray":key==="rmse"?"6 4":"none"},svg);
     counts.forEach((n,i)=>{
@@ -127,7 +134,8 @@ function sweepChart() {
       mark(chart,desc,g=>{svgEl("circle",{cx:points[i][0],cy:points[i][1],r:5,fill:colors[color],stroke:"white","stroke-width":1},g);svgEl("circle",{cx:points[i][0],cy:points[i][1],r:12,fill:"transparent"},g);});
       rows.push([n,name,m.random.toFixed(3),m.coverage.toFixed(3),signed(m.difference)]);
     });
-  }
+    label(svg,(L+R)/2,offsetY+316,"Sample count",{"text-anchor":"middle","font-size":12});
+  });
   table("sweep-table",["Count","Metric","Random","Coverage","Δerror (µatm)"],rows);
 }
 function biasChart() {
@@ -175,6 +183,7 @@ async function initialize() {
     for(const r of responses)if(!r.ok)throw Error("Data request failed: "+r.status);
     [state.data,state.charts]=await Promise.all(responses.map(r=>r.json()));
     renderCharts();renderAudits();updateMap();
+    $$("[data-paired-protocol]").forEach(b=>b.addEventListener("click",()=>{state.pairedProtocol=b.dataset.pairedProtocol;pairedChart();}));
     $$("[data-strategy]").forEach(b=>b.addEventListener("click",()=>{state.strategy=b.dataset.strategy;updateMap();}));
     $("#zero-toggle").addEventListener("change",e=>{state.showZero=e.target.checked;updateMap();});
     let frame;const widths=new WeakMap();

@@ -1,6 +1,7 @@
 # Frontend dependencies and generated build
 node_modules/
 dist/
+site/licensed/
 
 # Python
 __pycache__/

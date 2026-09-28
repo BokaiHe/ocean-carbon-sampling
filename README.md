@@ -224,8 +224,25 @@ Open the localhost URL printed by Vite, not `site/index.html` via `file://`.
 The React hero is pre-rendered for readable no-JavaScript fallback, then hydrated
 for video and navigation controls. The existing research visualizations remain
 independent; their frozen data and calculations are unchanged. Vite builds `dist/`,
-which GitHub Pages deploys. Edit `site/src/Hero.jsx`, not its generated header in
+which can be previewed locally. Edit `site/src/Hero.jsx`, not its generated header in
 `site/index.html`; `npm run render:hero` updates that checked-in fallback.
+
+### Licensed visual component and publishing
+
+The results-section background uses a user-supplied React Bits Pro Mosaic Waves
+component. Its source lives in ignored `site/licensed/MosaicWaves.tsx` and is not
+distributed in this public repository. Public clones build with a static fallback;
+all research data, charts and controls work without the paid component. A licensed
+developer may place their authorized copy at that local path to enable the effect.
+Local styling adaptations remove the Tailwind/helper requirement; the implementation
+still uses React Three Fiber and Three.js. Motion is paused or omitted when reduced
+motion, data saving, offscreen state or hidden tabs require it.
+
+Run `npm run publish:site` locally to build and publish only the compiled application
+to `site-build`. GitHub Pages deploys that branch through Actions. The command checks
+the remote and rejects TypeScript, JSX and source maps in the artifact; it never
+uploads `site/licensed`. Main-branch pushes alone no longer redeploy the site.
+The published bundle is the website application, not a downloadable source package.
 No model run or raw-data download is required to preview the checked-in site.
 The paired MAE chart foregrounds `area|both60|hidden`, alongside the whole-block
 stress test. The separate signed-bias dot chart uses whole-block results only.

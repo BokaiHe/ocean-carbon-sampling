@@ -55,4 +55,6 @@ def test_react_hero_build_keeps_research_assets_and_pages_subpath():
         assert f"'{name}'" in config
     assert 'id="hero-root"' in html
     assert 'href="mailto:bh2954@columbia.edu"' in html
-    assert "path: dist" in (root / ".github/workflows/deploy-pages.yml").read_text()
+    workflow = (root / ".github/workflows/deploy-pages.yml").read_text()
+    assert "ref: site-build" in workflow
+    assert "path: ." in workflow

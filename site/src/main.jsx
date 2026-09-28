@@ -1,5 +1,7 @@
 import React from 'react';
-import {hydrateRoot} from 'react-dom/client';
+import {createRoot,hydrateRoot} from 'react-dom/client';
 import Hero from './Hero.jsx';
+import MosaicBackdrop from './MosaicBackdrop.jsx';
 
 hydrateRoot(document.getElementById('hero-root'),<Hero />);
+document.querySelectorAll('[data-mosaic-background]').forEach(node=>createRoot(node).render(<MosaicBackdrop/>));
