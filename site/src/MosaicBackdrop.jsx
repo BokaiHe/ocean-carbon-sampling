@@ -25,7 +25,7 @@ export default function MosaicBackdrop(){
   return <div className="mosaic-backdrop" ref={root} data-motion={calm?'reduced':paused?'paused':'running'}>
     <div className="mosaic-field" aria-hidden="true">
       {__HAS_LICENSED_MOSAIC__&&!calm&&visible&&!hidden&&<BackgroundBoundary><Suspense fallback={null}>
-        <MosaicWaves pitch={9} fill={0.54} speed={0.24} warp={0.3} color="#426f91" hotColor="#a6c9df" backgroundColor="#102c40" brightness={3.8} ambient={0.025} vignette={0.45} cursorInteraction={false} dpr={1.25} targetFps={30} paused={paused}/>
+        <MosaicWaves paused={paused}/>
       </Suspense></BackgroundBoundary>}
     </div>
     {__HAS_LICENSED_MOSAIC__&&!calm&&<button type="button" className="mosaic-pause" onClick={()=>setPaused(p=>!p)} aria-pressed={paused}>{paused?'Play waves':'Pause waves'} <span aria-hidden="true">{paused?'▷':'Ⅱ'}</span></button>}

@@ -28,6 +28,15 @@ def test_primary_and_stress_results_remain_distinct():
     assert "not independent ESM replicates" in html
 
 
+def test_mosaic_uses_original_visual_defaults_without_overlay():
+    wrapper = (SITE / "src/MosaicBackdrop.jsx").read_text(encoding="utf-8")
+    css = (SITE / "editorial.css").read_text(encoding="utf-8")
+    assert "<MosaicWaves paused={paused}/>" in wrapper
+    assert ".mosaic-field:after" not in css
+    assert "85svh" in css and "80svh" in css
+    assert "pointer-events:none" in css  # Copy must not block the interactive canvas.
+
+
 def test_only_application_build_is_published():
     publisher = (ROOT / "scripts/publish_site.mjs").read_text()
     workflow = (ROOT / ".github/workflows/deploy-pages.yml").read_text()
