@@ -89,7 +89,17 @@ main .chart-panel { border-radius:12px; padding:32px; border-color:#d5e0e8; box-
 #estimand .section-heading { margin-bottom:24px; }
 #technical #estimand .section-heading .chart-note { color:#d0e0e9; }
 
-/* Restore the field introduction without changing the result chapter layout. */
-.background-layout.with-field-photo { display:grid; grid-template-columns:1.1fr .9fr; gap:48px; max-width:none; align-items:center; }
-.with-field-photo .field-photo { margin:0; }
-@media(max-width:800px) { .background-layout.with-field-photo { grid-template-columns:1fr; gap:28px; } .with-field-photo .field-photo { max-width:none; } }
+/* A single introduction: field context beside a fixed route illustration. */
+.field-intro { display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:clamp(24px,4vw,64px); align-items:center; scroll-margin-top:24px; }
+.field-intro-copy>p { font-size:clamp(18px,1.5vw,22px); line-height:1.65; max-width:490px; margin:0 0 28px; }
+.field-intro .field-photo { margin:0; max-width:460px; }
+.field-intro .field-photo img { aspect-ratio:16/9; border-radius:8px; }
+.voyage-preview { margin:0; min-width:0; padding:24px; border-radius:12px; color:#edf5f7; background:radial-gradient(ellipse at 65% 30%,#416978,#173b4b 80%); }
+.voyage-preview figcaption { display:flex; flex-wrap:wrap; gap:6px 18px; justify-content:space-between; align-items:center; }
+.voyage-preview figcaption strong { font-size:19px; font-weight:600; }
+.voyage-preview figcaption span { color:#c5dce6; font-size:14px; }
+.voyage-preview #voyage-globe { width:100%; max-width:540px; aspect-ratio:1; cursor:default; touch-action:auto; }
+.voyage-preview-footer { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px 18px; font-size:14px; color:#d2e2e9; }
+.voyage-preview-footer>span:first-child { display:flex; align-items:center; gap:8px; }
+.voyage-preview #voyage-caption { font-size:14px; line-height:1.5; color:#c5dce6; margin:12px 0 0; }
+@media(max-width:760px) { .field-intro { grid-template-columns:1fr; gap:24px; } .field-intro .field-photo { max-width:none; } .voyage-preview { padding:20px 16px; } }

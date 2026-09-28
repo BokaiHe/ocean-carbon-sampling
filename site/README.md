@@ -4,7 +4,7 @@ React + Vite presentation of frozen results. The browser performs no model fitti
 
 ## Reading order
 
-Question and shipboard photo → recorded Polarstern voyage → observed SOCAT globe → workflow → experimental globe → paired MAE → evaluation variants →
+Combined question, shipboard photo and looping Polarstern route → observed SOCAT globe → workflow → experimental globe → paired MAE → evaluation variants →
 supporting error map → sample-count trade-offs → optional methods and sources.
 
 The results use a React-controlled four-chapter index with one large chart panel
@@ -25,8 +25,10 @@ Signed-bias sensitivity remains available in the collapsed Methods audit
 The flat sampling maps, coverage-count chart and archived signed-bias map
 remain off the page. Their assets and exporters are retained. Both globes
 load lazily and retain white land with black coastlines above the data symbols.
-The restored PS103 globe follows the original 6,997 navigation records with a
-time slider and ship marker; it is not a CO₂ sampling mask. The NOAA CTD photo
+The PS103 illustration uses a fixed Southern Ocean view and a 32-second loop
+through original navigation records. It has no dragging, timeline or navigation
+controls. Offscreen/background animation pauses; reduced motion shows a still.
+It is not a CO₂ sampling mask. The NOAA CTD photo
 is contextual and is not from that voyage. No scientific scores were changed.
 
 All page text, controls and SVG labels use Arial, with a sans-serif fallback.
