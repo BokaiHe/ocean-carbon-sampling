@@ -1,0 +1,8 @@
+/* One type family across the public site, including charts and native controls.
+   Keep this last: legacy component font shorthands must not restore serif faces. */
+:root { --site-font: Arial, sans-serif; }
+body, body *, body *::before, body *::after {
+  font-family: var(--site-font) !important;
+  font-style: normal !important;
+}
+body em { font-weight: 600; }

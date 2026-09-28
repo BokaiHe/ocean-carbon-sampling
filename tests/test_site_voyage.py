@@ -19,6 +19,7 @@ def test_story_introduces_problem_and_method_before_results():
     sections = re.findall(r'<section\b[^>]*id="([^"]+)"', html)
     expected = [
         "background",
+        "voyage",
         "workflow",
         "sampling",
         "paired-evidence",

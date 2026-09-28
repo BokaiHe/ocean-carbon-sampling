@@ -4,7 +4,7 @@ React + Vite presentation of frozen results. The browser performs no model fitti
 
 ## Reading order
 
-Question → workflow → one sampling globe → paired MAE → evaluation variants →
+Question → observed SOCAT globe → workflow → experimental globe → paired MAE → evaluation variants →
 supporting error map → sample-count trade-offs → optional methods and sources.
 
 The results use a React-controlled four-chapter index with one large chart panel
@@ -15,15 +15,21 @@ with the next question, attribution and contact links. These are original
 implementations informed by the Showcase 7 and Footer 10 visual patterns, not
 redistributed licensed template source.
 
-The globe shows simulated sampling only. The flat error map is the sole spatial
-outcome view, explicitly labelled as a 2005 full-domain supporting analysis.
+The observation globe shows real SOCAT grid values, with a year selector and twelve
+visible month tiles above the globe. It does not invent ship routes. The experiment
+globe offers sampling, local MAE and difference-from-random views. Its error layers
+and the flat error map are explicitly labelled 2005 full-domain supporting analyses.
 Signed-bias sensitivity remains available in the collapsed Methods audit
 (`#estimand`); direct links open that audit automatically.
 
-The real-observation globe, flat sampling maps, coverage-count chart, archived
-signed-bias map and CTD photo are no longer displayed. Their source data, assets
-and exporters remain in the repository. Observed SOCAT values are downloadable
-under Sources but are not fetched by the page. No scientific scores were changed.
+The flat sampling maps, coverage-count chart, archived signed-bias map and CTD
+photo remain off the page. Their assets and exporters are retained. Both globes
+load lazily and retain white land with black coastlines above the data symbols.
+No scientific scores were changed.
+
+All page text, controls and SVG labels use Arial, with a sans-serif fallback.
+The final typography stylesheet overrides legacy serif and italic rules; hierarchy
+uses size and weight rather than switching font families.
 
 ## Preview
 

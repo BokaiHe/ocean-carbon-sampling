@@ -72,11 +72,13 @@ def test_observation_export_filters_missing_not_high_values(tmp_path):
     assert data["metadata"]["excluded_missing_or_unobserved_rows"] == 2
 
 
-def test_observation_archive_is_preserved_but_not_loaded_on_homepage():
+def test_observation_globe_is_restored_with_visible_month_controls():
     html = (SITE / "index.html").read_text(encoding="utf-8")
-    assert 'id="voyage"' not in html
-    assert 'id="observation-globe"' not in html
-    assert 'src="observations.js' not in html
+    assert 'id="voyage"' in html
+    assert 'id="observation-globe"' in html
+    assert 'src="observations.js' in html
+    assert html.index('id="observation-year"') < html.index('id="observation-globe"')
+    assert html.index('id="observation-month"') < html.index('id="observation-globe"')
     assert 'href="data/observed-co2.json" download' in html
     assert (SITE / "observations.js").is_file()
     assert "SOCAT data-use statement" in html

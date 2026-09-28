@@ -266,7 +266,7 @@ def test_story_order_and_archived_map_scope() -> None:
     assert 'id="priority-map"' not in html
     assert 'id="flat-maps"' not in html
     assert 'id="block-chart"' not in html
-    assert 'id="globe-layer"' not in html
+    assert 'id="globe-layer"' in html
     assert "Whole-block stress test only" in technical
     assert "Where should a follow-up sampling experiment test first?" not in html
     assert "Why this different scope?" in html

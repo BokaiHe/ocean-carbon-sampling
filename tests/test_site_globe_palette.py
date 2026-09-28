@@ -15,11 +15,15 @@ def test_both_globes_use_neutral_ocean_and_white_land():
     assert "Grey background is not a fine-grid coverage mask" in html
 
 
-def test_sampling_globe_has_one_view_and_a_shared_legend_palette():
+def test_experimental_globe_restores_three_views_without_losing_missing_values():
     js = (SITE / "globe.js").read_text(encoding="utf-8")
-    assert "colourStops.sampling.join(',')" in js
+    assert "colourStops[model.layer].join(',')" in js
     assert "Object.keys(colourStops)" in js
     assert "Grey background is not a fine-grid coverage mask" in js
-    assert "data.fields" not in js
-    assert "model.layer" not in js
+    assert "data.fields" in js
+    assert "model.layer" in js
+    assert "v===null?noDataColour" in js
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    for layer in ("sampling", "mae", "delta"):
+        assert f'value="{layer}"' in html
     assert "count===0?noDataColour" in js
