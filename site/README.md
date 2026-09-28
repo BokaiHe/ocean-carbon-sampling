@@ -7,6 +7,14 @@ React + Vite presentation of frozen results. The browser performs no model fitti
 Question → workflow → one sampling globe → paired MAE → evaluation variants →
 supporting error map → sample-count trade-offs → optional methods and sources.
 
+The results use a React-controlled four-chapter index with one large chart panel
+at a time. All scientific panels and their source links remain in the HTML;
+without the navigation enhancement they appear sequentially. Direct links and
+keyboard navigation select the appropriate chapter. The research footer closes
+with the next question, attribution and contact links. These are original
+implementations informed by the Showcase 7 and Footer 10 visual patterns, not
+redistributed licensed template source.
+
 The globe shows simulated sampling only. The flat error map is the sole spatial
 outcome view, explicitly labelled as a 2005 full-domain supporting analysis.
 Signed-bias sensitivity remains available in the collapsed Methods audit
