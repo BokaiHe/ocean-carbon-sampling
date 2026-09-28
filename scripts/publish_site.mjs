@@ -35,3 +35,11 @@ const commit=git('commit-tree',tree,...parents,'-m',`Publish research site from 
 git('update-ref','refs/heads/site-build',commit);
 git('push','origin','site-build:site-build');
 console.log(`Published compiled website ${commit}. No licensed source or source maps uploaded. Deployment staging: ${stage}`);
+// Dispatch from the protected main branch; site-build supplies only the artifact.
+// Read the existing GitHub credential in memory, never print or persist it.
+const credential=execFileSync('git',['credential','fill'],{input:'protocol=https\nhost=github.com\n\n',encoding:'utf8',env:{...process.env,GIT_TERMINAL_PROMPT:'0'},stdio:['pipe','pipe','pipe']});
+const token=credential.split(/\r?\n/).find(line=>line.startsWith('password='))?.slice(9);
+if(!token)throw Error('Build pushed. Run Deploy website to GitHub Pages manually on main; no GitHub credential was available for dispatch.');
+const response=await fetch('https://api.github.com/repos/BokaiHe/ocean-carbon-sampling/actions/workflows/deploy-pages.yml/dispatches',{method:'POST',headers:{Authorization:`Bearer ${token}`,Accept:'application/vnd.github+json','Content-Type':'application/json'},body:JSON.stringify({ref:'main'})});
+if(!response.ok)throw Error(`Build pushed, but deployment dispatch returned HTTP ${response.status}. Run the Pages workflow manually on main.`);
+console.log('Requested Pages deployment from main.');
