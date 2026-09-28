@@ -3,8 +3,7 @@ const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 const NS = "http://www.w3.org/2000/svg";
 const colors = {random:"#456d87",historical:"#a35f4d",hidden:"#456d87",block:"#a35f4d",median:"#a35f4d",p99:"#456d87",rmse:"#687477"};
-const state = {data:null, charts:null, strategy:"random", showZero:false, pairedProtocol:"hidden"};
-const names = {random:"Random", historical:"Historical-density", coverage:"Coverage"};
+const state = {data:null, charts:null, pairedProtocol:"hidden"};
 const signed = (n,d=3) => (n>0?"+":n<0?"−":"") + Math.abs(n).toFixed(d);
 const escapeHTML = text => String(text).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function svgEl(tag, attrs={}, parent) {
@@ -68,22 +67,6 @@ function pairedChart() {
   $("#primary-effect").innerHTML="+"+state.data.estimands["area|both60|hidden"].metrics.mae.relative_pct.toFixed(2)+"%<span>higher average error than random · primary test</span>";
   table("paired-table",["Protocol","Unit","Random MAE","Historical-density MAE","ΔMAE (µatm)"],rows);
 }
-function blockChart() {
-  const chart=makeChart("block-chart",236,"Occupied spatial blocks in the illustrative selection","Count of distinct 5 by 10 degree spatial blocks receiving at least one selected observation.");
-  const {svg,width}=chart,L=0,R=45,scale=n=>n/1100*(width-L-R);
-  const rows=[];
-  state.charts.sampling.blocks.forEach((row,i)=>{
-    const y=27+i*70, active=state.strategy===row.strategy;
-    label(svg,0,y-9,names[row.strategy],{fill:"#243b49","font-weight":active?700:400});
-    mark(chart,`${names[row.strategy]}: ${row.blocks} occupied blocks from ${row.sample_count.toLocaleString("en-US")} selected month-cells.`,g=>{
-      svgEl("rect",{x:0,y,width:width-R,height:16,rx:2,fill:"#edf2f5"},g);
-      svgEl("rect",{x:0,y,width:scale(row.blocks),height:16,rx:2,fill:row.strategy==="historical"?colors.historical:colors.random,opacity:active?1:0.6},g);
-    });
-    label(svg,width-R+8,y+13,row.blocks,{fill:"#243b49","font-weight":700});
-    rows.push([names[row.strategy],row.blocks,row.sample_count]);
-  });
-  table("block-table",["Rule","Occupied spatial blocks","Selected month-cells"],rows);
-}
 function robustnessChart() {
   const chart=makeChart("robustness-chart",450,"Historical-density MAE change across 12 evaluation variants","All displayed relative MAE changes are positive; these variants share data and are not independent tests.");
   const {svg,width}=chart,L=width<500?141:205,R=26;
@@ -139,6 +122,7 @@ function sweepChart() {
   table("sweep-table",["Count","Metric","Random","Coverage","Δerror (µatm)"],rows);
 }
 function biasChart() {
+  if (!$("#estimand").open) return;
   const chart=makeChart("bias-chart",285,"Whole-block signed-bias sensitivity","Four categorical changes to area weighting and domain shrink the original negative signed offset.");
   const {svg,width}=chart,L=44,R=20,top=32,bottom=198;
   const keys=state.data.estimand_journey,values=keys.map(k=>state.data.estimands[k].metrics.bias.difference);
@@ -156,36 +140,22 @@ function biasChart() {
   });
   table("bias-table",["Whole-block setting","Bias difference (µatm)"],rows);
 }
-function updateMap() {
-  const path=state.data.maps.images[state.strategy][state.showZero?"zero":"base"];
-  $("#sampling-map").src=path;$("#sampling-map-link").href=path;
-  $("#sampling-map").alt=names[state.strategy]+" illustrative sampling map"+(state.showZero?" with historical zero-support overlay":"");
-  $("#zero-callout").hidden=!state.showZero;
-  $("#map-description").textContent={
-    random:"Random: equal selection probability for each candidate month-cell.",
-    historical:"Historical-density: SOCAT count weights, not real cruise trajectories.",
-    coverage:"Coverage: prioritize underrepresented month-space blocks."
-  }[state.strategy];
-  $$("[data-strategy]").forEach(b=>{const active=b.dataset.strategy===state.strategy;b.classList.toggle("active",active);b.setAttribute("aria-pressed",String(active));});
-  blockChart();
-}
 function renderAudits() {
   const month=state.data.audits.month_balance;
   $("#month-audit").innerHTML="<p>Supporting whole-block selection audit; all strategies cover 12 months. Mean absolute deviation from equal monthly allocation:</p><ul>"+Object.entries(month).map(([k,v])=>"<li>"+escapeHTML(k.replaceAll("_","-"))+": "+v.mean_abs_equal_deviation_pp.toFixed(3)+" percentage points.</li>").join("")+"</ul>";
   const r=state.data.audits.regridding;
   $("#regrid-audit").innerHTML=`<p>Native-cell-area regridding preserved ${r.direction_checks_passed}/${r.direction_checks} prespecified directions. Correlated metrics are not independent tests. This checks regridding, not evaluation-area weighting.</p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/osse_regrid_audit_results.md">Read the full regridding audit ↗</a>`;
 }
-function renderCharts() {pairedChart();blockChart();robustnessChart();sweepChart();biasChart();}
+function renderCharts() {pairedChart();robustnessChart();sweepChart();biasChart();}
 // The React hero owns mobile navigation (including Escape and focus handling).
 async function initialize() {
   try{
     const responses=await Promise.all(["data/site-data.json","data/chart-data.json"].map(path=>fetch(path)));
     for(const r of responses)if(!r.ok)throw Error("Data request failed: "+r.status);
     [state.data,state.charts]=await Promise.all(responses.map(r=>r.json()));
-    renderCharts();renderAudits();updateMap();
+    renderCharts();renderAudits();
     $$("[data-paired-protocol]").forEach(b=>b.addEventListener("click",()=>{state.pairedProtocol=b.dataset.pairedProtocol;pairedChart();}));
-    $$("[data-strategy]").forEach(b=>b.addEventListener("click",()=>{state.strategy=b.dataset.strategy;updateMap();}));
-    $("#zero-toggle").addEventListener("change",e=>{state.showZero=e.target.checked;updateMap();});
+    $("#estimand").addEventListener("toggle",biasChart);
     let frame;const widths=new WeakMap();
     const observer=new ResizeObserver(entries=>{
       if(entries.some(e=>{const w=Math.floor(e.contentRect.width),old=widths.get(e.target);widths.set(e.target,w);return old!==w;})){
@@ -227,4 +197,8 @@ document.addEventListener("click",e=>{
   imageViewer.showModal();
   document.documentElement.classList.add("image-viewer-open");
 });
+// Preserve direct audit links while keeping the methods panel collapsed by default.
+function revealAudit(){if(location.hash==="#estimand")$("#estimand").open=true;}
+window.addEventListener("hashchange",revealAudit);
+revealAudit();
 initialize();

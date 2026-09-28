@@ -1,7 +1,7 @@
 import React,{useRef} from 'react';
 import useHeroVideo from './useHeroVideo.js';
 
-const chapters=[['#background','The question'],['#voyage','Observed ocean'],['#workflow','The method'],['#validation','Findings']];
+const chapters=[['#background','The question'],['#workflow','The method'],['#validation','Findings']];
 function OceanMark(){return <svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><path d="M4 17c5-6 9 6 14 0s9 6 14 0M5 23c5-6 8 6 13 0s8 6 13 0"/><path d="M18 3v5M3 18h5M28 18h5"/></svg>;}
 
 export const heroMedia={

@@ -11,7 +11,7 @@ main details { font-size:15px; }
 main details p { font-size:15px; line-height:1.7; }
 main .chart-about { border-top:1px solid #d6e0e7; margin-top:24px; padding-top:16px; }
 main .chart-about summary { font-size:15px; font-weight:500; color:#33556d; min-height:36px; }
-.background-layout { gap:70px; align-items:center; }
+.background-layout { display:block; max-width:880px; }
 .background-layout p:not(.eyebrow) { max-width:650px; }
 .research-question { margin-top:38px; padding:25px 30px; border-left:3px solid #5b86a4; background:#eaf0f4; }
 .research-question p { font-size:clamp(22px,2.2vw,31px); line-height:1.4; }
@@ -81,3 +81,10 @@ main .chart-panel { border-radius:12px; padding:32px; border-color:#d5e0e8; box-
 .next-question p { max-width:900px; }
 @media(max-width:1000px) { #paired-evidence,#results>.shell,#technical>.shell { grid-template-columns:1fr; gap:28px; } #paired-evidence .field-note p { max-width:760px; } .result-number { font-size:64px; } }
 @media(max-width:600px) { main>.section { padding-block:50px; } main h2 { font-size:35px; } main p { font-size:16px; } main .chart-panel,#paired-evidence .hero-chart { padding:18px 12px; } .result-overture { min-height:max(560px,80svh); } .result-overture h2 { font-size:48px; } .result-overture>.shell { padding-block:65px 85px; } .result-overture p:last-child { font-size:16px; } .mosaic-pause { right:20px; bottom:15px; } .legend { gap:12px; font-size:13px; } #results .legend span:last-child { flex-basis:100%; } .protocol-tabs button { font-size:13px; padding:10px 6px; } #related-work h2 { font-size:34px; } .background-layout { gap:28px; } }
+
+/* The sensitivity audit is optional, but its chart must remain legible. */
+#estimand .chart-panel { background:#fff; color:#203d4d; }
+#technical #estimand .chart-panel p,#technical #estimand .chart-panel summary { color:#33556d; }
+#technical #estimand .chart-panel table { color:#203d4d; }
+#estimand .section-heading { margin-bottom:24px; }
+#technical #estimand .section-heading .chart-note { color:#d0e0e9; }

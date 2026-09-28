@@ -1,18 +1,40 @@
-# Static interactive brief
+# Interactive research brief
 
-This site contains no backend and performs no model fitting. It reads the frozen
-`data/site-data.json` contract and swaps pre-rendered PNG maps.
+React + Vite presentation of frozen results. The browser performs no model fitting.
 
-Rebuild the data contract and maps from the repository root:
+## Reading order
+
+Question → workflow → one sampling globe → paired MAE → evaluation variants →
+supporting error map → sample-count trade-offs → optional methods and sources.
+
+The globe shows simulated sampling only. The flat error map is the sole spatial
+outcome view, explicitly labelled as a 2005 full-domain supporting analysis.
+Signed-bias sensitivity remains available in the collapsed Methods audit
+(`#estimand`); direct links open that audit automatically.
+
+The real-observation globe, flat sampling maps, coverage-count chart, archived
+signed-bias map and CTD photo are no longer displayed. Their source data, assets
+and exporters remain in the repository. Observed SOCAT values are downloadable
+under Sources but are not fetched by the page. No scientific scores were changed.
+
+## Preview
+
+From the repository root:
 
 ```bash
-python scripts/build_static_site_assets.py
+npm ci
+npm run dev
 ```
 
-Preview locally:
+For a production preview, run `npm run build` and then `npm run preview`; open the
+local URL printed by Vite. The private licensed visual components are optional
+for local builds; public clones use the supplied fallback.
 
-```bash
-python -m http.server 8000 --directory site
-```
+## Frozen assets and publication
 
-Then open `http://localhost:8000/`.
+`python scripts/build_static_site_assets.py` rebuilds the original data contract
+and archived PNG maps. It is not needed for presentation-only changes.
+
+The configured `npm run publish:site` builds and publishes compiled output only.
+It requires the owner's local licensed components and GitHub access; never commit
+licensed source files or credentials.

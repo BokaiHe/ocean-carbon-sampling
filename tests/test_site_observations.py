@@ -72,19 +72,14 @@ def test_observation_export_filters_missing_not_high_values(tmp_path):
     assert data["metadata"]["excluded_missing_or_unobserved_rows"] == 2
 
 
-def test_observation_date_controls_are_above_globe_with_visible_month_buttons():
+def test_observation_archive_is_preserved_but_not_loaded_on_homepage():
     html = (SITE / "index.html").read_text(encoding="utf-8")
-    js = (SITE / "observations.js").read_text(encoding="utf-8")
-    view = html.split('class="observation-view"', 1)[1].split("</section>", 1)[0]
-    assert view.index('id="observation-year"') < view.index('id="observation-globe"')
-    assert view.index('id="observation-month"') < view.index('id="observation-globe"')
-    assert '<select id="observation-month"' not in html
-    assert 'class="observation-month-buttons" role="group"' in html
-    assert "button.dataset.observationMonth" in js
-    assert "aria-pressed" in js
-    assert "months.slice(1)" in js
-    assert "button.textContent=String(i)" in js
-    assert 'id="observation-all-months"' in html
+    assert 'id="voyage"' not in html
+    assert 'id="observation-globe"' not in html
+    assert 'src="observations.js' not in html
+    assert 'href="data/observed-co2.json" download' in html
+    assert (SITE / "observations.js").is_file()
+    assert "SOCAT data-use statement" in html
 
 
 def test_observation_globe_has_no_routes_or_model_data_dependency():

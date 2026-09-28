@@ -19,11 +19,13 @@ def test_story_introduces_problem_and_method_before_results():
     sections = re.findall(r'<section\b[^>]*id="([^"]+)"', html)
     expected = [
         "background",
-        "voyage",
         "workflow",
         "sampling",
         "paired-evidence",
         "results",
+        "error-map",
+        "sample-count",
+        "technical",
     ]
     assert [sections.index(name) for name in expected] == sorted(
         sections.index(name) for name in expected

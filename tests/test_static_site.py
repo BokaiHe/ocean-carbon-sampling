@@ -85,7 +85,7 @@ def test_globe_retains_scope_fallback_and_local_dependencies() -> None:
     assert "prefers-reduced-motion" in js
     assert "pointercancel" in js
     assert "document.hidden" in js
-    assert "flat maps and result charts below are still available" in js
+    assert "supporting error map and result charts below are still available" in js
     assert (SITE / "vendor/d3-7.9.0.min.js").stat().st_size > 100000
     assert (SITE / "vendor/D3-LICENSE.txt").is_file()
     land = json.loads((SITE / "data/globe-land.json").read_text(encoding="utf-8"))
@@ -118,9 +118,8 @@ def test_ocean_editorial_layout_keeps_context_separate_from_evidence() -> None:
     assert 'id="paired-evidence"' in html
     source = (SITE / "assets/context/ocean-waves-source.md").read_text(encoding="utf-8")
     assert "ArtHouse Studio" in source
-    assert "NOAA Ocean Exploration" in html
-    assert "Context imagery, not a source of the values below." in html
-    assert "not the specific surface pCO₂ system" in html
+    assert 'class="field-photo"' not in html
+    assert 'id="error-map"' in html
     assert "nasa-celtic-sea-phytoplankton.jpg" in css
     assert "prefers-reduced-motion" in css
     for name in ("nasa-celtic-sea-phytoplankton.jpg", "noaa-ctd-launch.jpg"):
@@ -258,14 +257,17 @@ def test_story_order_and_archived_map_scope() -> None:
     html = (SITE / "index.html").read_text(encoding="utf-8")
     sections = re.findall(r'<section[^>]+id="([^"]+)"', html)
     assert sections.index("results") < sections.index("sample-count")
-    assert sections.index("sample-count") < sections.index("estimand")
-    assert sections.index("estimand") < sections.index("technical")
+    assert sections.index("sample-count") < sections.index("technical")
+    assert "estimand" not in sections
     technical = html.split('id="technical"', 1)[1].split("</section>", 1)[0]
-    assert '<details id="archived-bias-map">' in technical
-    assert technical.count('id="priority-map"') == 1
-    assert html.count('id="priority-map"') == 1
-    assert "Not a sampling-priority map." in technical
-    assert "locations north of 60°N" in technical
+    assert '<details id="estimand">' in technical
+    assert 'id="bias-chart"' in technical
+    assert 'id="archived-bias-map"' not in html
+    assert 'id="priority-map"' not in html
+    assert 'id="flat-maps"' not in html
+    assert 'id="block-chart"' not in html
+    assert 'id="globe-layer"' not in html
+    assert "Whole-block stress test only" in technical
     assert "Where should a follow-up sampling experiment test first?" not in html
     assert "Why this different scope?" in html
     assert "reversal threshold cannot be transferred" in html
@@ -298,7 +300,7 @@ def test_chart_export_matches_sources_without_new_model_fits() -> None:
 def test_visual_brief_charts_retain_scopes_and_accessible_values() -> None:
     html = (SITE / "index.html").read_text(encoding="utf-8")
     js = (SITE / "app.js").read_text(encoding="utf-8")
-    for name in ("paired", "block", "robustness", "sweep", "bias"):
+    for name in ("paired", "robustness", "sweep", "bias"):
         assert f'id="{name}-chart"' in html
         assert f'id="{name}-table"' in html
     assert "correlated evaluation variants" in html
