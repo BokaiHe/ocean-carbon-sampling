@@ -224,10 +224,21 @@ Open the localhost URL printed by Vite, not `site/index.html` via `file://`.
 The React hero is pre-rendered for readable no-JavaScript fallback, then hydrated
 for video and navigation controls. The existing research visualizations remain
 independent; their frozen data and calculations are unchanged. Vite builds `dist/`,
-which can be previewed locally. Edit `site/src/Hero.jsx`, not its generated header in
-`site/index.html`; `npm run render:hero` updates that checked-in fallback.
+which can be previewed locally. The deployed entrance uses the owner's authorized
+`site/licensed/Hero9.tsx`; `site/src/Hero.jsx` provides a public-clone fallback and
+shared navigation/media settings. Do not hand-edit the generated header in
+`site/index.html`; `npm run render:hero` updates the checked-in HTML.
 
-### Licensed visual component and publishing
+### Licensed visual components and publishing
+
+The Hero 9 entrance uses the owner-supplied React Bits Pro block with Motion and
+Lucide icons: full-height video, character-by-character blur reveal and translucent
+research links. Its source stays in ignored `site/licensed/Hero9.tsx`. Public clones
+build the fallback hero without that file. `OMIT_LICENSED_HERO=1` tests this path.
+The video and poster use the exact external URLs provided with the block; see
+`site/assets/context/hero9-source.md`. No media attribution is overlaid on the hero.
+Reduced motion and data-saving settings prevent automatic video playback. Neither
+background displays a pause button, as requested by the owner.
 
 The results-section background uses a user-supplied React Bits Pro Mosaic Waves
 component. Its source lives in ignored `site/licensed/MosaicWaves.tsx` and is not
@@ -241,7 +252,8 @@ motion, data saving, offscreen state or hidden tabs require it.
 Run `npm run publish:site` locally to build and publish only the compiled application
 to `site-build`. GitHub Pages deploys that branch through Actions. The command checks
 the remote and rejects TypeScript, JSX and source maps in the artifact; it never
-uploads `site/licensed`. Main-branch pushes alone no longer redeploy the site.
+uploads `site/licensed`. The publisher dispatches the protected main-branch workflow,
+which deploys the compiled `site-build` artifact; pushing main alone does not rebuild it.
 The published bundle is the website application, not a downloadable source package.
 No model run or raw-data download is required to preview the checked-in site.
 The paired MAE chart foregrounds `area|both60|hidden`, alongside the whole-block

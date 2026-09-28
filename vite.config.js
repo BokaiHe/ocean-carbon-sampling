@@ -8,6 +8,8 @@ import path from 'node:path';
 const root=fileURLToPath(new URL('.',import.meta.url));
 const licensed=path.join(root,'site/licensed/MosaicWaves.tsx');
 const hasLicensed=existsSync(licensed)&&process.env.OMIT_LICENSED_MOSAIC!=='1';
+const heroLicensed=path.join(root,'site/licensed/Hero9.tsx');
+const hasHero=existsSync(heroLicensed)&&process.env.OMIT_LICENSED_HERO!=='1';
 // Keep frozen URLs stable: existing charts fetch data/*.json and maps by name.
 // Only the hero is React-owned; the scientific renderers remain separate islands.
 export default defineConfig({
@@ -15,7 +17,7 @@ export default defineConfig({
   base:'./',
   publicDir:false,
   define:{__HAS_LICENSED_MOSAIC__:JSON.stringify(hasLicensed)},
-  resolve:{alias:{'@licensed/mosaic-waves':hasLicensed?licensed:path.join(root,'site/src/StaticMosaic.jsx')}},
+  resolve:{alias:{'@licensed/mosaic-waves':hasLicensed?licensed:path.join(root,'site/src/StaticMosaic.jsx'),'@licensed/hero-nine':hasHero?heroLicensed:path.join(root,'site/src/Hero.jsx')}},
   plugins:[react(),{
     name:'preserve-frozen-research-assets',
     apply:'build',

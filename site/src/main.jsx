@@ -1,6 +1,6 @@
 import React from 'react';
 import {createRoot,hydrateRoot} from 'react-dom/client';
-import Hero from './Hero.jsx';
+import Hero from '@licensed/hero-nine';
 import MosaicBackdrop from './MosaicBackdrop.jsx';
 
 hydrateRoot(document.getElementById('hero-root'),<Hero />);

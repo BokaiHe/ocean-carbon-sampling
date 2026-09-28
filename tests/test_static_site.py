@@ -113,7 +113,8 @@ def test_ocean_editorial_layout_keeps_context_separate_from_evidence() -> None:
     css = (SITE / "styles.css").read_text(encoding="utf-8")
     header = html.split("</header>", 1)[0]
     assert 'id="paired-chart"' not in header
-    assert 'class="story-rail shell"' in header
+    assert 'aria-label="Primary navigation"' in header
+    assert 'href="#background"' in header and 'href="#workflow"' in header
     assert 'id="paired-evidence"' in html
     source = (SITE / "assets/context/ocean-waves-source.md").read_text(encoding="utf-8")
     assert "ArtHouse Studio" in source

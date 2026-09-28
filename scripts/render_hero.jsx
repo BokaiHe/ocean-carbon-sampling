@@ -1,7 +1,12 @@
 import React from 'react';
 import {renderToString} from 'react-dom/server';
 import {readFile,writeFile} from 'node:fs/promises';
-import Hero from '../site/src/Hero.jsx';
+import {existsSync} from 'node:fs';
+import HeroFallback from '../site/src/Hero.jsx';
+
+const licensedHero=new URL('../site/licensed/Hero9.tsx',import.meta.url);
+const Hero=existsSync(licensedHero)&&process.env.OMIT_LICENSED_HERO!=='1'
+  ? (await import(licensedHero.href)).default : HeroFallback;
 
 // Commit the prerendered HTML for readable content even before JS loads.
 const target=new URL('../site/index.html',import.meta.url);

@@ -4,7 +4,7 @@ from pathlib import Path
 SITE = Path(__file__).resolve().parents[1] / "site"
 
 
-def test_hero_keeps_local_video_and_retains_source_record():
+def test_hero_uses_requested_video_and_retains_source_record():
     html = (SITE / "index.html").read_text(encoding="utf-8")
     assert 'href="hero.css?' in html
     assert 'src="/src/main.jsx"' in html
@@ -14,10 +14,11 @@ def test_hero_keeps_local_video_and_retains_source_record():
     assert "ArtHouse Studio / Pexels" not in header
     assert 'preload="none"' in html
     assert 'loop=""' in html
-    assert 'data-src="assets/context/ocean-waves.mp4"' in html
+    assert 'data-src="https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4"' in html
     assert (SITE / "assets/context/ocean-waves.mp4").stat().st_size < 5_000_000
     assert (SITE / "assets/context/ocean-waves-poster.jpg").is_file()
     assert (SITE / "assets/context/ocean-waves-source.md").is_file()
+    assert (SITE / "assets/context/hero9-source.md").is_file()
 
 
 def test_hero_has_reduced_motion_pause_and_no_data_dependency():
@@ -59,3 +60,20 @@ def test_react_hero_build_keeps_research_assets_and_pages_subpath():
     workflow = (root / ".github/workflows/deploy-pages.yml").read_text()
     assert "ref: site-build" in workflow
     assert "path: ." in workflow
+
+
+def test_hero9_private_source_has_public_build_fallback():
+    root = SITE.parent
+    config = (root / "vite.config.js").read_text()
+    renderer = (root / "scripts/render_hero.jsx").read_text()
+    assert "@licensed/hero-nine" in config
+    assert "OMIT_LICENSED_HERO" in config and "OMIT_LICENSED_HERO" in renderer
+    assert "HeroFallback" in renderer
+    assert "site/licensed/" in (root / ".gitignore").read_text()
+    assert "@licensed/hero-nine" in (SITE / "src/main.jsx").read_text()
+    css = (SITE / "hero9.css").read_text()
+    assert "prefers-reduced-motion:reduce" in css
+    assert "backdrop-filter:blur" in css
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    assert "App Store" not in html and "Google Play" not in html
+    assert "hero-motion" not in html

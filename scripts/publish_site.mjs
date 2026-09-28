@@ -9,6 +9,7 @@ import {execFileSync} from 'node:child_process';
 const root=fileURLToPath(new URL('..',import.meta.url));
 const licensed=path.join(root,'site/licensed/MosaicWaves.tsx');
 if(!existsSync(licensed))throw Error('Local licensed MosaicWaves.tsx is required to publish. Public clones can still build the static fallback.');
+if(!existsSync(path.join(root,'site/licensed/Hero9.tsx')))throw Error('Local licensed Hero9.tsx is required to publish.');
 if(!process.env.npm_execpath)throw Error('Use npm run publish:site.');
 const repoGit=(...args)=>execFileSync('git',['-c',`safe.directory=${root.replaceAll('\\','/')}`,'-C',root,...args],{encoding:'utf8'}).trim();
 const remote=repoGit('remote','get-url','origin');
