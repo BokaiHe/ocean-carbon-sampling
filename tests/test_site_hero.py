@@ -8,7 +8,7 @@ def test_hero_keeps_local_video_and_retains_source_record():
     html = (SITE / "index.html").read_text(encoding="utf-8")
     assert 'href="hero.css?' in html
     assert 'src="/src/main.jsx"' in html
-    assert 'id="hero-motion"' in html
+    assert 'id="hero-motion"' not in html
     header = html.split("</header>", 1)[0]
     assert "hero-image-credit" not in header
     assert "ArtHouse Studio / Pexels" not in header
@@ -27,7 +27,8 @@ def test_hero_has_reduced_motion_pause_and_no_data_dependency():
     assert "prefers-reduced-motion: reduce" in js
     assert "document.hidden" in js
     assert "IntersectionObserver" in js
-    assert "aria-pressed" in component
+    assert "hero-motion" not in component
+    assert "useHeroVideo(videoRef,heroRef)" in component
     assert "video.play()" in js
     assert "video.pause()" in js
     assert "saveData" in js

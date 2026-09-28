@@ -11,7 +11,7 @@ def test_mosaic_is_private_lazy_and_motion_safe():
     config = (ROOT / "vite.config.js").read_text()
     assert "site/licensed/" in ignored
     assert "lazy(()=>import('@licensed/mosaic-waves'))" in wrapper
-    for guard in ("IntersectionObserver", "prefers-reduced-motion", "document.hidden", "saveData", "paused={paused}"):
+    for guard in ("IntersectionObserver", "prefers-reduced-motion", "document.hidden", "saveData"):
         assert guard in wrapper
     assert "OMIT_LICENSED_MOSAIC" in config and "StaticMosaic.jsx" in config
     assert "fetch(" not in wrapper
@@ -31,7 +31,8 @@ def test_primary_and_stress_results_remain_distinct():
 def test_mosaic_uses_original_visual_defaults_without_overlay():
     wrapper = (SITE / "src/MosaicBackdrop.jsx").read_text(encoding="utf-8")
     css = (SITE / "editorial.css").read_text(encoding="utf-8")
-    assert "<MosaicWaves paused={paused}/>" in wrapper
+    assert "<MosaicWaves/>" in wrapper
+    assert "mosaic-pause" not in wrapper
     assert ".mosaic-field:after" not in css
     assert "85svh" in css and "80svh" in css
     assert "pointer-events:none" in css  # Copy must not block the interactive canvas.

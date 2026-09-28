@@ -6,8 +6,7 @@ function OceanMark(){return <svg viewBox="0 0 36 36" aria-hidden="true"><circle 
 
 export default function Hero(){
   const heroRef=useRef(null),videoRef=useRef(null);
-  const media=useHeroVideo(videoRef,heroRef);
-  const paused=media.mode==='paused'||media.mode==='error';
+  useHeroVideo(videoRef,heroRef);
   return <header id="top" className="cinematic-hero" ref={heroRef}>
     <video ref={videoRef} id="hero-video" className="hero-video" muted loop playsInline preload="none" poster="assets/context/ocean-waves-poster.jpg" data-src="assets/context/ocean-waves.mp4" aria-hidden="true" tabIndex={-1}/>
     <a className="skip-link" href="#background">Skip to the research</a>
@@ -33,7 +32,6 @@ export default function Hero(){
     </div>
     <div className="hero-footer shell">
       <p className="byline"><strong>Bokai He</strong><span>Columbia EEE · Independent course-project extension</span><a href="#related-work">Course foundation &amp; credits ↗</a></p>
-      <div className="hero-footer-right"><button id="hero-motion" type="button" aria-controls="hero-video" aria-pressed={paused} hidden={!media.allowed} onClick={media.toggle}><span aria-hidden="true">{paused?'▷':'Ⅱ'}</span>{media.mode==='error'?'Retry background video':paused?'Play background video':'Pause background video'}</button></div>
     </div>
     <div className="story-rail shell" aria-label="Explore the study">{[['01','#background','Why location matters'],['02','#workflow','Test with a known answer'],['03','#validation','See what changes']].map(([number,href,label])=><a key={number} href={href}><small>{number}</small><span>{label}</span><b aria-hidden="true">↗</b></a>)}</div>
   </header>;

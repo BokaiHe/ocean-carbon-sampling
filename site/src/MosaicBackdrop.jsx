@@ -11,7 +11,7 @@ class BackgroundBoundary extends Component {
 export default function MosaicBackdrop(){
   const root=useRef(null);
   const [visible,setVisible]=useState(false),[calm,setCalm]=useState(true);
-  const [paused,setPaused]=useState(false),[hidden,setHidden]=useState(false);
+  const [hidden,setHidden]=useState(false);
   useEffect(()=>{
     const query=matchMedia('(prefers-reduced-motion: reduce)');
     const sync=()=>setCalm(query.matches||Boolean(navigator.connection?.saveData));
@@ -22,12 +22,11 @@ export default function MosaicBackdrop(){
     observer.observe(root.current);
     return()=>{observer.disconnect();query.removeEventListener('change',sync);document.removeEventListener('visibilitychange',visibility);};
   },[]);
-  return <div className="mosaic-backdrop" ref={root} data-motion={calm?'reduced':paused?'paused':'running'}>
+  return <div className="mosaic-backdrop" ref={root} data-motion={calm?'reduced':'running'}>
     <div className="mosaic-field" aria-hidden="true">
       {__HAS_LICENSED_MOSAIC__&&!calm&&visible&&!hidden&&<BackgroundBoundary><Suspense fallback={null}>
-        <MosaicWaves paused={paused}/>
+        <MosaicWaves/>
       </Suspense></BackgroundBoundary>}
     </div>
-    {__HAS_LICENSED_MOSAIC__&&!calm&&<button type="button" className="mosaic-pause" onClick={()=>setPaused(p=>!p)} aria-pressed={paused}>{paused?'Play waves':'Pause waves'} <span aria-hidden="true">{paused?'▷':'Ⅱ'}</span></button>}
   </div>;
 }

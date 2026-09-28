@@ -36,9 +36,6 @@ main .chart-about summary { font-size:15px; font-weight:500; color:#33556d; min-
 .result-overture p:last-child { margin-top:24px; max-width:560px; color:#d3e3ed; font-size:18px; }
 [data-mosaic-background],.mosaic-backdrop,.mosaic-field { position:absolute; inset:0; }
 .mosaic-backdrop { background:radial-gradient(ellipse at 75% 45%,#162450,#0a0a0a 70%); }
-.mosaic-pause { position:absolute; right:28px; bottom:22px; z-index:2; border:1px solid #afcddd50; padding:9px 13px; background:#102c40a6; color:#deedf4; border-radius:4px; font-size:13px; min-height:44px; cursor:pointer; }
-.mosaic-pause span { margin-left:14px; }
-.mosaic-pause:focus-visible { outline:3px solid #fff; outline-offset:4px; }
 #paired-evidence { grid-template-columns:.7fr 1.3fr; gap:60px; align-items:center; }
 #paired-evidence .field-note { border:0; padding:0; }
 #paired-evidence .field-note p { max-width:470px; }
