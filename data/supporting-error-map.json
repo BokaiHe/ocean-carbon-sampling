@@ -1,0 +1,18 @@
+{
+  "source": "results/public/osse_visual_demo_fields.parquet",
+  "year": 2005,
+  "seeds": 20,
+  "sample_count": 5000,
+  "scope": "Supporting: original full-domain hidden-cell evaluation",
+  "definition": "Mean absolute error historical-density minus random, microatmospheres (uatm)",
+  "aggregation": "20 paired seed means, then available held-out months per location; no area factor",
+  "source_locations": 40624,
+  "finite_locations": 37920,
+  "missing_locations": 2704,
+  "colour_limit_uatm": 30.0,
+  "below_colour_scale": 115,
+  "above_colour_scale": 2169,
+  "minimum_uatm": -130.2678088185416,
+  "maximum_uatm": 327.2850198360842,
+  "no_new_fits_or_predictions": true
+}
