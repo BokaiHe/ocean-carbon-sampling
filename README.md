@@ -235,8 +235,10 @@ The Hero 9 entrance uses the owner-supplied React Bits Pro block with Motion and
 Lucide icons: full-height video, character-by-character blur reveal and translucent
 research links. Its source stays in ignored `site/licensed/Hero9.tsx`. Public clones
 build the fallback hero without that file. `OMIT_LICENSED_HERO=1` tests this path.
-The video and poster use the exact external URLs provided with the block; see
+The video uses the external URL provided with the block; see
 `site/assets/context/hero9-source.md`. No media attribution is overlaid on the hero.
+The unrelated mountain poster was removed; a solid dark-blue background appears
+while the video loads, or when motion is reduced.
 Reduced motion and data-saving settings prevent automatic video playback. Neither
 background displays a pause button, as requested by the owner.
 

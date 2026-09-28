@@ -12,6 +12,9 @@ def test_hero_uses_requested_video_and_retains_source_record():
     header = html.split("</header>", 1)[0]
     assert "hero-image-credit" not in header
     assert "ArtHouse Studio / Pexels" not in header
+    assert 'poster=' not in header
+    assert 'images.unsplash.com' not in header
+    assert 'photo-1506905925346' not in (SITE / 'src/Hero.jsx').read_text(encoding='utf-8')
     assert 'preload="none"' in html
     assert 'loop=""' in html
     assert 'data-src="https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4"' in html

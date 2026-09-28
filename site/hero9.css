@@ -1,5 +1,5 @@
 /* App-specific layout around the privately licensed Hero 9 block. */
-#top.hero9 { min-height:100svh; background:#101519; }
+#top.hero9 { min-height:100svh; background:#102c40; }
 .hero9::before { background:none; }
 .hero9::after { background:rgba(0,0,0,.2); }
 .hero9 .nav { border-bottom:0; min-height:100px; }
