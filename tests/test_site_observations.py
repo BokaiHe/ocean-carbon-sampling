@@ -87,8 +87,9 @@ def test_observation_globe_is_restored_with_visible_month_controls():
 def test_observation_globe_has_no_routes_or_model_data_dependency():
     html = (SITE / "index.html").read_text(encoding="utf-8")
     js = (SITE / "observations.js").read_text(encoding="utf-8")
-    assert 'src="voyage.js' not in html
-    assert "Follow a real ship" not in html
+    observed = html.split('id="voyage"', 1)[1].split('</section>', 1)[0]
+    assert 'voyage-track.json' not in observed
+    assert 'voyage-time' not in observed
     assert "not a complete annual mean" in html
     assert "not dissolved-carbon concentration" in html
     assert "per-cruise-weighted" in html

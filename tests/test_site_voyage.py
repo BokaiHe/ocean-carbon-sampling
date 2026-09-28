@@ -19,6 +19,7 @@ def test_story_introduces_problem_and_method_before_results():
     sections = re.findall(r'<section\b[^>]*id="([^"]+)"', html)
     expected = [
         "background",
+        "real-voyage",
         "voyage",
         "workflow",
         "sampling",
@@ -83,3 +84,14 @@ def test_voyage_is_independent_and_accessible():
     assert "aria-valuetext" in js
     assert "original navigation table and source link below remain available" in js
     assert "setInterval" not in js
+
+
+def test_real_ship_introduction_is_live_and_distinct_from_observations():
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    for name in ("voyage-explorer", "voyage-globe", "voyage-time", "voyage-locate"):
+        assert f'id="{name}"' in html
+    assert 'src="voyage.js' in html
+    assert 'noaa-ctd-launch.jpg' in html
+    assert 'This photo is not from the voyage below' in html
+    assert 'a position is not necessarily a CO₂ sample' in html
+    assert "'voyage.js'" in (ROOT / "vite.config.js").read_text(encoding="utf-8")

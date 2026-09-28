@@ -18,6 +18,7 @@
   <script vite-ignore src="vendor/d3-7.9.0.min.js" defer></script>
   <script vite-ignore src="globe.js?v=restored-layers-1" defer></script>
   <script vite-ignore src="observations.js?v=restored-1" defer></script>
+  <script vite-ignore src="voyage.js?v=restored-ship-1" defer></script>
 </head>
 <body>
   <nav class="chapter-nav" aria-label="Research chapters">
@@ -36,15 +37,41 @@
 <!-- react-hero:end -->
   <main>
     <section class="section shell" id="background">
-      <div class="background-layout">
+      <div class="background-layout with-field-photo">
         <div>
           <p class="eyebrow">01 / The question</p>
           <h2>A ship sees a route.<br />We need the whole picture.</h2>
-          <p>Measurements tell us about a few places. Models help fill the gaps. Does choosing different places give us a better picture of ocean CO₂?</p>
+          <p>Ships can measure surface-water CO₂ as they travel, but each journey covers only a narrow path. Models help fill the gaps. Does choosing different places give us a better picture of ocean CO₂?</p>
           <details class="chart-about"><summary>What are we measuring?</summary><p>Reconstruction means estimating the missing parts of a map from scattered measurements. The quantity here is pCO₂, a measure of CO₂ pressure in seawater—not a direct map of carbon uptake. <a href="https://www.aoml.noaa.gov/ocd/ocdweb/brown/brown_introduction.html">Shipboard measurements · NOAA ↗</a></p></details>
         </div>
+        <figure class="field-photo"><img src="assets/context/noaa-ctd-launch.jpg" width="1536" height="1025" alt="A research ship lowers instruments into the sea" loading="lazy" /><figcaption><span>Ocean science starts with measurements</span><a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA Ocean Exploration ↗</a></figcaption><p class="chart-note">A CTD deployment, not the specific surface pCO₂ system used in the study. This photo is not from the voyage below.</p></figure>
       </div>
+      <p><a href="#real-voyage">Follow a real research voyage ↓</a></p>
       <div class="research-question"><span>The experiment</span><p>5,000 measurements. Three ways to place them. <em>What changes?</em></p></div>
+    </section>
+
+    <section class="section shell" id="real-voyage">
+      <div class="section-heading"><p class="eyebrow">Field example / A real research voyage</p><h2>A ship leaves a path—not a complete map.</h2><p>Follow a recorded Polarstern research voyage across the Southern Ocean. The empty space around the line is the point: this one ship did not visit everywhere.</p></div>
+      <div class="voyage-explorer" id="voyage-explorer">
+        <div class="voyage-story">
+          <p class="eyebrow">Polarstern / PS103 / 2016–17</p>
+          <h3>From Cape Town<br /> towards South America.</h3>
+          <p>Move the time slider to follow the ship. Drag the globe to look around.</p>
+          <div class="voyage-key"><span class="route-key"></span>Travelled so far <span class="route-key future"></span>Full recorded route</div>
+          <label for="voyage-time">Move through the voyage</label>
+          <input type="range" id="voyage-time" min="0" max="1" value="0" step="1" disabled />
+          <output id="voyage-readout" for="voyage-time" aria-live="polite">Loading recorded navigation positions…</output>
+          <div class="voyage-actions"><button id="voyage-start" disabled>Start</button><button id="voyage-middle" disabled>Midway</button><button id="voyage-end" disabled>End</button></div>
+          <p class="voyage-caveat">The boat marks the selected recorded position. Real navigation, not a simulation: a position is not necessarily a CO₂ sample. Background example only.</p>
+        </div>
+        <div class="voyage-view">
+          <div class="globe-view-top"><span>REAL VOYAGE · NOT EXPERIMENT RESULTS</span><span>DRAG TO EXPLORE ↔</span></div>
+          <canvas id="voyage-globe" tabindex="0" role="img" aria-label="Recorded Polarstern voyage on a globe. Arrow keys turn the globe; Home resets. Use the time slider to inspect recorded positions." aria-describedby="voyage-readout">The route runs from Cape Town through the Southern Ocean towards Punta Arenas. Download the recorded positions below.</canvas>
+          <div class="globe-controls"><button id="voyage-left" disabled aria-label="Turn voyage globe left">←</button><button id="voyage-right" disabled aria-label="Turn voyage globe right">→</button><button id="voyage-reset" disabled>Reset view</button><button id="voyage-locate" disabled>Find ship</button></div>
+        </div>
+      </div>
+      <p class="chart-note">Navigation record: 16 Dec 2016–2 Feb 2017. Boebel (2017), AWI / <a href="https://doi.org/10.1594/PANGAEA.875075">PANGAEA ↗</a> · <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. This is not the historical-density sampling mask used below.</p>
+      <details class="chart-about"><summary>Route source, limitations &amp; downloads</summary><p>Boebel, Olaf (2017): Station list and links to master tracks in different resolutions of POLARSTERN cruise PS103 (ANT-XXXII/2), Cape Town - Punta Arenas, 2016-12-16 - 2017-02-03. Alfred Wegener Institute, PANGAEA, doi:10.1594/PANGAEA.875075.</p><p>All positions and timestamps in the downloaded, approximately 10-minute navigation record are retained. Lines connect adjacent recorded positions, not a measured continuous path; gaps longer than 30 minutes are left disconnected. Speed and course are omitted. The ship symbol is illustrative, not a heading or live position. Navigation alone does not show which instruments were operating. These data do not train or score our experiment.</p><p><a href="data/voyage-track.json" download>Route &amp; provenance (JSON)</a> · <a href="data/PS103-track.tab" download>Original navigation table</a> · <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/export_site_voyage.py">Reproduce the export ↗</a></p></details>
     </section>
 
     <section class="section shell" id="voyage">

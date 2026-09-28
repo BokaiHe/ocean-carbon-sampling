@@ -4,7 +4,7 @@ React + Vite presentation of frozen results. The browser performs no model fitti
 
 ## Reading order
 
-Question → observed SOCAT globe → workflow → experimental globe → paired MAE → evaluation variants →
+Question and shipboard photo → recorded Polarstern voyage → observed SOCAT globe → workflow → experimental globe → paired MAE → evaluation variants →
 supporting error map → sample-count trade-offs → optional methods and sources.
 
 The results use a React-controlled four-chapter index with one large chart panel
@@ -22,10 +22,12 @@ and the flat error map are explicitly labelled 2005 full-domain supporting analy
 Signed-bias sensitivity remains available in the collapsed Methods audit
 (`#estimand`); direct links open that audit automatically.
 
-The flat sampling maps, coverage-count chart, archived signed-bias map and CTD
-photo remain off the page. Their assets and exporters are retained. Both globes
+The flat sampling maps, coverage-count chart and archived signed-bias map
+remain off the page. Their assets and exporters are retained. Both globes
 load lazily and retain white land with black coastlines above the data symbols.
-No scientific scores were changed.
+The restored PS103 globe follows the original 6,997 navigation records with a
+time slider and ship marker; it is not a CO₂ sampling mask. The NOAA CTD photo
+is contextual and is not from that voyage. No scientific scores were changed.
 
 All page text, controls and SVG labels use Arial, with a sans-serif fallback.
 The final typography stylesheet overrides legacy serif and italic rules; hierarchy

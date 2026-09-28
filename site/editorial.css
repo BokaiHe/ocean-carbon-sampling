@@ -88,3 +88,8 @@ main .chart-panel { border-radius:12px; padding:32px; border-color:#d5e0e8; box-
 #technical #estimand .chart-panel table { color:#203d4d; }
 #estimand .section-heading { margin-bottom:24px; }
 #technical #estimand .section-heading .chart-note { color:#d0e0e9; }
+
+/* Restore the field introduction without changing the result chapter layout. */
+.background-layout.with-field-photo { display:grid; grid-template-columns:1.1fr .9fr; gap:48px; max-width:none; align-items:center; }
+.with-field-photo .field-photo { margin:0; }
+@media(max-width:800px) { .background-layout.with-field-photo { grid-template-columns:1fr; gap:28px; } .with-field-photo .field-photo { max-width:none; } }

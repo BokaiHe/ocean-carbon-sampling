@@ -118,7 +118,8 @@ def test_ocean_editorial_layout_keeps_context_separate_from_evidence() -> None:
     assert 'id="paired-evidence"' in html
     source = (SITE / "assets/context/ocean-waves-source.md").read_text(encoding="utf-8")
     assert "ArtHouse Studio" in source
-    assert 'class="field-photo"' not in html
+    assert 'class="field-photo"' in html
+    assert 'This photo is not from the voyage below' in html
     assert 'id="error-map"' in html
     assert "nasa-celtic-sea-phytoplankton.jpg" in css
     assert "prefers-reduced-motion" in css
