@@ -36,6 +36,19 @@ main>.section { padding-block:48px; }
 .globe-sidebar h3 { font-size:28px; }
 .globe-view-top,.globe-footnote,.globe-scope { font-size:14px; }
 .ui-arrow { display:inline-block; vertical-align:-.15em; width:1em; height:1em; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+/* Give the three charts the full content width on smaller desktop windows. */
+@media(min-width:1001px) and (max-width:1399px) {
+ .story-layout { grid-template-columns:1fr; gap:24px; }
+ .story-navigation { position:static; }
+ .finding-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+ .finding-tabs button { border-bottom:1px solid #c4d2d9; gap:8px; }
+ .finding-label { font-size:18px; }
+ .finding-hint { display:none; }
+ .story-nav-footer { padding-top:14px; }
+}
+@media(min-width:1001px) {
+ #sample-count .chart-scroll-hint { display:none; }
+}
 @media(max-width:760px) {
  .evidence-story { padding-block:36px; }
  .story-intro { margin-bottom:18px; padding-bottom:18px; }
@@ -43,6 +56,7 @@ main>.section { padding-block:48px; }
  .domain-alert { font-size:15px; }
  .evidence-story .chart-panel { padding:16px 10px; }
  .field-intro { gap:20px; }
+ .field-intro .field-photo { width:100%; max-width:none; }
  .result-overture { min-height:180px; }
  .result-overture>.shell { padding-block:30px; }
  .optional-explorer { padding:14px 10px; }

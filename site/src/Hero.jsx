@@ -46,7 +46,7 @@ export default function Hero(){
       </div>
     </div>
     <div className="hero-footer shell">
-      <p className="byline"><strong>Bokai He</strong><span>Columbia EEE · Independent course-project extension</span><a href="#related-work">Course foundation &amp; credits ↗</a></p>
+      <p className="byline"><strong>Bokai He</strong><span>Columbia EEE · Independent course-project extension</span><a href="#related-work">Course foundation &amp; credits <ArrowUpRight className="ui-arrow" aria-hidden="true"/></a></p>
     </div>
     <div className="story-rail shell" aria-label="Explore the study">{[['01','#background','Why location matters'],['02','#workflow','Test with a known answer'],['03','#validation','See what changes']].map(([number,href,label])=><a key={number} href={href}><small>{number}</small><span>{label}</span><b aria-hidden="true">↗</b></a>)}</div>
   </header>;

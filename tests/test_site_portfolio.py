@@ -31,3 +31,27 @@ def test_chart_legibility_and_tab_scroll_are_explicit():
     assert '"sweep-chart",300' in js
     assert 'scrollRequested' in story and "scrollIntoView({behavior:'instant',block:'start'})" in story
     assert 'focus({preventScroll:true})' in story
+
+
+def test_headline_is_explicitly_a_conditional_benchmark():
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    js = (SITE / "app.js").read_text(encoding="utf-8")
+    headline = html.split('id="paired-evidence"', 1)[1].split('</aside>', 1)[0]
+    assert "Current benchmark only" in headline
+    assert "no corrected-mask rerun has verified this magnitude or ranking" in headline
+    assert "higher MAE than random · current benchmark" in js
+
+
+def test_desktop_chart_space_and_mobile_photo_alignment():
+    css = (SITE / "portfolio.css").read_text(encoding="utf-8")
+    assert "@media(min-width:1001px) and (max-width:1399px)" in css
+    assert ".finding-tabs { display:grid; grid-template-columns:repeat(4,minmax(0,1fr))" in css
+    mobile = css.split("@media(max-width:760px)", 1)[1]
+    assert ".field-intro .field-photo { width:100%; max-width:none; }" in mobile
+
+
+def test_hero_credit_uses_svg_not_a_font_arrow():
+    html = (SITE / "index.html").read_text(encoding="utf-8")
+    hero = (SITE / "src/Hero.jsx").read_text(encoding="utf-8")
+    assert "Course foundation &amp; credits ↗" not in html + hero
+    assert "Course foundation &amp; credits <svg" in html
