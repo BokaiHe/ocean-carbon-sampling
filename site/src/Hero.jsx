@@ -1,7 +1,8 @@
 import React,{useRef} from 'react';
+import {ArrowUpRight} from 'lucide-react';
 import useHeroVideo from './useHeroVideo.js';
 
-const chapters=[['#background','The question'],['#voyage','Observed ocean'],['#workflow','The method'],['#validation','Findings']];
+const chapters=[['#validation','Findings'],['#background','The question'],['#sampling','The experiment'],['#workflow','The method']];
 function OceanMark(){return <svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><path d="M4 17c5-6 9 6 14 0s9 6 14 0M5 23c5-6 8 6 13 0s8 6 13 0"/><path d="M18 3v5M3 18h5M28 18h5"/></svg>;}
 
 export const heroMedia={
@@ -11,10 +12,10 @@ export const heroMedia={
 export function HeroNavigation(){return <nav className="nav shell" aria-label="Primary navigation">
   <a className="brand" href="#top"><OceanMark/><span>OCEAN CARBON<span className="brand-subtitle">A sampling experiment</span></span></a>
   <div className="nav-links">{chapters.map(([href,label])=><a key={href} href={href}>{label}</a>)}</div>
-  <a className="hero-contact" href="mailto:bh2954@columbia.edu">Let’s talk <span aria-hidden="true">↗</span></a>
+  <a className="hero-contact" href="mailto:bh2954@columbia.edu">Let’s talk <ArrowUpRight className="ui-arrow" aria-hidden="true" /></a>
   <details className="mobile-navigation" id="mobile-navigation" onClick={event=>{if(event.target.closest('a'))event.currentTarget.open=false;}} onKeyDown={event=>{if(event.key==='Escape'){event.currentTarget.open=false;event.currentTarget.querySelector('summary').focus();}}}>
-    <summary>Menu <span aria-hidden="true">＋</span></summary>
-    <div className="mobile-nav-links">{[...chapters,['#sampling','Explore the experiment'],['#technical','Boundaries'],['#related-work','Sources & credits']].map(([href,label])=><a key={href} href={href}>{label}<span aria-hidden="true">↗</span></a>)}</div>
+    <summary>Menu <span aria-hidden="true">+</span></summary>
+    <div className="mobile-nav-links">{[...chapters,['#voyage','Observed ocean'],['#technical','Boundaries'],['#related-work','Sources & credits']].map(([href,label])=><a key={href} href={href}>{label}<ArrowUpRight className="ui-arrow" aria-hidden="true" /></a>)}</div>
   </details>
 </nav>;}
 
@@ -23,14 +24,14 @@ export default function Hero(){
   useHeroVideo(videoRef,heroRef);
   return <header id="top" className="cinematic-hero" ref={heroRef}>
     <video ref={videoRef} id="hero-video" className="hero-video" muted loop playsInline preload="none" data-src={heroMedia.video} aria-hidden="true" tabIndex={-1}/>
-    <a className="skip-link" href="#background">Skip to the research</a>
+    <a className="skip-link" href="#evidence-story">Skip to the research</a>
     <nav className="nav shell" aria-label="Primary navigation">
       <a className="brand" href="#top"><OceanMark/><span>OCEAN CARBON<span className="brand-subtitle">A sampling experiment</span></span></a>
       <div className="nav-links">{chapters.map(([href,label])=><a key={href} href={href}>{label}</a>)}</div>
-      <a className="hero-contact" href="mailto:bh2954@columbia.edu">Let’s talk <span aria-hidden="true">↗</span></a>
+      <a className="hero-contact" href="mailto:bh2954@columbia.edu">Let’s talk <ArrowUpRight className="ui-arrow" aria-hidden="true" /></a>
       <details className="mobile-navigation" id="mobile-navigation" onClick={event=>{if(event.target.closest('a'))event.currentTarget.open=false;}} onKeyDown={event=>{if(event.key==='Escape'){event.currentTarget.open=false;event.currentTarget.querySelector('summary').focus();}}}>
-        <summary>Menu <span aria-hidden="true">＋</span></summary>
-        <div className="mobile-nav-links">{[...chapters,['#sampling','Explore the experiment'],['#technical','Boundaries'],['#related-work','Sources & credits']].map(([href,label])=><a key={href} href={href}>{label}<span aria-hidden="true">↗</span></a>)}</div>
+        <summary>Menu <span aria-hidden="true">+</span></summary>
+        <div className="mobile-nav-links">{[...chapters,['#voyage','Observed ocean'],['#technical','Boundaries'],['#related-work','Sources & credits']].map(([href,label])=><a key={href} href={href}>{label}<ArrowUpRight className="ui-arrow" aria-hidden="true" /></a>)}</div>
       </details>
     </nav>
     <div className="publication-strip shell"><span><i aria-hidden="true"/>Independent research / 01</span><span>Ocean observation &amp; machine learning</span></div>
@@ -40,7 +41,7 @@ export default function Hero(){
         <h1><span className="hero-reveal-line">A vast ocean.</span><br/><span className="hero-reveal-line hero-line-soft">A few paths through it.</span></h1>
         <div className="hero-intro">
           <p className="lede">We cannot measure everywhere.<br/>With the same number of observations, how much does <em>where we look</em> change what we know?</p>
-          <div className="hero-actions"><a className="button primary" href="#background">Explore the research <span aria-hidden="true">↘</span></a><a className="hero-code" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data <span aria-hidden="true">↗</span></a></div>
+          <div className="hero-actions"><a className="button primary" href="#evidence-story">Explore the research <ArrowUpRight aria-hidden="true" size={20}/></a><a className="hero-code" href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data <ArrowUpRight aria-hidden="true" size={20}/></a></div>
         </div>
       </div>
     </div>

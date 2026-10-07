@@ -16,8 +16,9 @@ const hashIndex = () => {
 export default function ResultsStory(){
   const [active,setActive]=useState(()=>Math.max(0,hashIndex()));
   const buttons=useRef([]);
+  const scrollRequested=useRef(false);
   useEffect(()=>{
-    const sync=()=>{const index=hashIndex();if(index>=0)setActive(index);};
+    const sync=()=>{const index=hashIndex();if(index>=0){scrollRequested.current=true;setActive(index);}};
     window.addEventListener('hashchange',sync);
     window.addEventListener('popstate',sync);
     return ()=>{window.removeEventListener('hashchange',sync);window.removeEventListener('popstate',sync);};
@@ -32,7 +33,10 @@ export default function ResultsStory(){
       panel.setAttribute('aria-labelledby',`finding-tab-${index}`);
       panel.tabIndex=0;
     });
-    const frame=requestAnimationFrame(()=>window.dispatchEvent(new Event('research:panelchange')));
+    const frame=requestAnimationFrame(()=>{
+      window.dispatchEvent(new Event('research:panelchange'));
+      if(scrollRequested.current){document.getElementById(chapters[active].id).scrollIntoView({behavior:'instant',block:'start'});scrollRequested.current=false;}
+    });
     return ()=>cancelAnimationFrame(frame);
   },[active]);
   useEffect(()=>()=>{
@@ -43,9 +47,11 @@ export default function ResultsStory(){
     });
   },[]);
   function choose(index,focus=false){
+    scrollRequested.current=true;
+    if(index===active){document.getElementById(chapters[index].id).scrollIntoView({behavior:'instant',block:'start'});scrollRequested.current=false;}
     setActive(index);
     history.replaceState(null,'',`#${chapters[index].id}`);
-    if(focus)buttons.current[index]?.focus();
+    if(focus)buttons.current[index]?.focus({preventScroll:true});
   }
   function keyboard(event,index){
     const destinations={ArrowDown:(index+1)%4,ArrowUp:(index+3)%4,ArrowRight:(index+1)%4,ArrowLeft:(index+3)%4,Home:0,End:3};
@@ -57,9 +63,9 @@ export default function ResultsStory(){
       {chapters.map((chapter,index)=><button key={chapter.id} ref={node=>buttons.current[index]=node} id={`finding-tab-${index}`} role="tab" aria-selected={active===index} aria-controls={chapter.id} tabIndex={active===index?0:-1} onClick={()=>choose(index)} onKeyDown={event=>keyboard(event,index)}>
         <span className="finding-number">0{index+1}</span>
         <span className="finding-label">{chapter.label}<span className="finding-hint">{chapter.hint}</span></span>
-        <span className="finding-arrow" aria-hidden="true">↗</span>
+        <svg className="finding-arrow ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
       </button>)}
     </div>
-    <div className="story-nav-footer"><span>0{active+1} / 04</span><a href="#technical">Methods &amp; limitations ↗</a></div>
+    <div className="story-nav-footer"><span>0{active+1} / 04</span><a href="#technical">Methods &amp; limitations</a></div>
   </>;
 }

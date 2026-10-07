@@ -4,8 +4,8 @@ React + Vite presentation of frozen results. The browser performs no model fitti
 
 ## Reading order
 
-Combined question, shipboard photo and looping Polarstern route → observed SOCAT globe → workflow → experimental globe → paired MAE → evaluation variants →
-supporting error map → sample-count trade-offs → optional methods and sources.
+Contribution and primary result → optional result chapters → compact field context →
+optional SOCAT globe → workflow → experimental globe → methods and sources.
 
 The results use a React-controlled four-chapter index with one large chart panel
 at a time. All scientific panels and their source links remain in the HTML;
@@ -15,7 +15,7 @@ with the next question, attribution and contact links. These are original
 implementations informed by the Showcase 7 and Footer 10 visual patterns, not
 redistributed licensed template source.
 
-The observation globe shows real SOCAT grid values, with a year selector and twelve
+The observation globe is retained in an initially collapsed context panel and shows real SOCAT grid values, with a year selector and twelve
 visible month tiles above the globe. It does not invent ship routes. The experiment
 globe offers sampling, local MAE and difference-from-random views. Its error layers
 and the flat error map are explicitly labelled 2005 full-domain supporting analyses.
@@ -56,3 +56,7 @@ and archived PNG maps. It is not needed for presentation-only changes.
 The configured `npm run publish:site` builds and publishes compiled output only.
 It requires the owner's local licensed components and GitHub access; never commit
 licensed source files or credentials.
+
+The visible domain-status note applies to all simulated results: ocean-only
+eligibility is unresolved, and corrected-mask effects on scores and rankings
+have not been measured. This presentation edit does not fix or rerun that audit.

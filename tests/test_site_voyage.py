@@ -14,18 +14,18 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 
 
-def test_story_introduces_problem_and_method_before_results():
+def test_portfolio_leads_with_contribution_then_preserves_context_and_method():
     html = (SITE / "index.html").read_text(encoding="utf-8")
     sections = re.findall(r'<section\b[^>]*id="([^"]+)"', html)
     expected = [
-        "background",
-        "voyage",
-        "workflow",
-        "sampling",
         "paired-evidence",
         "results",
         "error-map",
         "sample-count",
+        "background",
+        "voyage",
+        "workflow",
+        "sampling",
         "technical",
     ]
     assert [sections.index(name) for name in expected] == sorted(

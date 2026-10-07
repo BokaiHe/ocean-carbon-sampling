@@ -1,0 +1,49 @@
+/* A result-first research portfolio, retaining the ocean visual identity. */
+.evidence-story { padding:54px 0 60px; }
+.story-intro { display:block; margin-bottom:28px; padding-bottom:24px; }
+.story-intro h2 { font-size:clamp(32px,3.2vw,50px)!important; }
+.story-intro p { max-width:980px; margin:14px 0 0; font-size:18px; color:#294758; }
+.story-nav-label,.finding-hint,.story-nav-footer { font-size:15px; color:#354f60; }
+.finding-tabs button { padding-block:19px; }
+.domain-alert { border-left:3px solid #9b694c; background:#f4eee7; padding:13px 16px; margin:0 0 24px; color:#453d35; font-size:15px; line-height:1.6; }
+.domain-alert p { margin:4px 0 0; font-size:15px; color:inherit; }
+.domain-alert a { color:#224e69; }
+.scope-warning { color:#614530!important; font-size:15px!important; border-left:3px solid #b88d6f; padding-left:12px; }
+.evidence-story .chart-note,.evidence-story .legend,.evidence-story .chart-about summary { font-size:16px; color:#294758; }
+.evidence-story .chart-note { line-height:1.55; }
+.evidence-story .chart-panel { padding:20px; }
+.chart-scroll { overflow-x:auto; overscroll-behavior-x:contain; }
+.chart-scroll svg { max-width:none; display:block; }
+.chart-scroll:focus-visible { outline:2px solid #286486; outline-offset:3px; }
+.chart-scroll-hint { color:#294758; font-size:15px; margin:10px 0; }
+.chart-readout:empty { display:none; }
+.result-overture { min-height:220px; }
+.result-overture>.shell { padding-block:42px; }
+.result-overture h2 { font-size:clamp(30px,3vw,46px); }
+.result-overture p:last-child { display:none; }
+main>.section { padding-block:48px; }
+.section-heading { margin-bottom:24px; }
+.section-heading h2 { font-size:clamp(30px,3vw,46px); }
+.voyage-preview #voyage-globe { max-width:330px; }
+.field-intro { gap:36px; }
+.field-intro .field-photo { max-width:360px; }
+.field-intro-copy>p { font-size:18px; margin-bottom:18px; }
+.optional-explorer { border:1px solid #c5d4dc; border-radius:10px; padding:16px 20px; background:#f0f5f7; }
+.optional-explorer>summary { font-size:18px; font-weight:600; cursor:pointer; color:#23495e; min-height:28px; }
+.optional-explorer[open]>summary { margin-bottom:24px; }
+#voyage .section-heading h2 { font-size:30px; }
+#ocean-globe { max-width:560px; }
+.globe-sidebar h3 { font-size:28px; }
+.globe-view-top,.globe-footnote,.globe-scope { font-size:14px; }
+.ui-arrow { display:inline-block; vertical-align:-.15em; width:1em; height:1em; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+@media(max-width:760px) {
+ .evidence-story { padding-block:36px; }
+ .story-intro { margin-bottom:18px; padding-bottom:18px; }
+ .story-intro p { font-size:16px; }
+ .domain-alert { font-size:15px; }
+ .evidence-story .chart-panel { padding:16px 10px; }
+ .field-intro { gap:20px; }
+ .result-overture { min-height:180px; }
+ .result-overture>.shell { padding-block:30px; }
+ .optional-explorer { padding:14px 10px; }
+}
