@@ -67,7 +67,7 @@ function pairedChart() {
   $$("[data-paired-protocol]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.pairedProtocol===key)));
   const primaryPercent=state.data.estimands["area|both60|hidden"].metrics.mae.relative_pct;
   const percent=primary?primaryPercent:state.data.estimands["area|both60|block"].metrics.mae.relative_pct;
-  $("#primary-effect").innerHTML="+"+percent.toFixed(2)+"%<span>higher MAE than random · "+(primary?"primary test":"stress test")+"</span>";
+  $("#primary-effect").innerHTML="+"+percent.toFixed(2)+"%<span>higher MAE than random · current benchmark · "+(primary?"primary test":"stress test")+"</span>";
   table("paired-table",["Protocol","Unit","Random MAE","Historical-density MAE","ΔMAE (µatm)"],rows);
 }
 function robustnessChart() {
