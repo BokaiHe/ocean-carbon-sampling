@@ -34,7 +34,8 @@ table live in `docs/` and the notebooks.
   for 2005, 2010 and 2014, by year and month. Dots are observed 1° grid-cell
   centres, not ship positions; all-month values average available months only.
 - **Method:** the five-step OSSE, a per-block heatmap and samples-per-block
-  histogram for each sampling rule, the design of the augmentation pilot, and a
+  histogram for each sampling rule (2005, seed 0, original full-domain
+  supporting illustration, not the masked headline comparison), the design of the augmentation pilot, and a
   globe of the 2005 full-domain sampling and error fields (a pre-mask supporting
   view, labelled as such).
 - **Findings:** paired MAE by year and by whole-block unit (connected-ocean
@@ -122,14 +123,17 @@ and score all arms on one shared hidden set with five paired acquisition seeds.
 Reported domain: **open-ocean interior (M2), latitude < 60°N.** Area-weighted
 RMSE, µatm, mean of five seeds:
 
-| Evaluation cells | H | H + random | H + gap | Gap − random advantage |
+| Evaluation cells | H | H + random | H + gap | Random − gap RMSE (positive favours gaps) |
 |---|---:|---:|---:|---:|
 | All unobserved | 16.067 | 13.160 | 13.031 | 0.128 (5/5 seeds) |
 | Historical gaps | 17.538 | 13.920 | 13.415 | 0.505 (5/5) |
 | Previously observed | 14.751 | 12.502 | 12.708 | −0.206 (0/5) |
 
-Adding observations helps everywhere; aiming them at gaps adds a small,
-consistent extra inside the gaps at a cost where ships already go.
+In this 2005 open-ocean test, both addition rules reduce mean RMSE relative
+to H in each reported region. Gap targeting offers a small additional benefit
+over random additions overall and inside historical gaps, but performs worse
+than random additions at previously observed locations. This compares two
+rules, not every possible placement of new observations.
 
 **Order of analysis, stated plainly.** The pilot was first run globally without
 an ocean mask (gap advantage 0.462 µatm RMSE). The connected-ocean (M1) and
@@ -151,8 +155,9 @@ changes with the quantity being estimated:
 | Evaluation only <60°N, spherical area | −0.631 |
 | Candidates and evaluation <60°N, spherical area | −0.473 |
 
-These are not four independent confirmations. The last value is not the primary
-hidden-cell estimate (−0.835 µatm). The original large offset was reclassified
+These are pre-mask sensitivity results, not four independent confirmations.
+The last value is not the pre-mask hidden-cell estimate (−0.835 µatm), nor the
+current M1 hidden-cell estimate (−1.052 µatm). The original large offset was reclassified
 as an estimand-sensitivity example, not evidence of a universal signed bias.
 
 The 2005 full-domain structural-zero maps and density diagnostics are supporting

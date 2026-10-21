@@ -37,6 +37,10 @@ entry in `i18n.js` (checked by `tests/test_site.py`). Script-generated labels us
 
 The experiment globe shows the 2005 full-domain run from before the ocean mask
 and says so on the page.
+The three sampling-rule maps and block histograms use that same supporting
+dataset (2005, sampling seed 0). Their caption separates them from the masked,
+area-weighted main comparison. The augmentation dot chart plots random-addition
+RMSE minus gap-addition RMSE; positive values favour gap targeting.
 
 ## Preview and publish
 

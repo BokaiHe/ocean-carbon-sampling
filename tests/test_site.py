@@ -95,3 +95,42 @@ def test_photographs_and_sources_are_credited():
     for doi in ("10.25921/648f-fv35", "10.22033/ESGF/CMIP6.5195", "10.1029/2020GB006788", "10.5194/bg-21-2159-2024"):
         assert doi in HTML
     assert "Azam Khan" in HTML and "McKinley" in HTML
+
+
+def test_sampling_illustration_has_its_own_scope():
+    metadata = _data("globe-data.json")["metadata"]
+    assert metadata["year"] == 2005 and metadata["sampling_seed"] == 0
+    assert "Original full-domain" in metadata["scope"]
+    note = HTML.split('data-i18n="rules.note">', 1)[1].split("</p>", 1)[0]
+    assert "2005, seed 0" in note and "before the ocean mask" in note
+    assert "Not the main comparison" in note
+    assert HTML.index('data-i18n="domain.chip"') < HTML.index('data-i18n="rules.note"') < HTML.index('class="rule-grid"')
+
+
+def test_augmentation_sign_label_matches_plotted_contrast():
+    source = (SITE / "story.js").read_text(encoding="utf-8")
+    chinese = (SITE / "i18n.js").read_text(encoding="utf-8")
+    assert "p.contrast === 'random_minus_gap'" in source
+    assert 'data-i18n="f3.dots">Random − gap RMSE' in HTML
+    assert "'f3.dots':'随机 − 空白区的 RMSE" in chinese
+    assert "positive favours gaps" in HTML
+    # Verify the sign from the frozen arm scores, without fitting any models.
+    data = _data("augmentation.json")
+    rows = [r for r in data["paired"] if r["metric"] == "rmse" and r["contrast"] == "random_minus_gap"]
+    assert len(rows) == 15  # Three evaluation regions, five paired seeds.
+    for row in rows:
+        scores = {s["arm"]: s["rmse"] for s in data["scores"]
+                  if s["seed"] == row["seed"] and s["domain"] == row["domain"]}
+        # Each of the three exported values is independently rounded to 0.001.
+        assert abs(row["improvement"] - (scores["random_addition"] - scores["gap_addition"])) <= 0.0015 + 1e-9
+
+
+def test_conclusions_stay_within_tested_sampling_rules():
+    chinese = (SITE / "i18n.js").read_text(encoding="utf-8")
+    assert "not a replay of ship routes" in HTML
+    assert "In the 2005 open-ocean test" in HTML
+    assert "do not identify an optimal deployment" in HTML
+    for outdated in ("Following past ship tracks", "Adding beats aiming", "pay off</span> anywhere"):
+        assert outdated not in HTML
+    for outdated in ("照着历史航迹", "处处有用", "多加比挑位置更重要"):
+        assert outdated not in chinese

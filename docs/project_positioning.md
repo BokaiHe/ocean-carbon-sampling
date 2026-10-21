@@ -1,14 +1,15 @@
 # Project positioning, attribution and evaluation scope
 
-Presentation revision: 2026-09-23. This revision uses existing result tables.
-No observations, sampling rules, model fits or numerical results were changed.
+Current presentation revision: 2026-10-21. This text-only reconciliation uses
+the already completed ocean-mask audit and 2005 augmentation runs. It adds no
+observations, model fits or numerical results.
 
-Navigation and narrative follow-up: the sample-count comparison precedes the
-signed-offset sensitivity journey. The original 2005 full-domain bias map is
-archived in the website's collapsed Methods section, not offered as a priority
-map for the <60°N primary domain. The sweep retains its original full-domain,
-equal-cell scope because no aligned-domain four-count sweep has been run;
-its reversal threshold is not transferred to the primary comparison.
+The website presents the fixed-count comparison, coverage limits and the
+existing-network augmentation pilot as three findings. The original signed-bias
+map and sample-count sweep are no longer on the page; their source results
+remain archived. The three sampling-rule maps, block histograms and experiment
+globe remain explicitly labelled pre-mask, original full-domain supporting
+views, not maps of the current masked headline results.
 
 ## One research question and one storyline
 
@@ -20,8 +21,10 @@ under a specified model and evaluation domain?
    discovery that real-world sampling is uneven.
 2. Test whether broader coverage solves that problem. It does not improve all
    error measures; the response depends on sample count and evaluation.
-3. Motivate a future experiment on where to add observations to an existing
-   network. The current replacement-design comparison does not answer it.
+3. Compare two rules for adding 1,000 observations to the existing 2005 network
+   in a separate, completed [augmentation pilot](../experiments/network_augmentation_2005/README.md).
+   Both improve reconstruction in that test; gap targeting offers a small
+   additional open-ocean benefit. This is not an optimal-deployment claim.
 
 ## Primary comparison and stress test
 
@@ -60,10 +63,11 @@ blocks, not buffered long-range extrapolation. Each year-fold mean averages
 20 paired seeds. The three years share one ESM run; neither 3/3 nor 15/15 is
 an independent-replicate significance test.
 
-The four-step signed-bias history remains a **whole-block** sensitivity audit:
+The four-step signed-bias history remains a **pre-mask, whole-block** sensitivity audit:
 −4.954 (full-domain/equal-cell), −1.884 (full-domain/area), −0.631
 (evaluation <60°N/area), −0.473 µatm (both domains <60°N/area).
-The last value is not the primary hidden-cell bias difference (−0.835 µatm).
+The last value is not the pre-mask hidden-cell bias difference (−0.835 µatm),
+nor the current M1 hidden-cell difference (−1.052 µatm).
 This presentation choice is a post-analysis reframing, not a newly
 preregistered protocol. Older notebooks, experimental configs and audit
 documents retain their original scopes and whole-block default terminology;
@@ -98,9 +102,12 @@ scope or ensemble breadth.
 
 Heimdal et al. evaluated additional Southern Ocean autonomous observations
 on top of SOCAT, with pCO2-Residual, multiple ESMs and full-field evaluation.
-Here, fixed-count density/coverage rules replace one another, with direct-pCO2
-prediction and two held-out evaluations. This is not a replication, a superior
-method claim, or an estimate of their platform or flux benefits.
+Here, the fixed-count study compares replacement density/coverage rules with
+direct-pCO2 prediction and two held-out evaluations. The separate 2005 pilot
+now also tests additions to SOCAT-supported locations, still with one ESM and
+one learner. This is not a replication, a superior method claim, or an estimate
+of platform or flux benefits. The pilot's M1/M2 domain reruns and the M2 website
+focus were chosen after seeing earlier results, as its README explicitly records.
 
 References verified against Crossref DOI metadata and article text on
 2026-09-23. Two verified; no mismatches. The academic-search MCP was unavailable,
@@ -138,26 +145,26 @@ published methodology and new implementation is kept distinct.
 
 ## Stop rule
 
-### Visual brief revision (2026-09-23)
+### Archived visual brief revision (2026-09-23)
 
-The public page now shows paired MAE (3 primary year means and 15 stress-test
+The page at that date showed paired MAE (3 primary year means and 15 stress-test
 year–fold means), all 12 evaluation variants, the four-count coverage sweep,
 occupied sampling blocks, and four independent dots for the signed-bias
-sensitivity audit. The paired MAE axis is zoomed to the data range; the four
-sample counts are equally spaced categories, with the median-error direction
+sensitivity audit. The paired MAE axis was zoomed to the data range; the four
+sample counts were equally spaced categories, with the median-error direction
 explicitly annotated.
-SVG marks expose exact values on hover, tap or keyboard focus; expandable
-tables preserve the numerical record. Scope captions remain visible. The
+That version's SVG marks exposed values on hover, tap or keyboard focus; expandable
+tables preserved the numerical record. Scope captions remained visible. The
 variants are correlated, paired lines are not confidence intervals, and the
-sample-count curve connects tested settings rather than estimating a continuous
-response. A five-step diagram replaces the longer workflow cards.
+sample-count curve connected tested settings rather than estimating a continuous
+response. A five-step diagram replaced the longer workflow cards.
 
-No experiment was rerun. The paired and occupied-block chart export reads the
-curated CSV/parquet outputs; the other charts use the unchanged frozen result
-JSON. The map and occupied-block bars describe one original full-domain
+No experiment was rerun for that September presentation revision. The paired
+and occupied-block chart export read the curated CSV/parquet outputs; the other
+charts used the unchanged frozen result JSON. The map and occupied-block bars described one original full-domain
 selection (2005, seed 0), not the primary aligned-domain experiments.
 
-Archived full-domain per-cell mean absolute errors now provide a supporting
+Archived full-domain per-cell mean absolute errors provided a supporting
 historical-density-minus-random error map without retraining or prediction.
 Its heading, caption and downloadable metadata identify the 2005 original
 full-domain protocol. Missing cells remain missing and colour-saturated values
@@ -167,11 +174,11 @@ caches retain aggregate scores rather than per-cell predictions. Clipping the
 archived map would not reproduce the aligned training domain, so it cannot
 serve as the primary-scope penalty map requested for a future presentation.
 
-### No additional experiment in this revision
+### Current stop rule (2026-10-21)
 
-No new experiment is required for this presentation revision. The only
-optional next experiment discussed here is a protocol-frozen reconstruction
-sampled from the complete candidate domain, with explicit full-field and
-unobserved-cell scoring. It would require new sampling and fitting. Real SOCAT
-masks, new predictors, tuning and multiple ESMs are separate extensions, not
-silent changes to this comparison.
+The ocean-mask audit and existing-network augmentation pilot are completed,
+with their protocols, outputs and limitations retained. The current cleanup
+only aligns wording, scope labels and documentation; it does not rerun them.
+Cross-ESM/learner checks, more augmentation years and operational deployment
+constraints remain separate future extensions, not prerequisites for reporting
+these bounded experiments. No new experiment is part of this revision.

@@ -92,4 +92,5 @@ For a new run, use a separate study directory and freeze its protocol before fit
 
 This pilot supports the value of filling observational gaps under one fixed simulation and learner, with a regional tradeoff. It does not establish global deployment optimality, equal operational cost, independent real-observation accuracy, or generality across years and ESMs. Adding points in a simulated gap is not proof that a ship or float can operate there. More years and added counts belong in a separately frozen extension.
 
-This study has not been published or pushed to GitHub.
+The study code, saved outputs and tests are now included in the public project
+repository. This is a research pilot, not a peer-reviewed publication.

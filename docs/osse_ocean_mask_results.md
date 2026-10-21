@@ -65,9 +65,11 @@ that its size depends on the estimand.
 
 ## Not rerun
 
-The 12-variant evaluation chart, the full-domain sample-count sweep, the 2005
-supporting error map and the experiment globe remain pre-mask analyses and are
-labelled as such on the website. North of 60°N is outside every mask.
+The 12-variant evaluation chart, the full-domain sample-count sweep and the 2005
+supporting error map remain archived pre-mask analyses, no longer displayed on
+the website. The sampling-rule maps/histograms and experiment globe remain
+pre-mask supporting views on the website, labelled separately from the main
+comparison. North of 60°N is outside every mask.
 
 Source tables: `results/public/osse_ocean_mask_{metrics,unit_summary,paired,overall}.csv`
 and `results/public/osse_ocean_mask_cells.csv`.
