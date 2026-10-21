@@ -1,9 +1,8 @@
 {
   "provenance": {
-    "pairs": "results/public/osse_latitude_cap_paired.csv",
-    "sampling": "results/public/osse_visual_demo_sampling.parquet",
-    "sampling_metadata": "results/public/osse_visual_demo_metadata.csv",
-    "pair_scope": "5,000 samples; spherical area; candidates and evaluation <60N; 20-seed unit means",
+    "pairs": "results/public/osse_ocean_mask_paired.csv (mask m1)",
+    "mask_audit": "results/public/osse_ocean_mask_overall.csv; M0 from results/public/osse_latitude_cap_overall.csv",
+    "pair_scope": "5,000 samples; spherical area; candidates and evaluation <60N in the connected-ocean mask (M1); 20-seed unit means",
     "no_new_fits": true
   },
   "pairs": {
@@ -11,143 +10,303 @@
       {
         "year": 2005,
         "fold": -1,
-        "random": 9.328888687301385,
-        "historical": 11.522527648767202
+        "random": 8.993869168865379,
+        "historical": 11.315326305182712
       },
       {
         "year": 2010,
         "fold": -1,
-        "random": 9.431333192158244,
-        "historical": 11.873835511452054
+        "random": 9.176686592901074,
+        "historical": 11.649035182659375
       },
       {
         "year": 2014,
         "fold": -1,
-        "random": 9.764903084558757,
-        "historical": 12.527620773365514
+        "random": 9.506960545841087,
+        "historical": 12.274545080271889
       }
     ],
     "block": [
       {
         "year": 2005,
         "fold": 0,
-        "random": 11.47558142699268,
-        "historical": 13.02956565872071
+        "random": 10.454085068231215,
+        "historical": 12.079437017519377
       },
       {
         "year": 2005,
         "fold": 1,
-        "random": 11.244336887468766,
-        "historical": 12.150654666737392
+        "random": 10.97769063784295,
+        "historical": 12.098929923316796
       },
       {
         "year": 2005,
         "fold": 2,
-        "random": 12.801692428247884,
-        "historical": 15.189940684875314
+        "random": 12.061629084540796,
+        "historical": 14.672059893171806
       },
       {
         "year": 2005,
         "fold": 3,
-        "random": 11.0398058648378,
-        "historical": 13.395494754957753
+        "random": 10.938054674379664,
+        "historical": 13.397614292992452
       },
       {
         "year": 2005,
         "fold": 4,
-        "random": 11.656371196809678,
+        "random": 11.703314867131905,
         "historical": 12.680312356958911
       },
       {
         "year": 2010,
         "fold": 0,
-        "random": 11.732710670972375,
-        "historical": 13.469836306461476
+        "random": 10.685392713866872,
+        "historical": 12.57709365478063
       },
       {
         "year": 2010,
         "fold": 1,
-        "random": 11.645671169446294,
-        "historical": 12.863102754136005
+        "random": 11.13138408719252,
+        "historical": 12.805961671855462
       },
       {
         "year": 2010,
         "fold": 2,
-        "random": 12.159383667460352,
-        "historical": 14.926127458264189
+        "random": 11.346779987010107,
+        "historical": 14.498952234425431
       },
       {
         "year": 2010,
         "fold": 3,
-        "random": 11.08092809312196,
-        "historical": 13.058465657470665
+        "random": 10.856275100180522,
+        "historical": 13.059376100163146
       },
       {
         "year": 2010,
         "fold": 4,
-        "random": 11.729074958636485,
+        "random": 11.670496260122253,
         "historical": 13.365836944022604
       },
       {
         "year": 2014,
         "fold": 0,
-        "random": 12.160702726148886,
-        "historical": 13.96651190526516
+        "random": 11.186208500013333,
+        "historical": 12.995216563769985
       },
       {
         "year": 2014,
         "fold": 1,
-        "random": 11.718580503904716,
-        "historical": 13.416869574308786
+        "random": 11.393065063175705,
+        "historical": 13.33792963907266
       },
       {
         "year": 2014,
         "fold": 2,
-        "random": 13.811317527536747,
-        "historical": 16.278266882905257
+        "random": 12.908691251199937,
+        "historical": 15.922380972900632
       },
       {
         "year": 2014,
         "fold": 3,
-        "random": 11.44979128074463,
-        "historical": 13.87510757441937
+        "random": 11.281871423524844,
+        "historical": 13.871291379877004
       },
       {
         "year": 2014,
         "fold": 4,
-        "random": 11.83719542955988,
+        "random": 11.852672319580495,
         "historical": 13.70014760162348
       }
     ]
   },
-  "sampling": {
-    "year": 2005,
-    "seed": 0,
-    "longitude_degrees": 10.0,
-    "latitude_degrees": 5.0,
-    "scope": "Original full-domain hidden-cell illustrative selection; not the primary aligned-domain runs",
-    "blocks": [
+  "mask_audit": {
+    "primary_mask": "m1",
+    "locations_below_60n": {
+      "m0": 36215,
+      "m1": 36108,
+      "m2": 33089
+    },
+    "rows": [
       {
-        "strategy": "random",
-        "blocks": 955,
-        "sample_count": 5000
+        "mask": "m0",
+        "label": "Original model domain",
+        "protocol": "hidden",
+        "comparison": "historical_density",
+        "n_units": 3,
+        "random_mae": 9.508,
+        "comparator_mae": 11.975,
+        "difference_mae": 2.466,
+        "relative_mae_pct": 25.94,
+        "units_mae_worse": 3,
+        "random_rmse": 20.766,
+        "difference_rmse": 4.224,
+        "units_rmse_lower": 0
       },
       {
-        "strategy": "historical",
-        "blocks": 622,
-        "sample_count": 5000
+        "mask": "m0",
+        "label": "Original model domain",
+        "protocol": "hidden",
+        "comparison": "spatial_coverage",
+        "n_units": 3,
+        "random_mae": 9.508,
+        "comparator_mae": 9.695,
+        "difference_mae": 0.186,
+        "relative_mae_pct": 1.96,
+        "units_mae_worse": 3,
+        "random_rmse": 20.766,
+        "difference_rmse": -1.745,
+        "units_rmse_lower": 3
       },
       {
-        "strategy": "coverage",
-        "blocks": 1026,
-        "sample_count": 5000
+        "mask": "m0",
+        "label": "Original model domain",
+        "protocol": "block",
+        "comparison": "historical_density",
+        "n_units": 15,
+        "random_mae": 11.836,
+        "comparator_mae": 13.691,
+        "difference_mae": 1.855,
+        "relative_mae_pct": 15.67,
+        "units_mae_worse": 15,
+        "random_rmse": 25.422,
+        "difference_rmse": 1.31,
+        "units_rmse_lower": 3
+      },
+      {
+        "mask": "m0",
+        "label": "Original model domain",
+        "protocol": "block",
+        "comparison": "spatial_coverage",
+        "n_units": 15,
+        "random_mae": 11.836,
+        "comparator_mae": 11.829,
+        "difference_mae": -0.007,
+        "relative_mae_pct": -0.06,
+        "units_mae_worse": 7,
+        "random_rmse": 25.422,
+        "difference_rmse": -2.201,
+        "units_rmse_lower": 14
+      },
+      {
+        "mask": "m1",
+        "label": "Connected ocean (primary)",
+        "protocol": "hidden",
+        "comparison": "historical_density",
+        "n_units": 3,
+        "random_mae": 9.226,
+        "comparator_mae": 11.746,
+        "difference_mae": 2.52,
+        "relative_mae_pct": 27.32,
+        "units_mae_worse": 3,
+        "random_rmse": 20.075,
+        "difference_rmse": 4.228,
+        "units_rmse_lower": 0
+      },
+      {
+        "mask": "m1",
+        "label": "Connected ocean (primary)",
+        "protocol": "hidden",
+        "comparison": "spatial_coverage",
+        "n_units": 3,
+        "random_mae": 9.226,
+        "comparator_mae": 9.62,
+        "difference_mae": 0.394,
+        "relative_mae_pct": 4.27,
+        "units_mae_worse": 3,
+        "random_rmse": 20.075,
+        "difference_rmse": -1.008,
+        "units_rmse_lower": 3
+      },
+      {
+        "mask": "m1",
+        "label": "Connected ocean (primary)",
+        "protocol": "block",
+        "comparison": "historical_density",
+        "n_units": 15,
+        "random_mae": 11.363,
+        "comparator_mae": 13.404,
+        "difference_mae": 2.041,
+        "relative_mae_pct": 17.96,
+        "units_mae_worse": 15,
+        "random_rmse": 23.692,
+        "difference_rmse": 2.029,
+        "units_rmse_lower": 2
+      },
+      {
+        "mask": "m1",
+        "label": "Connected ocean (primary)",
+        "protocol": "block",
+        "comparison": "spatial_coverage",
+        "n_units": 15,
+        "random_mae": 11.363,
+        "comparator_mae": 11.381,
+        "difference_mae": 0.017,
+        "relative_mae_pct": 0.15,
+        "units_mae_worse": 7,
+        "random_rmse": 23.692,
+        "difference_rmse": -1.869,
+        "units_rmse_lower": 12
+      },
+      {
+        "mask": "m2",
+        "label": "Open-ocean interior",
+        "protocol": "hidden",
+        "comparison": "historical_density",
+        "n_units": 3,
+        "random_mae": 7.843,
+        "comparator_mae": 10.033,
+        "difference_mae": 2.189,
+        "relative_mae_pct": 27.91,
+        "units_mae_worse": 3,
+        "random_rmse": 11.38,
+        "difference_rmse": 3.059,
+        "units_rmse_lower": 0
+      },
+      {
+        "mask": "m2",
+        "label": "Open-ocean interior",
+        "protocol": "hidden",
+        "comparison": "spatial_coverage",
+        "n_units": 3,
+        "random_mae": 7.843,
+        "comparator_mae": 7.885,
+        "difference_mae": 0.042,
+        "relative_mae_pct": 0.54,
+        "units_mae_worse": 3,
+        "random_rmse": 11.38,
+        "difference_rmse": -0.25,
+        "units_rmse_lower": 3
+      },
+      {
+        "mask": "m2",
+        "label": "Open-ocean interior",
+        "protocol": "block",
+        "comparison": "historical_density",
+        "n_units": 15,
+        "random_mae": 9.677,
+        "comparator_mae": 11.613,
+        "difference_mae": 1.936,
+        "relative_mae_pct": 20.0,
+        "units_mae_worse": 15,
+        "random_rmse": 14.053,
+        "difference_rmse": 2.345,
+        "units_rmse_lower": 0
+      },
+      {
+        "mask": "m2",
+        "label": "Open-ocean interior",
+        "protocol": "block",
+        "comparison": "spatial_coverage",
+        "n_units": 15,
+        "random_mae": 9.677,
+        "comparator_mae": 9.728,
+        "difference_mae": 0.05,
+        "relative_mae_pct": 0.52,
+        "units_mae_worse": 10,
+        "random_rmse": 14.053,
+        "difference_rmse": -0.178,
+        "units_rmse_lower": 14
       }
     ]
-  },
-  "error_map_availability": {
-    "source": "results/public/osse_visual_demo_fields.parquet",
-    "available": "2005 full-domain per-cell mean absolute errors for random and historical-density, averaged across 20 seeds and available hidden months",
-    "primary_domain_map_available": false,
-    "boundary": "Clipping the saved full-domain map cannot reproduce candidate-domain alignment. Current latitude-cap caches contain aggregate scores, not per-cell predictions."
   }
 }
