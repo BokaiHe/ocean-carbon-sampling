@@ -92,7 +92,8 @@
         if (n) { ctx.globalAlpha = .18 + .82 * Math.min(1, n / 12); ctx.fillStyle = hue[strategy]; ctx.fillRect(ax, ay, w, h); }
         else { ctx.globalAlpha = .72; ctx.fillStyle = '#d6e2ea'; ctx.fillRect(ax, ay, w, h); }
       }
-      ctx.globalAlpha = .55; m.land(); ctx.globalAlpha = 1;
+      // Opaque land is drawn last so coastal sampling blocks cannot show through it.
+      ctx.globalAlpha = 1; m.land();
       // Histogram of samples per block, on one shared scale across the three cards.
       const node = $('.rule-hist', card), {svg, width} = svgIn(node, 78);
       const x = d3.scaleBand().domain(bins.map(b => b[2])).range([0, width]).padding(.18), y = d3.scaleLinear().domain([0, top]).range([52, 4]);
