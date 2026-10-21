@@ -170,6 +170,15 @@ Cells at 60–90°N contribute −4.540 µatm of the equal-cell total, but −1.
 3.8% of spherical cell area in this evaluation sample. South of 60°N, the
 corresponding contributions are −0.574 and −0.438 µatm.
 
+## Ocean-domain mask audit (2026-10-21)
+
+The candidate domain had no explicit ocean mask, and three inland water bodies
+were treated as ocean. Rerunning the latitude-cap comparisons on a
+connected-ocean mask (and an open-ocean sensitivity mask) left the
+historical-density penalty unchanged in direction and slightly larger; the
+coverage RMSE advantage mostly came from marginal seas and coastal cells. See
+[osse_ocean_mask_results.md](osse_ocean_mask_results.md).
+
 ## Evaluation-area and latitude-domain audit
 
 All locked models were refit for 20 paired seeds at sample count 5,000 in the

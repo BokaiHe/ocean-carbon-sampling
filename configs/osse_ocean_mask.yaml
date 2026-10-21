@@ -1,0 +1,54 @@
+project:
+  phase: osse_ocean_mask_audit
+  protocol: docs/osse_ocean_mask_protocol.md
+  question: >-
+    Do the latitude-cap headline comparisons persist when the candidate and
+    evaluation pools are restricted to an explicitly defined ocean domain?
+
+source:
+  osse_config: configs/osse_pilot.yaml
+  block_config: configs/osse_spatial_block_confirmatory.yaml
+  reference_outputs: results/public/osse_latitude_cap_overall.csv
+  years:
+    - 2005
+    - 2010
+    - 2014
+
+mask:
+  grid_union_years:
+    - 2005
+    - 2010
+    - 2014
+  connectivity: 8
+  periodic_longitude: true
+  latitude_max: 60.0
+  primary: m1_connected_ocean
+  sensitivity: m2_open_ocean_interior
+  marginal_seas:
+    mediterranean_black:
+      seed: [35.5, 18.5]
+      latitude: [30.0, 47.5]
+      longitude: [-5.5, 42.0]
+    baltic:
+      seed: [58.5, 20.5]
+      latitude: [53.0, 66.0]
+      longitude: [9.5, 31.0]
+    hudson_bay:
+      seed: [58.5, -85.5]
+      latitude: [51.0, 70.0]
+      longitude: [-96.0, -70.0]
+  coastal_rule: any_of_8_neighbours_land_like
+  # Non-water location is land-like if it overlaps Natural Earth 1:110m land
+  # or its 8-connected non-water component exceeds this size (binning holes).
+  coastal_max_hole_locations: 10
+  cells_file: results/public/osse_ocean_mask_cells.csv
+
+execution:
+  budget: 5000
+  seeds_from: block_config
+  evaluation: reuse_m0_hidden_set_restricted_to_mask
+  work_directory: results/osse_ocean_mask_work
+  metrics_file: results/public/osse_ocean_mask_metrics.csv
+  unit_summary_file: results/public/osse_ocean_mask_unit_summary.csv
+  paired_file: results/public/osse_ocean_mask_paired.csv
+  overall_file: results/public/osse_ocean_mask_overall.csv

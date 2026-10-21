@@ -7,9 +7,79 @@ from pathlib import Path
 
 import pandas as pd
 
+SCHEMES = (
+    ("hidden", "hidden_cells_latitude_cap", 3),
+    ("block", "whole_blocks_latitude_cap", 15),
+)
+MASK_LABELS = {
+    "m0": "Original model domain",
+    "m1": "Connected ocean (primary)",
+    "m2": "Open-ocean interior",
+}
+
+
+def _headline_rows(frame: pd.DataFrame) -> pd.DataFrame:
+    return frame.loc[
+        (frame["budget"] == 5000)
+        & (frame["domain"] == "south_of_60n")
+        & (frame["weighting"] == "spherical_cell_area")
+    ]
+
+
+def build_mask_audit(results_dir: Path) -> dict:
+    """M0 (pre-mask) and M1/M2 (masked rerun) paired summaries."""
+    reference = pd.read_csv(results_dir / "osse_latitude_cap_overall.csv")
+    reference.insert(0, "mask", "m0")
+    masked = pd.read_csv(results_dir / "osse_ocean_mask_overall.csv")
+    overall = _headline_rows(pd.concat([reference, masked], ignore_index=True))
+    rows = []
+    for mask, label in MASK_LABELS.items():
+        for key, source, expected in SCHEMES:
+            for comparison in ("historical_density", "spatial_coverage"):
+                row = overall.loc[
+                    (overall["mask"] == mask)
+                    & (overall["validation_scheme"] == source)
+                    & (overall["comparison"] == f"{comparison}_minus_random")
+                ]
+                if len(row) != 1 or int(row["n_units"].iloc[0]) != expected:
+                    raise ValueError(f"Unexpected mask audit row: {mask} {key} {comparison}")
+                row = row.iloc[0]
+                rows.append(
+                    {
+                        "mask": mask,
+                        "label": label,
+                        "protocol": key,
+                        "comparison": comparison,
+                        "n_units": expected,
+                        "random_mae": round(float(row.mean_random_mae), 3),
+                        "comparator_mae": round(float(row.mean_comparator_mae), 3),
+                        "difference_mae": round(float(row.mean_difference_mae), 3),
+                        "relative_mae_pct": round(
+                            100 * float(row.mean_difference_mae) / float(row.mean_random_mae), 2
+                        ),
+                        "units_mae_worse": expected
+                        - int(row.units_difference_mae_below_zero),
+                        "random_rmse": round(float(row.mean_random_rmse), 3),
+                        "difference_rmse": round(float(row.mean_difference_rmse), 3),
+                        "units_rmse_lower": int(row.units_difference_rmse_below_zero),
+                    }
+                )
+    cells = pd.read_csv(results_dir / "osse_ocean_mask_cells.csv")
+    below = cells.loc[cells["latitude"] < 60]
+    return {
+        "primary_mask": "m1",
+        "locations_below_60n": {
+            "m0": len(below),
+            "m1": int(below["in_m1"].sum()),
+            "m2": int(below["in_m2"].sum()),
+        },
+        "rows": rows,
+    }
+
 
 def build_chart_data(results_dir: Path) -> dict:
-    paired = pd.read_csv(results_dir / "osse_latitude_cap_paired.csv")
+    paired = pd.read_csv(results_dir / "osse_ocean_mask_paired.csv")
+    paired = paired.loc[paired["mask"] == "m1"]
     selected = paired.loc[
         (paired["budget"] == 5000)
         & (paired["domain"] == "south_of_60n")
@@ -17,10 +87,7 @@ def build_chart_data(results_dir: Path) -> dict:
         & (paired["comparison"] == "historical_density_minus_random")
     ]
     pairs = {}
-    for key, source, expected in (
-        ("hidden", "hidden_cells_latitude_cap", 3),
-        ("block", "whole_blocks_latitude_cap", 15),
-    ):
+    for key, source, expected in SCHEMES:
         rows = selected.loc[selected["validation_scheme"] == source].sort_values(
             ["year", "spatial_fold"]
         )
@@ -36,51 +103,15 @@ def build_chart_data(results_dir: Path) -> dict:
             for row in rows.itertuples()
         ]
 
-    sampling = pd.read_parquet(results_dir / "osse_visual_demo_sampling.parquet")
-    metadata = pd.read_csv(results_dir / "osse_visual_demo_metadata.csv").iloc[0]
-    blocks = []
-    for key, source in (
-        ("random", "random"),
-        ("historical", "historical_density"),
-        ("coverage", "spatial_coverage"),
-    ):
-        rows = sampling.loc[sampling["strategy"] == source]
-        if rows.duplicated(["latitude", "longitude"]).any():
-            raise ValueError("Sampling summary has duplicate spatial blocks")
-        count = int(rows["observations"].sum())
-        if count != int(metadata["budget"]):
-            raise ValueError("Sampling map and metadata counts disagree")
-        blocks.append(
-            {
-                "strategy": key,
-                "blocks": int((rows["observations"] > 0).sum()),
-                "sample_count": count,
-            }
-        )
-
     return {
         "provenance": {
-            "pairs": "results/public/osse_latitude_cap_paired.csv",
-            "sampling": "results/public/osse_visual_demo_sampling.parquet",
-            "sampling_metadata": "results/public/osse_visual_demo_metadata.csv",
-            "pair_scope": "5,000 samples; spherical area; candidates and evaluation <60N; 20-seed unit means",
+            "pairs": "results/public/osse_ocean_mask_paired.csv (mask m1)",
+            "mask_audit": "results/public/osse_ocean_mask_overall.csv; M0 from results/public/osse_latitude_cap_overall.csv",
+            "pair_scope": "5,000 samples; spherical area; candidates and evaluation <60N in the connected-ocean mask (M1); 20-seed unit means",
             "no_new_fits": True,
         },
         "pairs": pairs,
-        "sampling": {
-            "year": int(metadata["year"]),
-            "seed": int(metadata["seed"]),
-            "longitude_degrees": float(metadata["sampling_longitude_degrees"]),
-            "latitude_degrees": float(metadata["sampling_latitude_degrees"]),
-            "scope": "Original full-domain hidden-cell illustrative selection; not the primary aligned-domain runs",
-            "blocks": blocks,
-        },
-        "error_map_availability": {
-            "source": "results/public/osse_visual_demo_fields.parquet",
-            "available": "2005 full-domain per-cell mean absolute errors for random and historical-density, averaged across 20 seeds and available hidden months",
-            "primary_domain_map_available": False,
-            "boundary": "Clipping the saved full-domain map cannot reproduce candidate-domain alignment. Current latitude-cap caches contain aggregate scores, not per-cell predictions.",
-        },
+        "mask_audit": build_mask_audit(results_dir),
     }
 
 

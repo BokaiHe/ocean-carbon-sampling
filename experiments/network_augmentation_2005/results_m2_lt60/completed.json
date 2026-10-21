@@ -1,0 +1,18 @@
+{
+  "completed_utc": "2026-10-21T20:01:10.881655+00:00",
+  "model_fits": 11,
+  "all_baseline_points_preserved": true,
+  "evaluation_never_acquired": true,
+  "equal_added_month_quotas": true,
+  "source_inputs_unchanged": true,
+  "started_sha256": "ce6fa85d90b2aefbf812c809575da6e4329956a79baa7d864230c124240cba30",
+  "outputs_sha256": {
+    "additions.csv": "bd7a20a0a8953f61242c035cb54e22e5b14f315c145b611a891a89a6b8d08b1d",
+    "design.parquet": "aa52e3cbb76396d2d460ed47ce9f04a5f85c90c8efccfa286bf5c3b782764579",
+    "effect_summary.csv": "5a99d274c50b67be0c8e599c90fb339543eb612b802685ac31e9c80710394a50",
+    "evaluation_predictions.parquet": "1a895fd58d59d32615560433b6ff184d5a9250fd2efc202c6197a8ddbcb8535c",
+    "metrics.csv": "9bfc3baf01997b4ffc85e7c44e7e4d247ee66d2f62cf3373e7bd85eca10d64cc",
+    "paired_effects.csv": "1626f8231c5e83cb44f8306807fc381d3f55a1e65d6cfbe343720adce34a9d52",
+    "started.json": "ce6fa85d90b2aefbf812c809575da6e4329956a79baa7d864230c124240cba30"
+  }
+}

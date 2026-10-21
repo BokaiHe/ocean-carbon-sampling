@@ -32,14 +32,19 @@ and not a sea-ice mask.
 
 | Evaluation | Random MAE | Historical-density MAE | Difference | Relative change | Consistency |
 |---|---:|---:|---:|---:|---|
-| Primary: scattered hidden cells | 9.508 | 11.975 | +2.466 | +25.94% | 3/3 year means worse |
-| Stress test: whole blocks | 11.836 | 13.691 | +1.855 | +15.67% | 15/15 year-fold means worse |
+| Primary: scattered hidden cells | 9.226 | 11.746 | +2.520 | +27.32% | 3/3 year means worse |
+| Stress test: whole blocks | 11.363 | 13.404 | +2.041 | +17.96% | 15/15 year-fold means worse |
 
-MAE is in µatm. Differences and percentages are computed before rounding,
-so subtraction of displayed values can differ by 0.001 µatm. Source:
-[`osse_latitude_cap_overall.csv`](../results/public/osse_latitude_cap_overall.csv).
-Year-level and year-fold effects are in
-[`osse_latitude_cap_paired.csv`](../results/public/osse_latitude_cap_paired.csv).
+MAE is in µatm, under the connected-ocean mask (Caspian Sea, Great Lakes and
+Lake Victoria removed from sampling and testing). Differences and percentages
+are computed before rounding, so subtraction of displayed values can differ by
+0.001 µatm. Source:
+[`osse_ocean_mask_overall.csv`](../results/public/osse_ocean_mask_overall.csv);
+year-level and year-fold effects are in
+[`osse_ocean_mask_paired.csv`](../results/public/osse_ocean_mask_paired.csv).
+Pre-mask values (+25.94% and +15.67%) remain in
+[`osse_latitude_cap_overall.csv`](../results/public/osse_latitude_cap_overall.csv);
+see the [mask audit](osse_ocean_mask_results.md).
 
 The primary protocol reserves approximately 20% of the month-cells in each
 month before sampling. One fixed evaluation set per year is shared by all
@@ -156,7 +161,8 @@ Archived full-domain per-cell mean absolute errors now provide a supporting
 historical-density-minus-random error map without retraining or prediction.
 Its heading, caption and downloadable metadata identify the 2005 original
 full-domain protocol. Missing cells remain missing and colour-saturated values
-remain intact in the CSV. See [figure QA](site_error_map_notes.md). Aligned-domain
+remain intact in the CSV. (The map has since left the website; its source is
+`results/public/osse_visual_demo_fields.parquet`.) Aligned-domain
 caches retain aggregate scores rather than per-cell predictions. Clipping the
 archived map would not reproduce the aligned training domain, so it cannot
 serve as the primary-scope penalty map requested for a future presentation.

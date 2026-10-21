@@ -3,284 +3,241 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="A visual, reproducible OSSE of ocean-carbon sampling: historical-density costs, coverage trade-offs and evaluation sensitivity." />
-  <title>Ocean Carbon Sampling · Visual research brief</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%23365368'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="styles.css?v=expedition-1" />
-  <link rel="stylesheet" href="expedition.css?v=neutral-globes-1" />
-  <link rel="stylesheet" href="hero.css?v=video-2" />
+  <meta name="description" content="Where we measure the ocean changes what machine-learning maps of ocean CO₂ can see: a reproducible sampling experiment by Bokai He." />
+  <title>Ocean Carbon Sampling</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='27' fill='%230b3a52'/%3E%3Cpath d='M10 34c7-8 13 8 22 0s15 8 22 0' stroke='%2363e0d0' stroke-width='4' fill='none'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" />
+  <link rel="stylesheet" href="hero.css" />
   <link rel="stylesheet" href="hero9.css" />
-  <link rel="stylesheet" href="editorial.css" />
-  <link rel="stylesheet" href="story.css" />
-  <link rel="stylesheet" href="portfolio.css" />
-  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="ocean.css" />
+  <script vite-ignore src="i18n.js?v=3"></script>
   <script type="module" src="/src/main.jsx"></script>
-  <script vite-ignore src="app.js?v=portfolio-1" defer></script>
   <script vite-ignore src="vendor/d3-7.9.0.min.js" defer></script>
-  <script vite-ignore src="globe.js?v=restored-layers-1" defer></script>
-  <script vite-ignore src="observations.js?v=restored-1" defer></script>
-  <script vite-ignore src="voyage.js?v=ambient-route-1" defer></script>
+  <script vite-ignore src="globes.js?v=1" defer></script>
+  <script vite-ignore src="story.js?v=9" defer></script>
 </head>
 <body>
-  <nav class="chapter-nav" aria-label="Research chapters">
-    <a href="#top" class="chapter-home"><small>OCEAN CARBON</small><strong>A sampling<br />experiment.</strong><span>Research note / 01</span></a>
-    <a href="#background"><span>01</span> Why this question? <b>↗</b></a>
-    <a href="#voyage"><span>02</span> Observed ocean <b>↗</b></a>
-    <a href="#workflow"><span>03</span> How we test it <b>↗</b></a>
-    <a href="#sampling"><span>04</span> Explore the experiment <b>↗</b></a>
-    <a href="#validation"><span>05</span> What we found <b>↗</b></a>
-    <a href="#technical"><span>06</span> The boundaries <b>↗</b></a>
-    <a href="#related-work"><span>07</span> Sources &amp; credits <b>↗</b></a>
-    <a class="chapter-contact" href="mailto:bh2954@columbia.edu">Bokai He · Columbia EEE<br />Get in touch ↗</a>
-  </nav>
   <!-- react-hero:start -->
-<div id="hero-root"><header id="top" class="cinematic-hero hero9" data-hero-design="hero-9"><video vite-ignore id="hero-video" class="hero-video" muted="" loop="" playsInline="" preload="none" data-src="https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4" aria-hidden="true" tabindex="-1"></video><a class="skip-link" href="#evidence-story">Skip to the research</a><nav class="nav shell" aria-label="Primary navigation"><a class="brand" href="#top"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"></circle><path d="M4 17c5-6 9 6 14 0s9 6 14 0M5 23c5-6 8 6 13 0s8 6 13 0"></path><path d="M18 3v5M3 18h5M28 18h5"></path></svg><span>OCEAN CARBON<span class="brand-subtitle">A sampling experiment</span></span></a><div class="nav-links"><a href="#validation">Findings</a><a href="#background">The question</a><a href="#sampling">The experiment</a><a href="#workflow">The method</a></div><a class="hero-contact" href="mailto:bh2954@columbia.edu">Let’s talk <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><details class="mobile-navigation" id="mobile-navigation"><summary>Menu <span aria-hidden="true">+</span></summary><div class="mobile-nav-links"><a href="#validation">Findings<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#background">The question<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#sampling">The experiment<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#workflow">The method<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#voyage">Observed ocean<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#technical">Boundaries<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#related-work">Sources &amp; credits<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></div></details></nav><div class="hero9-content shell"><div class="hero9-layout"><div class="hero9-title-group"><p class="eyebrow">Ocean carbon / A sampling experiment</p><h1 aria-label="A vast ocean. A few paths through it."><span class="hero9-blur-text" aria-hidden="true"><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">A</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">v</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">a</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">s</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">t</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">o</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">c</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">e</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">a</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">n</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">.</span></span></span><br/><span class="hero9-blur-text" aria-hidden="true"><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">A</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">f</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">e</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">w</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">p</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">a</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">t</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">h</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">s</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">t</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">h</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">r</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">o</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">u</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">g</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">h</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">i</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">t</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">.</span></span></span></h1><a href="#evidence-story" class="hero9-scroll" style="opacity:1"><span class="hero9-dot" aria-hidden="true"></span> Explore the research <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="hero9-aside" style="opacity:1;transform:none"><p class="hero9-description">We cannot measure everywhere. With the same number of observations, how much does where we look change what we know?</p><div class="hero9-links"><a href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#workflow">How it works <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></div><p class="hero9-byline">Bokai He · Columbia EEE<br/><a href="#related-work">Course foundation &amp; credits <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></p></div></div></div></header></div>
+<div id="hero-root"><header id="top" class="cinematic-hero hero9" data-hero-design="hero-9"><video vite-ignore id="hero-video" class="hero-video" muted="" loop="" playsInline="" preload="none" data-src="https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4" aria-hidden="true" tabindex="-1"></video><a class="skip-link" href="#evidence-story">Skip to the research</a><nav class="nav shell" aria-label="Primary navigation"><a class="brand" href="#top"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"></circle><path d="M4 17c5-6 9 6 14 0s9 6 14 0M5 23c5-6 8 6 13 0s8 6 13 0"></path><path d="M18 3v5M3 18h5M28 18h5"></path></svg><span>OCEAN CARBON<span class="brand-subtitle">A sampling experiment</span></span></a><div class="nav-links"><a href="#intro">Intro</a><a href="#background">Background</a><a href="#method">Method</a><a href="#findings">Findings</a></div><a class="hero-contact" href="mailto:bh2954@columbia.edu">Let’s talk<!-- --> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><div class="lang-switch" role="group" aria-label="Language"><button type="button" data-lang-set="en" aria-pressed="true">EN</button><button type="button" data-lang-set="zh" aria-pressed="false">中文</button></div><details class="mobile-navigation" id="mobile-navigation"><summary>Menu<!-- --> <span aria-hidden="true">+</span></summary><div class="mobile-nav-links"><a href="#intro">Intro<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#background">Background<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#method">Method<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#findings">Findings<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#conclusion">Conclusion<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#limits">Limits<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#sources">Sources &amp; credits<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></div></details></nav><div class="hero9-content shell"><div class="hero9-layout"><div class="hero9-title-group"><p class="eyebrow">Ocean carbon / A sampling experiment</p><h1 aria-label="A vast ocean. A few paths through it."><span class="hero9-blur-text" aria-hidden="true"><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">A</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">v</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">a</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">s</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">t</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">o</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">c</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">e</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">a</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">n</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">.</span></span></span><br/><span class="hero9-blur-text" aria-hidden="true"><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">A</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">f</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">e</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">w</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">p</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">a</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">t</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">h</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">s</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">t</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">h</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">r</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">o</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">u</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">g</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">h</span></span><span class="hero9-word"><span class="hero9-character" style="opacity:1;filter:blur(0px)">i</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">t</span><span class="hero9-character" style="opacity:1;filter:blur(0px)">.</span></span></span></h1><a href="#intro" class="hero9-scroll" style="opacity:1"><span class="hero9-dot" aria-hidden="true"></span> <!-- -->Explore the research<!-- --> <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></a></div><div class="hero9-aside" style="opacity:1;transform:none"><p class="hero9-description">We cannot measure everywhere. With the same number of observations, how much does where we look change what we know?</p><div class="hero9-links"><a href="https://github.com/BokaiHe/ocean-carbon-sampling">Code &amp; data<!-- --> <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a href="#method">How it works<!-- --> <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></div><p class="hero9-byline">Bokai He · Columbia EEE<br/><a href="#sources">Course foundation &amp; credits<!-- --> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right ui-arrow" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a></p></div></div></div></header></div>
 <!-- react-hero:end -->
-  <main>
-    <section class="evidence-story" id="evidence-story" aria-labelledby="evidence-story-title"><div class="shell">
-      <div class="story-intro"><h2 id="evidence-story-title">What changes when we move the samples?</h2><p><strong>My contribution:</strong> a reproducible simulation framework comparing three sampling rules, with paired tests and explicit checks of how evaluation choices change the answer.</p></div>
-      <div class="story-layout">
-        <aside class="story-navigation"><div id="results-navigation"></div></aside>
-        <div class="story-stage">
-          <aside class="domain-alert" id="result-domain-status"><strong>Ocean-domain check: unresolved</strong><p>These are comparisons on the saved candidate domain. Inland/coastal eligibility is unresolved; its effect on error magnitudes and rankings has not been quantified. A white land overlay does not fix the analysis mask. <a href="#ocean-domain-audit">What remains supported?</a></p></aside>
-    <section class="evidence-panel" id="paired-evidence" aria-label="Paired reconstruction results">
-      <aside class="field-note">
-        <span class="result-index">01</span>
-        <h2>Historical-density has larger errors in this benchmark.</h2>
-        <div class="result-number" id="primary-effect">—<span>higher average error than random</span></div>
-        <p>Current benchmark only: one simulated ocean, one learner and the saved candidate domain. The ocean-domain audit is unresolved; no corrected-mask rerun has verified this magnitude or ranking. <a href="#ocean-domain-audit">Research limitation</a>—not a verdict on real observing networks.</p>
-      </aside>
-      <figure class="chart-panel hero-chart" id="validation">
-        <figcaption><h2>Historical-density has higher MAE in every test unit.</h2></figcaption>
-        <div class="protocol-tabs" role="group" aria-label="Evaluation protocol"><button data-paired-protocol="hidden" aria-pressed="true">Hidden cells · main test</button><button data-paired-protocol="block" aria-pressed="false">Whole blocks · stress test</button></div>
-        <div class="legend"><span><i class="key random"></i>Random</span><span><i class="key historical"></i>Historical-density</span></div>
-        <div id="paired-chart" class="chart" aria-live="polite"></div>
-        <p class="chart-note">5,000 samples · area-weighted · sampling and evaluation &lt;60°N. Rows average 20 paired seeds, not independent ESM replicates.</p>
-        <details class="chart-about"><summary>About this chart &amp; exact values</summary>
-          <p>Primary: 3 year means on one fixed, month-stratified hidden set per year. Stress test: 15 year–fold means with complete blocks held out. Connecting lines pair two strategies on the same test set; they are not confidence intervals. The horizontal axis is zoomed, not zero-based. Larger MAE means larger typical absolute error. These magnitudes are conditional on this learner and model truth.</p>
-          <div id="paired-table" class="table-scroll"></div>
-          <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/results/public/osse_latitude_cap_paired.csv">Source: paired unit results <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-        </details>
-      </figure>
-    </section>
-    <section class="evidence-panel" id="results"><div class="shell">
-      <div class="section-heading"><span class="result-index">02</span><h2>A different scorecard.<br />The same direction.</h2><p>Historical-density has higher average error in every tested weighting and domain combination.</p></div>
-      <figure class="chart-panel">
-        <div class="legend"><span><i class="key hidden"></i>Hidden cells · primary protocol</span><span><i class="key block"></i>Whole blocks · stress protocol</span><span>Outlined points: aligned, area-weighted scope</span></div>
-        <div id="robustness-chart" class="chart"></div>
-        <p class="chart-note">Historical-density relative to random. Right of zero = higher MAE. These are correlated evaluation variants, not 12 independent tests. All retain the <a href="#ocean-domain-audit">unresolved ocean-domain eligibility check</a>.</p>
-        <details class="chart-about"><summary>About the variants &amp; exact values</summary>
-          <p>Weighting: equal grid cells or spherical cell area. Domain: full; evaluation only &lt;60°N; or both candidates and evaluation &lt;60°N. The primary comparison is hidden-cell, area-weighted, both domains &lt;60°N. Changing domains can also change the training pool. Positivity across these settings does not establish robustness to another learner, ESM or real observing network.</p>
-          <div id="robustness-table" class="table-scroll"></div>
-          <a href="data/site-data.json">Frozen result contract <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-        </details>
-      </figure>
-    </div></section>
+  <div class="sea-transition" aria-hidden="true"><svg class="sea-wave w1" viewBox="0 0 2880 200" preserveAspectRatio="none"><path d="M0 70 Q120 48 240 70 T480 70 T720 70 T960 70 T1200 70 T1440 70 T1680 70 T1920 70 T2160 70 T2400 70 T2640 70 T2880 70 L2880 200 L0 200 Z"/></svg><svg class="sea-wave w2" viewBox="0 0 2880 200" preserveAspectRatio="none"><path d="M0 100 Q90 84 180 100 T360 100 T540 100 T720 100 T900 100 T1080 100 T1260 100 T1440 100 T1620 100 T1800 100 T1980 100 T2160 100 T2340 100 T2520 100 T2700 100 T2880 100 L2880 200 L0 200 Z"/></svg><svg class="sea-wave w3" viewBox="0 0 2880 200" preserveAspectRatio="none"><path d="M0 130 Q180 104 360 130 T720 130 T1080 130 T1440 130 T1800 130 T2160 130 T2520 130 T2880 130 L2880 200 L0 200 Z"/></svg><div class="sea-bubbles"><i style="--x:8%;--s:6px;--d:9s;--delay:0s"></i><i style="--x:17%;--s:4px;--d:11s;--delay:3s"></i><i style="--x:29%;--s:8px;--d:10s;--delay:6s"></i><i style="--x:41%;--s:5px;--d:12s;--delay:1s"></i><i style="--x:55%;--s:7px;--d:9s;--delay:4s"></i><i style="--x:63%;--s:4px;--d:13s;--delay:7s"></i><i style="--x:74%;--s:6px;--d:10s;--delay:2s"></i><i style="--x:86%;--s:5px;--d:11s;--delay:5s"></i><i style="--x:93%;--s:7px;--d:12s;--delay:8s"></i></div></div>
+  <nav class="topbar" id="topbar" aria-label="Sections">
+    <a class="topbar-brand" href="#top"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><path d="M4 17c5-6 9 6 14 0s9 6 14 0M5 23c5-6 8 6 13 0s8 6 13 0"/></svg><span>Ocean Carbon Sampling</span></a>
+    <div class="topbar-links">
+      <a href="#intro" data-i18n="nav.intro">Intro</a>
+      <a href="#background" data-i18n="nav.background">Background</a>
+      <a href="#method" data-i18n="nav.method">Method</a>
+      <a href="#findings" data-i18n="nav.findings">Findings</a>
+      <a href="#conclusion" data-i18n="nav.conclusion">Conclusion</a>
+      <a href="#limits" data-i18n="nav.limits">Limits</a>
+      <a href="#sources" data-i18n="nav.sources">Sources</a>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language"><button type="button" data-lang-set="en" aria-pressed="true">EN</button><button type="button" data-lang-set="zh" aria-pressed="false">中文</button></div>
+  </nav>
+  <div class="depth-rail" aria-hidden="true"><span class="depth-line"><i id="depth-fill"></i></span><b id="depth-value">0 m</b></div>
 
-    <section class="evidence-panel" id="error-map">
-      <div class="section-heading"><p class="eyebrow">A closer look / Supporting map</p><h2>The penalty is not everywhere.</h2><p>Blue: historical-density has less error. Rust: more. This 2005 full-domain map is supporting evidence, not the primary evaluation.</p></div>
-      <p class="scope-warning">Domain audit pending: this map localizes saved errors, not confirmed ocean-only penalties or where extra samples would help most. <a href="#ocean-domain-audit">Scope and limits</a>.</p>
-      <figure class="chart-panel outcome-map">
-        <div class="legend"><span><i class="key hidden"></i>Blue: lower error</span><span><i class="key historical"></i>Rust: higher error</span><span><i class="key missing"></i>Grey water: no mapped error</span></div>
-        <a href="assets/maps/supporting_mae_difference_2005.png" aria-label="Open the supporting error map at full resolution"><img id="error-difference-map" src="assets/maps/supporting_mae_difference_2005.png" width="2829" height="1818" loading="lazy" alt="Supporting 2005 full-domain map of historical-density minus random mean absolute error. Rust indicates larger error, blue smaller error. The dashed line marks 60 degrees north; this is not the aligned-domain primary analysis." /></a>
-        <figcaption class="chart-note">2005 · original full-domain hidden cells · 5,000 samples · 20 paired seeds. Local mean absolute-error differences, not global area-weighted contributions. Dashed line: 60°N reference, not a crop.</figcaption>
-        <p class="chart-note"><a href="assets/maps/supporting_mae_difference_2005.png">Enlarge map <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a> · Colour saturates at ±30 µatm; arrowheads indicate values beyond the scale.</p>
-        <details class="chart-about"><summary>About this supporting map &amp; source data</summary>
-          <p>Supporting full-domain view—not the primary scope.</p>
-          <p>Each mapped value subtracts the saved random mean absolute error from the historical-density mean absolute error, averaged over 20 paired seeds and the available hidden months at that location. All 40,624 source locations are retained in the download; 37,920 have paired error estimates and 2,704 have none. Missing values are not zero, and grey water does not mean historical zero support.</p>
-          <p>The colour scale saturates for 115 locations below −30 and 2,169 above +30 µatm; no values are removed or altered in the data. There is no smoothing and no statistical-significance overlay. Coastlines are a cartographic reference.</p>
-          <p>This is the original full-domain analysis, not the primary aligned &lt;60°N experiment. Cropping the map cannot reproduce its training pool. The map shows error differences—not the benefit of adding observations at a location. No models were retrained.</p>
-          <p><a href="data/supporting-error-map.csv" download>Map values (CSV)</a> · <a href="data/supporting-error-map.json">Provenance &amp; range</a> · <a href="assets/maps/supporting_mae_difference_2005.svg">SVG</a> · <a href="assets/maps/supporting_mae_difference_2005.pdf">PDF</a> · <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/build_site_error_map.py">Reproduce the figure <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></p>
-        </details>
-      </figure>
-    </section>
-
-    <section class="evidence-panel" id="sample-count">
-      <div class="section-heading"><span class="result-index">03</span><h2>Spreading out is not a cure-all.</h2><p>Coverage can reduce the largest errors while increasing the median error. The sample count matters.</p></div>
-      <figure class="chart-panel">
-        <div id="sweep-chart" class="chart chart-scroll" tabindex="0" aria-label="Three sample-count panels; scroll horizontally on narrow screens"></div><p class="chart-scroll-hint">Three metrics, side by side. On a narrow screen, swipe across the chart.</p>
-        <p class="chart-note">Coverage − random, µatm · full-domain hidden cells · equal-cell weighting. Below zero is better. Each panel has its own vertical scale; sample counts are equally spaced. The <a href="#ocean-domain-audit">domain audit also applies here</a>.</p>
-        <details class="chart-about"><summary>Why this different scope? &amp; exact values</summary>
-          <p>Counts are equally spaced categories, not a linear axis. Each panel has its own vertical scale; compare signs within panels, not the visual size of changes across panels.</p>
-          <p>Median describes the middle absolute error; p99 is the error threshold exceeded by about 1% of evaluated cells. RMSE gives larger errors extra weight, so it is not a separate proof of an overall improvement.</p>
-          <p>The four-count sweep exists only for the original full-domain, equal-cell evaluation. No aligned &lt;60°N, area-weighted sweep has been run. Its magnitudes and reversal threshold cannot be transferred to the primary result. Lines connect four tested counts, not an estimated continuous learning curve. Hyperparameters remain fixed across counts.</p>
-          <div id="sweep-table" class="table-scroll"></div>
-        </details>
-      </figure>
-      <p class="chart-note">Signed bias is sensitive to weighting and evaluation domain, so it is not a headline conclusion. <a href="#estimand">See the methods audit <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></p>
-    </section>
-
-        </div>
+  <main id="evidence-story">
+    <section class="chapter" id="intro">
+      <div class="chapter-head">
+        <p class="kicker" data-i18n="intro.kicker">01 · Introduction</p>
+        <h2 data-i18n="intro.title">The ocean absorbs our CO₂.<br/>We measure only <span class="hl-co2">a sliver</span> of it.</h2>
       </div>
-    </div></section>
-
-    <section id="findings" class="result-overture" aria-label="Introducing the findings">
-      <div data-mosaic-background></div>
-      <div class="shell"><p class="eyebrow">Explore the study</p><h2>Why location matters.</h2><p>Where observations go changes what the model can recover.</p></div>
-    </section>
-
-    <section class="section shell" id="background">
-      <div class="section-heading"><p class="eyebrow">01 / The question</p><h2>A ship sees a route.<br />We need the whole picture.</h2></div>
-      <div class="field-intro" id="real-voyage">
-        <div class="field-intro-copy">
-          <p>Ships measure along their journeys. Models fill the gaps. Can changing where we measure give us a better picture of ocean CO₂?</p>
-          <figure class="field-photo"><img src="assets/context/noaa-ctd-launch.jpg" width="1536" height="1025" alt="Instruments being lowered from a research ship into the sea" loading="lazy" /><figcaption><span>Shipboard science</span><a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></figcaption></figure>
+      <div class="intro-grid">
+        <div class="stat-stack">
+          <div class="stat"><b class="stat-num" data-count="25" data-format="quarter">≈ 1/4</b><span data-i18n="intro.stat1">of human CO₂ emissions is taken up by the ocean each year</span><a class="stat-source" href="https://essd.copernicus.org/articles/17/965/2025/" data-i18n="intro.source">Source: Global Carbon Budget</a></div>
+          <div class="stat"><b class="stat-num" data-count="3.4" data-suffix="%">3.4%</b><span data-i18n="intro.stat2">of monthly 1° ocean grid cells had a ship measurement in 2014</span></div>
+          <div class="stat"><b class="stat-num" data-count="5000">5,000</b><span data-i18n="intro.stat3">samples per experiment — only where they go changes</span></div>
         </div>
-        <figure class="voyage-preview" id="voyage-explorer">
-          <figcaption><strong>One ship. One recorded journey.</strong><span>Polarstern · PS103 · 2016–17</span></figcaption>
-          <canvas id="voyage-globe" role="img" aria-label="Fixed view of the Southern Ocean. A ship marker replays Polarstern's recorded route from Cape Town towards Punta Arenas." aria-describedby="voyage-caption">Recorded voyage from Cape Town through the Southern Ocean towards Punta Arenas. The navigation table is linked below.</canvas>
-          <div class="voyage-preview-footer"><span><i class="route-key"></i>Recorded route</span><span id="voyage-readout">Loading route…</span></div>
-          <p id="voyage-caption">Real navigation, not CO₂ sampling locations.</p>
+        <figure class="photo-plate tall">
+          <img src="assets/context/nasa-celtic-sea-phytoplankton.jpg" width="1536" height="1024" loading="lazy" alt="Satellite image of a blue and green phytoplankton bloom in the Celtic Sea" />
+          <figcaption><span data-i18n="intro.photo">A phytoplankton bloom in the Celtic Sea, seen from orbit. The surface ocean is anything but uniform.</span> <a href="https://science.nasa.gov/image-detail/phytoplanktonbloom-france-amo-20240510-lrg/">NASA Earth Observatory</a></figcaption>
         </figure>
       </div>
-      <div class="research-question"><span>The experiment</span><p>5,000 measurements. Three ways to place them. <em>What changes?</em></p></div>
-      <details class="chart-about"><summary>About the illustration &amp; sources</summary>
-        <p>Reconstruction estimates missing parts of a map from scattered measurements. We study seawater pCO₂, not carbon uptake directly. <a href="https://www.aoml.noaa.gov/ocd/ocdweb/brown/brown_introduction.html">How shipboard CO₂ measurements work · NOAA <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></p>
-        <p>The photograph shows a CTD deployment, not the surface pCO₂ system. This photo is not from the voyage below; it is contextual imagery.</p>
-        <p>Route: Boebel (2017), AWI / <a href="https://doi.org/10.1594/PANGAEA.875075">PANGAEA</a> · <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. The loop compresses 16 Dec 2016–2 Feb 2017 into 32 seconds, stepping through recorded positions. The restart is not a return voyage. Lines join adjacent records; gaps over 30 minutes remain disconnected. The ship symbol does not show heading, speed or live position; a position is not necessarily a CO₂ sample. These records do not train or score the experiment.</p>
-        <p><a href="data/voyage-track.json" download>Route &amp; provenance (JSON)</a> · <a href="data/PS103-track.tab" download>Original navigation table</a> · <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/export_site_voyage.py">Reproduce this illustration <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>. Reduced-motion preferences show a still view.</p>
-      </details>
+      <p class="lede wide" data-i18n="intro.lede">Machine learning turns sparse measurements into complete maps of ocean CO₂. <b>If the measurements are clustered, do the maps get worse — and where should the next ones go?</b></p>
     </section>
 
-    <section class="section shell" id="voyage">
-      <div class="section-heading"><p class="eyebrow">02 / The observed ocean</p><h2>Plenty of observations.<br />Still plenty of gaps.</h2><p>Optional context: real measurements show where the gaps are. Open the globe to inspect a year or month.</p></div>
-      <details class="optional-explorer" id="observations-detail"><summary>Explore real SOCAT observations by year and month</summary>
-      <div class="observation-explorer" id="observation-explorer">
-        <div class="observation-sidebar">
-          <p class="eyebrow">SOCAT v2025 / Observed ocean</p>
-          <h3>Where we have looked.</h3>
-          <p>Each dot is an observed 1° grid cell, not a ship. Tap to inspect.</p>
-          <div class="observation-legend"><strong>Surface-water fCO₂ · µatm</strong><div id="observation-scale" class="globe-colour-scale"></div><div class="globe-ticks"><span>≤200</span><span>400</span><span>≥600</span></div><p>Blue: lower · Gold: higher<br />Same colour scale for every date.</p><div class="globe-surface-key"><span><i class="land-key"></i>Land</span><span><i class="missing-key"></i>No displayed observation</span></div></div>
-          <p class="observation-status" id="observation-status" aria-live="polite">Loading observed grid cells…</p>
-          <div class="globe-selection observation-selection"><span>Selected grid cell</span><p id="observation-readout" aria-live="polite">Tap a dot to see its value, position and observation count.</p></div>
-        </div>
-        <div class="observation-view">
-          <div class="observation-filters">
-            <div class="observation-year-row"><label for="observation-year">Year</label><select id="observation-year" disabled><option>Loading…</option></select></div>
-            <div class="observation-month-heading"><span id="observation-month-label" class="observation-filter-label">Month · 1–12</span><button id="observation-all-months" data-observation-month="0" aria-pressed="true" aria-label="All available months" disabled>All months</button></div>
-            <div id="observation-month" class="observation-month-buttons" role="group" aria-labelledby="observation-month-label"><button disabled>Loading months…</button></div>
-          </div>
-          <div class="globe-view-top"><span>OBSERVED fCO₂ · NOT MODEL ERROR</span><span>DRAG TO EXPLORE</span></div>
-          <canvas id="observation-globe" tabindex="0" role="img" aria-label="SOCAT observed fCO2 globe. Drag or use arrow keys to rotate, plus and minus to zoom, Home to reset. A grid-cell selector below offers keyboard inspection." aria-describedby="observation-status">Observed monthly grid values are available in the JSON download below.</canvas>
-          <div class="globe-controls"><button id="observation-left" disabled aria-label="Turn observed globe left">Left</button><button id="observation-right" disabled aria-label="Turn observed globe right">Right</button><button id="observation-in" disabled aria-label="Zoom observed globe in">+</button><button id="observation-out" disabled aria-label="Zoom observed globe out">-</button><button id="observation-reset" disabled>Reset</button></div>
-          <div class="globe-regions"><button data-observed-ocean="atlantic" disabled>Atlantic</button><button data-observed-ocean="pacific" disabled>Pacific</button><button data-observed-ocean="indian" disabled>Indian</button><button data-observed-ocean="southern" disabled>Southern Ocean</button></div>
-        </div>
-        <div class="globe-footnote"><span>Observed monthly grid means · no interpolation or invented routes</span><span>White land overlays dots for display; original records remain in the download.</span></div>
+    <section class="chapter" id="background">
+      <div class="chapter-head">
+        <p class="kicker" data-i18n="bg.kicker">02 · Background</p>
+        <h2 data-i18n="bg.title">Where ships have looked,<br/>and where they <span class="hl-teal">haven’t</span>.</h2>
+        <p class="lede" data-i18n="bg.lede">Each dot is a 1° cell with real surface-water fCO₂ measurements (SOCAT v2025). Drag the globe and switch year or month to see the gaps.</p>
       </div>
-      <p class="chart-note">Observed fCO₂, not carbon uptake. All-month colours average available observations only.</p>
-      <details class="chart-about"><summary>What does the all-month view mean?</summary><p>fCO₂ is CO₂ fugacity, closely related to partial pressure—not dissolved-carbon concentration. The all-month view averages only months with observations; it is not a complete annual mean.</p></details>
-      <details class="chart-about"><summary>How to read the points, keyboard inspection &amp; source</summary><p>Source: <a href="https://doi.org/10.25921/648f-fv35">Bakker et al. (2025), SOCAT v2025 <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>, 1° monthly gridded product. Monthly colours use the per-cruise-weighted fCO₂ mean. All-month colours are equal-weight means of available monthly values. These are grid-cell centres, not exact ship positions. Counts sum the observations behind the displayed monthly records, not dots or unique cruises.</p><p>Three years match the OSSE study years (2005, 2010, 2014); the default is 2014. This context view is not the historical-density sampling mask, which uses 1990–2004 counts. Observed fCO₂ values are not used as the OSSE truth or to score its predictions.</p><p>Missing observations are not filled. Colours saturate below 200 and above 600 µatm; point inspection and downloads retain actual values. All finite observed values are retained, including extremes. Land covers symbols for readability only; some coastal grid centres may be covered. Blank map areas do not prove permanent absence of observations, especially outside the displayed dates.</p><label for="observation-point">Inspect a grid cell (keyboard alternative)</label><select id="observation-point" disabled><option>Loading…</option></select><p><a href="data/observed-co2.json" download>Monthly values &amp; provenance (JSON)</a> · <a href="https://socat.info/index.php/version-2025/">Original dataset downloads <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a> · <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/export_site_observations.py">Reproduce this view <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></p><p>We thank the SOCAT data providers, researchers, funding agencies, data managers and quality controllers. SOCAT is an international effort endorsed by IOCCP and SOLAS. Methods: <a href="https://doi.org/10.5194/essd-8-383-2016">Bakker et al. (2016)</a> and <a href="https://doi.org/10.5194/essd-5-145-2013">Sabine et al. (2013)</a>. Please follow the <a href="https://socat.info/wp-content/uploads/2025/06/SOCATv2025_DataUseStatement.pdf">SOCAT data-use statement</a>.</p></details>
-      </details>
-    </section>
-
-    <section class="section shell" id="workflow">
-      <div class="section-heading"><p class="eyebrow">03 / A controlled test</p><h2>Hide the answer.<br />Then try to recover it.</h2><p>A simulated ocean lets us check predictions against values we already know.</p></div>
-      <ol class="workflow-flow" aria-label="Experiment sequence">
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c12 12 12 24 0 36-12-12-12-24 0-36M9 15h30M9 33h30"/></svg><strong>1. Keep the answers</strong><span>Start with monthly CO₂ maps from an ocean simulation.</span></li>
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 8h34v32H7zM18 8v32M30 8v32M7 19h34M7 29h34"/><circle cx="13" cy="14" r="3"/><circle cx="25" cy="24" r="3"/></svg><strong>2. Set a test aside</strong><span>Hide the same places and months from all three sampling plans.</span></li>
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7v12M10 19h28M10 19v12M38 19v12M5 31h10v10H5zM33 31h10v10H33z"/><circle cx="24" cy="7" r="4"/></svg><strong>3. Choose 5,000</strong><span>From the remaining pool, choose measurements using each plan.</span></li>
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 8h32v32H8zM14 27l7 6 13-18"/></svg><strong>4. Fill the gaps</strong><span>Train the same type of model to predict the hidden values.</span></li>
-        <li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 39h34M12 35V22M24 35V10M36 35V17"/></svg><strong>5. Check the error</strong><span>Compare predictions with the answers we kept. Smaller errors are better.</span></li>
-      </ol>
-      <div class="method-plans" aria-label="The three sampling rules"><p><strong>Random</strong>Give each eligible location-month an equal chance.</p><p><strong>Historical-density</strong>Prefer places and months with more past SOCAT observations—not actual ship routes.</p><p><strong>Coverage</strong>Spread measurements across space and months by prioritizing underrepresented blocks.</p></div>
-      <p class="chart-note">One IPSL-CM6A-LR simulation · one fixed HistGradientBoosting learner · 2005, 2010, 2014 · 20 paired seeds. Each observation is one location in one month, not one ship or one voyage.</p>
-      <details class="chart-about"><summary>What makes the comparison fair—and what does it not test?</summary><p>Holdout happens before training. Strategies share the same test set, sample count, model settings and paired seeds. The primary evaluation hides scattered month-cells; the stress test hides entire blocks. In the primary and aligned stress-test comparisons, both sampling and evaluation are restricted to &lt;60°N and errors are area-weighted.</p><p>The simulated observations have no added measurement error. The experiment compares idealized placement rules, not feasible ship routes, deployment costs or a universally best observing network. The full-domain supporting maps below use a different, clearly labelled scope.</p></details>
-    </section>
-
-    <section class="section shell" id="sampling">
-      <div class="section-heading"><p class="eyebrow">04 / Explore the experiment</p><h2>Change the plan.<br />Look at what it misses.</h2><p>Switch between where we sample and where predictions go wrong. This globe shows the simulated experiment, not real observations.</p></div>
-      <p class="scope-warning">The land overlay is visual only. Sampling eligibility and error scores have not been recomputed with an audited ocean mask. <a href="#ocean-domain-audit">Read the domain status</a>.</p>
-      <div class="globe-explorer" id="globe-explorer">
-        <div class="globe-sidebar">
-          <p class="eyebrow">A world to explore / 2005</p>
-          <h3>Same ocean.<br />Different views.</h3>
-          <p>Choose a view and a sampling plan. Tap a point to see its value.</p>
-          <label class="globe-label" for="globe-layer">What do you want to see?</label>
-          <select id="globe-layer"><option value="sampling">Where did we measure?</option><option value="mae">How wrong were the predictions?</option><option value="delta">Better or worse than random?</option></select>
-          <p class="globe-label">Which sampling plan?</p>
-          <div class="globe-strategies" role="group" aria-label="Globe sampling strategy"><button data-globe-strategy="random" aria-pressed="true">Random</button><button data-globe-strategy="historical" aria-pressed="false">Historical-density</button><button data-globe-strategy="coverage" aria-pressed="false">Coverage</button></div>
-          <div class="globe-legend" id="globe-legend"></div>
-          <p id="globe-scope" class="globe-scope">Loading frozen map data… Saved values are also available in the download.</p>
-          <div class="globe-selection" aria-live="polite"><span>Point inspection</span><p id="globe-readout">Tap a point to inspect its value.</p></div>
+      <div class="globe-card" id="observation-explorer">
+        <div class="globe-stage">
+          <canvas id="observation-globe" tabindex="0" role="img" aria-label="Globe of SOCAT observed surface fCO2. Drag or use arrow keys to rotate; plus and minus zoom."></canvas>
+          <p class="globe-hint" data-i18n="obs.drag">Drag to rotate · pinch or Ctrl + scroll to zoom</p>
         </div>
-        <div class="globe-view">
-          <div class="globe-view-top"><span id="globe-role">DESIGN MAP · NOT MODEL ERROR</span><span>DRAG TO EXPLORE</span></div>
-          <canvas id="ocean-globe" tabindex="0" role="img" aria-label="Interactive globe. Arrow keys rotate; plus and minus zoom; Home resets. Use the point selector below for keyboard inspection." aria-describedby="globe-scope">Saved values are available in coordinate inspection and the JSON download below.</canvas>
-          <div class="globe-controls" role="group" aria-label="Globe view controls"><button id="globe-left" aria-label="Rotate globe left">Left</button><button id="globe-right" aria-label="Rotate globe right">Right</button><button id="globe-in" aria-label="Zoom into globe">+</button><button id="globe-out" aria-label="Zoom out of globe">-</button><button id="globe-reset">Reset</button><button id="globe-spin" aria-pressed="false">Rotate</button></div>
-          <div class="globe-regions" role="group" aria-label="Jump to an ocean"><button data-ocean="atlantic">Atlantic</button><button data-ocean="pacific">Pacific</button><button data-ocean="indian">Indian</button><button data-ocean="southern">Southern Ocean</button></div>
+        <div class="globe-panel">
+          <div class="control-row"><label for="observation-year" data-i18n="obs.year">Year</label><div class="seg" id="observation-year" role="group" aria-label="Year"></div></div>
+          <div class="month-strip" id="observation-month" role="group" aria-label="Month"></div>
+          <div class="legend-block"><span data-i18n="obs.scale">Surface-water fCO₂ · µatm</span><div class="ramp" id="observation-scale"></div><div class="ramp-ticks"><span>≤200</span><span>400</span><span>≥600</span></div><div class="key-row"><span><i class="k-land"></i><b data-i18n="obs.land">Land</b></span><span><i class="k-none"></i><b data-i18n="obs.none">No observation</b></span></div></div>
+          <p class="readout big" id="observation-count">—</p>
+          <p class="readout" id="observation-readout" aria-live="polite"></p>
         </div>
-        <div class="globe-footnote"><span>Frozen OSSE / not live vessel tracking</span><span>Full-domain supporting view · not the aligned &lt;60°N primary evaluation</span><span>White land overlays data symbols for display only. Source values and scores are unchanged; the ocean-domain audit remains unresolved.</span></div>
       </div>
-      <details class="chart-about"><summary>About the globe, accessible point inspection &amp; downloads</summary>
-        <p>The white land layer is drawn above all data symbols. It can cover coastal block centres and inland-water values because the simplified land basemap does not distinguish every water body. This is a cartographic overlay, not a scientific exclusion mask or a correction to the experimental domain. Covered values remain in downloads and coordinate inspection; visible dots alone do not sum to the full sample count. The inland-water eligibility issue remains under review.</p>
-        <p>The globe uses real geographic coordinates, not real ship tracks. Dots summarize selected observations at 5° × 10° block centres from one seed. Historical-density draws month-cells without replacement using SOCAT 1990–2004 count weights; it does not replay cruises or repeat lines. Random gives each candidate equal probability; coverage prioritizes underrepresented month-space blocks. No route or marginal benefit of adding a sample is inferred.</p>
-        <p>Error dots show local MAE averaged over 20 paired seeds and available hidden months in 2005. They are not individual observations or a new model run. This full-domain supporting view is not the aligned &lt;60°N primary evaluation. The flat error map in the results shows the same supporting analysis.</p>
-        <p>Missing errors remain grey, not zero. MAE colours saturate at 60 µatm and differences at ±30 µatm; inspected values are not clipped. Sampling and error dots use different spatial aggregations.</p>
-        <p>Grey background is not a fine-grid coverage mask. The dotted 60°N line is a reference, not a domain mask. Land is from <a href="https://www.naturalearthdata.com/about/terms-of-use/">Natural Earth</a>, rendered using <a href="https://d3js.org/d3-geo/azimuthal">D3 orthographic projection</a>.</p>
-        <label for="globe-point">Choose a sampling block (keyboard alternative to tapping)</label><select id="globe-point"><option value="">Select a block…</option></select>
-        <form id="globe-coordinate-form" class="globe-coordinate-form"><label>Latitude <input id="globe-latitude" type="number" min="-90" max="90" step="any" value="30" required /></label><label>Longitude <input id="globe-longitude" type="number" min="-180" max="180" step="any" value="-40" required /></label><button type="submit">Inspect nearest point</button></form>
-        <p>Coordinate inspection selects the nearest saved location or sampling block, which may not be at the coordinates entered. Its actual position is shown in the readout. <a href="data/globe-data.json" download>Globe values and provenance (JSON)</a> · <a href="vendor/D3-LICENSE.txt">D3 license</a>.</p>
-      </details>
-    </section>
-
-    <section class="section dark" id="technical"><div class="shell">
-      <div class="section-heading"><p class="eyebrow">Behind the figures</p><h2>Want to look closer?</h2><p>Methods, checks and the questions this experiment cannot answer.</p></div>
-      <div class="details-stack">
-        <details id="ocean-domain-audit"><summary>Ocean-domain audit: what is affected?</summary><div class="detail-body"><p><strong>Unresolved:</strong> which coastal or inland-water model locations should belong to the intended ocean-only candidate and evaluation pools. Drawing white land over symbols changes presentation, not the saved training data or scores. Restricting latitude or applying area weights is not an ocean-mask audit.</p><p><strong>Affected:</strong> the headline MAE comparison, evaluation-variant chart, sample-count sweep and model-error maps are conditional on the existing domain. No corrected-mask rerun has quantified whether their magnitudes or strategy rankings persist. Twelve positive variants do not test this missing control.</p><p><strong>Still supported:</strong> the displayed values describe the frozen experiment and its specified evaluation variants. The framework, paired comparisons and evaluation-sensitivity demonstration remain inspectable; an ocean-only scientific conclusion is provisional. The recorded ship route and SOCAT context globe are separate source datasets, not validated or invalidated by this OSSE mask question.</p><p><strong>Needed to close it:</strong> define and freeze the eligible ocean mask, apply it to both candidate and test pools, then rerun paired comparisons. This website refinement does not perform that experiment or alter saved values.</p></div></details>
-        <details id="estimand"><summary>Signed bias: why the interpretation changed</summary><div class="detail-body">
-      <div class="section-heading"><p class="eyebrow">What changed our interpretation</p><h3>A strong-looking bias. A narrower conclusion.</h3><p class="chart-note">Whole-block stress test only. Weighting and domain choices shrink the signed offset—not evidence of a universal bias.</p></div>
-      <figure class="chart-panel">
-        <div id="bias-chart" class="chart"></div>
-        <p class="chart-note">Historical-density − random signed bias, µatm. Categorical changes of weighting and domain; not a time series.</p>
-        <details class="chart-about"><summary>About this audit &amp; exact values</summary>
-          <p>The final whole-block value is not the hidden-cell primary estimate. These settings share results and are not independent confirmations. The latitude cap is a domain restriction, not a sea-ice or physical-access mask.</p>
-          <div id="bias-table" class="table-scroll"></div>
-        </details>
+      <figure class="photo-strip">
+        <img src="assets/context/noaa-ctd-launch.jpg" width="1536" height="1025" loading="lazy" alt="Instruments being lowered from a research ship into the sea" />
+        <figcaption><span data-i18n="bg.photo">A research ship lowers instruments into the sea. Real measurements are costly, sparse and follow ship tracks.</span> <a href="https://oceanexplorer.noaa.gov/multimedia/explorations-22saipan-surveys-gallery-media-ctd-launch/">NOAA Ocean Exploration</a></figcaption>
       </figure>
-        </div></details>
-        <details><summary>Primary evaluation, stress test &amp; replication</summary><div class="detail-body">
-          <p>Hidden-cell evaluation reserves about 20% of month-cells within each month before sampling. One fixed set per year is shared across strategies and 20 paired seeds. Whole-block evaluation excludes all months in 20° × 10° blocks, using five checkerboard folds without a buffer.</p>
-          <p>Three years share one ESM run. The three primary year means and 15 stress-test year–fold means are descriptive units, not independent Earth-system replicates. No formal whole-block significance test is claimed. Neither protocol is full-field evaluation after unrestricted sampling.</p>
-          <p>The September 2026 presentation change foregrounds the existing hidden-cell analysis. It is a post-analysis reframing, not a newly preregistered protocol. Differences are computed before rounding.</p>
-          <a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/project_positioning.md">Full evaluation scope &amp; source notes <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-        </div></details>
-        <details><summary>Four design boundaries &amp; not yet supported</summary><div class="detail-body">
-          <ul>
-            <li><strong>Idealized observations.</strong> Monthly model truth has no added measurement or point-to-grid representation error. Predictors come from the same simulation; real-world rankings may differ.</li>
-            <li><strong>Fixed learner.</strong> HistGradientBoosting settings do not change with count or strategy. Count effects are conditional on the learner, not geometry alone.</li>
-            <li><strong>Limited inputs.</strong> SST, salinity, latitude, cyclic longitude, year and cyclic month; no MLD, chlorophyll or atmospheric CO₂. One ESM member, no feature-ablation claim.</li>
-            <li><strong>Separate yearly fits.</strong> All 12 months fit jointly within each year. Interannual trends and decadal carbon-sink variability are not tested.</li>
-          </ul>
-          <p>Cross-learner and cross-ESM robustness, noisy observations, full-field recovery, flux integration, sea-ice-aware access and feasible deployment plans remain not yet supported.</p>
-        </div></details>
-        <details><summary>Month balance</summary><div class="detail-body" id="month-audit"></div></details>
-        <details><summary>Regridding audit</summary><div class="detail-body" id="regrid-audit"></div></details>
-        <details><summary>Interpretability gate: why no SHAP mechanism plot?</summary><div class="detail-body"><p>The regional diagnostic XGBoost models failed the spatially grouped generalization gate. Explaining those models would not establish scientific drivers.</p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/diagnostic_results.md">Read the gate decision <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div></details>
-        <details><summary>Supporting map versus primary-scope map</summary><div class="detail-body"><p>The <a href="#error-map">supporting error map</a> uses saved 2005 full-domain errors without retraining. The aligned-domain runs retain aggregate scores, not per-cell predictions. Clipping the old map to &lt;60°N would not recreate the aligned training pool. A primary-scope penalty map is therefore not shown here.</p><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/scripts/export_osse_visual_demo_data.py">Inspect the saved-field provenance <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></div></details>
-      </div>
-    </div></section>
+    </section>
 
-    <section class="section shell" id="related-work">
-      <div class="section-heading"><p class="eyebrow">Sources &amp; people</p><h2>Built on shared work.</h2></div>
-      <div class="reference-grid">
-        <article><h3><a href="https://doi.org/10.1029/2020GB006788">Gloege et al. (2021) <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></h3><p>Large Ensemble Testbed, model truth and temporal reconstruction skill. Our three yearly fits do not test that temporal scope.</p></article>
-        <article><h3><a href="https://doi.org/10.5194/bg-21-2159-2024">Heimdal et al. (2024) <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></h3><p>SOCAT plus autonomous observations, pCO₂-Residual, multiple ESMs and full-field evaluation. Here: fixed-count rules, one learner and held-out evaluation.</p></article>
+    <section class="chapter" id="method">
+      <div class="chapter-head">
+        <p class="kicker" data-i18n="method.kicker">03 · Method</p>
+        <h2 data-i18n="method.title">A <span class="hl-teal">simulated ocean</span><br/>as the answer key.</h2>
+        <p class="lede" data-i18n="method.lede">The real ocean has no complete answer. So we use an Earth-system-model ocean as truth, hide part of it, and test how well each sampling rule recovers it.</p>
       </div>
-      <p class="credits">Independent extension of the Spring 2025 EESC/STAT 4243 project in <strong>Galen A. McKinley’s class</strong>. Original team: <strong>Azam Khan, Bokai He, Sarah Pariser and Zhi Wang</strong>.</p>
-      <details class="chart-about"><summary>Course contributions &amp; independent extension</summary>
-        <p>The original contribution statement credits Bokai He with statistical significance analysis and NGBoost/XGBoost comparison; Azam with training, visualization and analysis; Sarah with masks and narrative/code integration; Zhi with seasonality analysis and visualization.</p>
-        <p>This repository separately develops the fixed-count experiments, evaluation audits and web brief. The course work is not presented as sole-authored. Course attribution does not claim supervision or endorsement of every subsequent extension; original p-value and t-test work is not a formal significance claim for this OSSE.</p>
-        <a href="https://github.com/spariser/ReconstructOceanCarbonP3G1">Original project and team contributions <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a>
-      </details>
+      <ol class="flow">
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></span><b data-i18n="step1.t">Truth</b><span data-i18n="step1.d">IPSL-CM6A-LR gives complete monthly surface pCO₂</span></li>
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 12h16M12 4v16"/><path d="M14 14h4v4h-4z" fill="currentColor"/></svg></span><b data-i18n="step2.t">Hide</b><span data-i18n="step2.d">Set aside 20% of cells as one shared test set</span></li>
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="18" cy="11" r="1.6"/><circle cx="9" cy="14" r="1.6"/><circle cx="15" cy="18" r="1.6"/><circle cx="5" cy="19" r="1.6"/></svg></span><b data-i18n="step3.t">Sample</b><span data-i18n="step3.d">Pick 5,000 month-cells with one rule</span></li>
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><path d="M12 3v6M12 15v6M5 7l4 3M15 14l4 3M5 17l4-3M15 10l4-3"/><circle cx="12" cy="12" r="3"/></svg></span><b data-i18n="step4.t">Learn</b><span data-i18n="step4.d">One gradient-boosting model fills the map from SST, salinity, position and month</span></li>
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b data-i18n="step5.t">Score</b><span data-i18n="step5.d">Compare with the hidden truth across 20 paired seeds</span></li>
+      </ol>
+
+      <h3 class="block-title" data-i18n="rules.title">Three rules, the same 5,000 samples</h3>
+      <div class="rule-grid">
+        <article class="rule-card" data-rule="random"><canvas class="mini-map" data-strategy="random" aria-hidden="true"></canvas><h4><i class="dot random"></i><span data-i18n="rule.random">Random</span></h4><p data-i18n="rule.random.d">Every cell has an equal chance</p><div class="rule-hist"></div><p class="rule-meta"></p></article>
+        <article class="rule-card" data-rule="historical"><canvas class="mini-map" data-strategy="historical" aria-hidden="true"></canvas><h4><i class="dot historical"></i><span data-i18n="rule.historical">Historical-density</span></h4><p data-i18n="rule.historical.d">Weighted by 1990–2004 SOCAT density — mimics how real ship data cluster</p><div class="rule-hist"></div><p class="rule-meta"></p></article>
+        <article class="rule-card" data-rule="coverage"><canvas class="mini-map" data-strategy="coverage" aria-hidden="true"></canvas><h4><i class="dot coverage"></i><span data-i18n="rule.coverage">Coverage</span></h4><p data-i18n="rule.coverage.d">Prioritises under-sampled places and months</p><div class="rule-hist"></div><p class="rule-meta"></p></article>
+      </div>
+      <p class="chip" data-i18n="domain.chip">South of 60°N · connected ocean (inland lakes removed) · 2005, 2010, 2014 · 20 seeds</p>
+
+      <h3 class="block-title" data-i18n="aug.title">A second experiment: add to the real network</h3>
+      <ol class="flow flow-3">
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><path d="M3 17c3-3 5 1 8-2s5-6 10-4"/><circle cx="6" cy="15" r="1.4"/><circle cx="13" cy="12" r="1.4"/><circle cx="19" cy="11" r="1.4"/></svg></span><b data-i18n="aug1.t">Keep the real network</b><span data-i18n="aug1.d">Every 2005 SOCAT month-cell that matches the model ocean stays in training</span></li>
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span><b data-i18n="aug2.t">Add 1,000 cells two ways</b><span data-i18n="aug2.d">At random, or only where SOCAT never measured in 1990–2005 — same months, same count</span></li>
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b data-i18n="aug3.t">Score the same hidden cells</b><span data-i18n="aug3.d">One shared test set, five paired seeds; the added cells are never tested</span></li>
+      </ol>
+      <p class="chip" data-i18n="aug.chip">Open-ocean interior (marginal seas and land-adjacent cells removed) · south of 60°N · 2005 · 5 seeds</p>
+
+      <h3 class="block-title" data-i18n="globe.title">See for yourself: where samples go, where errors grow</h3>
+      <div class="globe-card" id="globe-explorer">
+        <div class="globe-stage">
+          <canvas id="ocean-globe" tabindex="0" role="img" aria-label="Experiment globe. Drag or use arrow keys to rotate; plus and minus zoom."></canvas>
+          <p class="globe-hint" data-i18n="obs.drag">Drag to rotate · pinch or Ctrl + scroll to zoom</p>
+        </div>
+        <div class="globe-panel">
+          <div class="control-row"><span data-i18n="globe.layer">Show</span><div class="seg" role="group" aria-label="Layer"><button type="button" data-globe-layer="sampling" aria-pressed="true" data-i18n="globe.sampling">Samples</button><button type="button" data-globe-layer="mae" aria-pressed="false" data-i18n="globe.mae">Error</button><button type="button" data-globe-layer="delta" aria-pressed="false" data-i18n="globe.delta">vs random</button></div></div>
+          <div class="control-row"><span data-i18n="globe.plan">Rule</span><div class="seg" role="group" aria-label="Sampling rule"><button type="button" data-globe-strategy="random" aria-pressed="true" data-i18n="rule.random">Random</button><button type="button" data-globe-strategy="historical" aria-pressed="false" data-i18n="rule.historical">Historical-density</button><button type="button" data-globe-strategy="coverage" aria-pressed="false" data-i18n="rule.coverage">Coverage</button></div></div>
+          <div class="legend-block" id="globe-legend"></div>
+          <p class="readout" id="globe-readout" aria-live="polite"></p>
+          <p class="fine" data-i18n="globe.note">2005 full-domain supporting view (before the ocean mask), not the headline evaluation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter findings-open" id="findings">
+      <div data-mosaic-background></div>
+      <div class="findings-cover">
+        <p class="kicker" data-i18n="find.kicker">04 · Findings</p>
+        <h2 data-i18n="find.title">Three findings</h2>
+      </div>
+    </section>
+
+    <section class="chapter finding" id="f-history">
+      <div class="finding-head">
+        <div><p class="kicker" data-i18n="f1.label">Finding 1</p><h2 data-i18n="f1.title">Following past ship tracks<br/>raises error by <span class="hl-hist">27%</span>.</h2></div>
+        <div class="big-number hist"><b id="f1-number">+27.3%</b><span data-i18n="f1.unit">higher mean absolute error than random</span></div>
+      </div>
+      <div class="seg wide" role="group" aria-label="Evaluation"><button type="button" data-f1="hidden" aria-pressed="true" data-i18n="f1.hidden">Hidden cells · 3 years</button><button type="button" data-f1="block" aria-pressed="false" data-i18n="f1.block">Whole blocks · 15 units</button></div>
+      <div class="chart" id="f1-chart" role="img" aria-label="Paired MAE of random and historical-density sampling"></div>
+      <div class="chart-legend"><span><i class="dot random"></i><b data-i18n="rule.random">Random</b></span><span><i class="dot historical"></i><b data-i18n="rule.historical">Historical-density</b></span></div>
+      <p class="caption" data-i18n="f1.caption">MAE in µatm, lower is better. Each row compares both rules on the same test set, averaged over 20 paired seeds. Worse in every year and every one of the 15 whole-block units.</p>
+    </section>
+
+    <section class="chapter finding" id="f-coverage">
+      <div class="finding-head">
+        <div><p class="kicker" data-i18n="f2.label">Finding 2</p><h2 data-i18n="f2.title">Spreading out trims <span class="hl-cov">extreme</span> errors,<br/>not typical ones.</h2></div>
+        <div class="big-number cov"><b>−1.0</b><span>RMSE · µatm</span><b class="minor">+0.4</b><span>MAE · µatm</span></div>
+      </div>
+      <div class="chart" id="f2-chart" role="img" aria-label="Coverage minus random MAE and RMSE under three ocean masks"></div>
+      <div class="chart-legend"><span><i class="sq mae"></i><b data-i18n="f2.mae">MAE (typical error)</b></span><span><i class="sq rmse"></i><b data-i18n="f2.rmse">RMSE (extreme error)</b></span></div>
+      <p class="caption" data-i18n="f2.caption">Coverage − random, µatm; lower is better. Most of the RMSE gain comes from marginal seas and coastal cells; in the open ocean it nearly vanishes.</p>
+    </section>
+
+    <section class="chapter finding" id="f-augment">
+      <div class="finding-head">
+        <div><p class="kicker" data-i18n="f3.label">Finding 3</p><h2 data-i18n="f3.title">Adding 1,000 observations <span class="hl-teal">helps a lot</span>.<br/>Aiming them at gaps <span class="hl-gap">helps a little</span>.</h2></div>
+        <div class="big-number"><b class="teal">−2.9</b><span data-i18n="f3.s1">RMSE drop from adding 1,000 observations (µatm)</span><b class="minor gap">−0.13</b><span data-i18n="f3.s2">extra drop when they target historical gaps (µatm)</span></div>
+      </div>
+      <div class="aug-grid">
+        <div class="aug-map-card">
+          <div class="aug-controls">
+            <div class="seg" role="group" aria-label="Addition arm"><button type="button" data-aug-arm="random_addition" aria-pressed="false" data-i18n="arm.random">+ random</button><button type="button" data-aug-arm="gap_addition" aria-pressed="true" data-i18n="arm.gap">+ gaps</button></div>
+            <div class="seg" role="group" aria-label="Seed" id="aug-seeds"></div>
+          </div>
+          <canvas id="aug-map" role="img" aria-label="Map of the existing 2005 network and 1,000 added observations"></canvas>
+          <div class="chart-legend"><span><i class="dot baseline"></i><b data-i18n="f3.legend.h">Existing 2005 SOCAT network</b></span><span><i class="dot gapzone"></i><b data-i18n="f3.legend.gap">Never observed 1990–2005</b></span><span><i class="dot added"></i><b id="aug-added-label">+1,000</b></span></div>
+        </div>
+        <div class="aug-side">
+          <h4 data-i18n="f3.bars">RMSE by region (µatm)</h4>
+          <div class="chart" id="f3-bars"></div>
+          <div class="chart-legend"><span><i class="sq baseline"></i><b data-i18n="arm.baseline">Existing network</b></span><span><i class="sq random"></i><b data-i18n="arm.random">+ random</b></span><span><i class="sq gap"></i><b data-i18n="arm.gap">+ gaps</b></span></div>
+          <h4 data-i18n="f3.dots">Gap − random, per seed (µatm; positive favours gaps)</h4>
+          <div class="chart" id="f3-dots"></div>
+        </div>
+      </div>
+      <p class="caption" data-i18n="f3.caption">2005, open ocean south of 60°N. Gap targeting helps inside the gaps but slightly hurts where ships already go. Keeping marginal seas (connected ocean) makes the advantage look larger (an extra 1.32 µatm drop), but about 80% of it comes from Hudson Bay; the earlier global version was inflated by the Arctic and inland lakes. These domain-matched reruns were chosen after seeing the global result.</p>
+    </section>
+
+    <section class="chapter" id="checks">
+      <div class="chapter-head">
+        <p class="kicker" data-i18n="checks.kicker">05 · Robustness</p>
+        <h2 data-i18n="checks.title">Ask the question differently.<br/>Does it still hold?</h2>
+      </div>
+      <div class="check-grid">
+        <article class="check"><b class="check-num">3/3</b><h4 data-i18n="c1.t">Every year</h4><p data-i18n="c1.d">Historical-density is worse in 2005, 2010 and 2014</p></article>
+        <article class="check"><b class="check-num">15/15</b><h4 data-i18n="c2.t">Whole blocks held out</h4><p data-i18n="c2.d">Worse in all 15 year × spatial-fold units: +18.0%</p></article>
+        <article class="check"><div class="mask-spark" id="mask-spark"></div><h4 data-i18n="c3.t">Ocean mask</h4><p data-i18n="c3.d">Direction unchanged after removing lakes, marginal seas and coasts</p></article>
+        <article class="check"><b class="check-num small">−4.95 → −0.47</b><h4 data-i18n="c4.t">Signed bias</h4><p data-i18n="c4.d">Historical − random bias (µatm, whole-block test) shrinks this much once cells are area-weighted and the domain aligned — too sensitive to be a headline</p></article>
+      </div>
+    </section>
+
+    <section class="chapter" id="conclusion">
+      <div class="chapter-head">
+        <p class="kicker" data-i18n="concl.kicker">06 · Conclusion</p>
+        <h2 data-i18n="concl.title">Clustered sampling <span class="hl-hist">costs accuracy</span>.<br/>More observations <span class="hl-teal">pay off</span> anywhere.</h2>
+      </div>
+      <div class="answer-grid">
+        <a class="answer" href="#f-history"><b class="hl-hist">+27%</b><h4 data-i18n="a1.t">Where we measure matters</h4><p data-i18n="a1.d">At the same 5,000 samples, copying the historical ship pattern gives clearly worse maps than sampling at random — in every year tested.</p></a>
+        <a class="answer" href="#f-coverage"><b class="hl-cov">RMSE ↓</b><h4 data-i18n="a2.t">Spreading out is not a cure-all</h4><p data-i18n="a2.d">Even coverage trims the largest errors, mostly near coasts and in marginal seas, while typical error barely moves.</p></a>
+        <a class="answer" href="#f-augment"><b class="hl-teal">−2.9</b><h4 data-i18n="a3.t">Adding beats aiming</h4><p data-i18n="a3.d">1,000 extra open-ocean observations cut error far more than choosing where they go; aiming at gaps adds a small, consistent extra.</p></a>
+      </div>
+      <p class="lede wide" data-i18n="concl.lede">For an observing network, the first lesson is to measure more and less predictably; filling known gaps is a refinement — and every number here holds for one simulated ocean and one model, not yet for the real network.</p>
+    </section>
+
+    <section class="chapter" id="limits">
+      <div class="chapter-head">
+        <p class="kicker" data-i18n="limits.kicker">07 · Limits</p>
+        <h2 data-i18n="limits.title">What this study<br/><span class="hl-co2">cannot</span> tell you.</h2>
+      </div>
+      <ul class="limit-grid">
+        <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/></svg><span data-i18n="l1">One Earth-system-model ocean</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="4"/></svg><span data-i18n="l2">One learner, a few predictors</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="M4 12c3-4 5 4 8 0s5 4 8 0"/></svg><span data-i18n="l3">Idealised observations, no measurement error</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 9-9"/></svg><span data-i18n="l4">Grid cells, not real ship routes, cost or feasibility</span></li>
+        <li><svg viewBox="0 0 24 24"><path d="M3 7h18M6 3l-3 4 3 4"/></svg><span data-i18n="l5">South of 60°N only</span></li>
+        <li><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span data-i18n="l6">Augmentation tested in 2005 only</span></li>
+      </ul>
+    </section>
+
+    <section class="chapter" id="sources">
+      <div class="chapter-head">
+        <p class="kicker" data-i18n="src.kicker">08 · Sources &amp; credits</p>
+        <h2 data-i18n="src.title">Data, code and people</h2>
+      </div>
+      <div class="source-grid">
+        <div><h4 data-i18n="src.data">Data</h4><ul><li><a href="https://doi.org/10.25921/648f-fv35">SOCAT v2025</a></li><li><a href="https://doi.org/10.22033/ESGF/CMIP6.5195">IPSL-CM6A-LR historical (CMIP6)</a></li><li><a href="https://essd.copernicus.org/articles/17/965/2025/">Global Carbon Budget 2024</a></li></ul></div>
+        <div><h4 data-i18n="src.related">Related work</h4><ul><li><a href="https://doi.org/10.1029/2020GB006788">Gloege et al. (2021)</a></li><li><a href="https://doi.org/10.5194/bg-21-2159-2024">Heimdal et al. (2024)</a></li></ul></div>
+        <div><h4 data-i18n="src.people">Course &amp; team</h4><p data-i18n="src.people.d">Independent extension of a Spring 2025 EESC/STAT 4243 project in Galen A. McKinley’s class. Original team: Azam Khan, Bokai He, Sarah Pariser and Zhi Wang.</p><p><a href="https://github.com/spariser/ReconstructOceanCarbonP3G1">ReconstructOceanCarbonP3G1</a></p></div>
+        <div><h4 data-i18n="src.more">Details</h4><p data-i18n="src.more.d">Method details, every table and the audit trail live in the notebook and docs.</p><ul><li><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/notebooks/published/osse_results_walkthrough.ipynb" data-i18n="src.notebook">Results notebook</a></li><li><a href="https://github.com/BokaiHe/ocean-carbon-sampling" data-i18n="src.repo">Code repository</a></li><li><a href="https://github.com/BokaiHe/ocean-carbon-sampling/blob/main/docs/osse_ocean_mask_protocol.md" data-i18n="src.protocols">Protocols</a></li></ul></div>
+      </div>
     </section>
   </main>
-  <footer class="research-footer" id="contact"><div class="shell">
-    <div class="footer-story-grid">
-      <div class="footer-next"><p class="eyebrow">The next question</p><h2>Where should we<br /><span>look next?</span></h2><p class="footer-next-copy">Where should observations be added? That needs an add-observation experiment with access and cost constraints. This study compares replacement designs; it does not identify optimal routes or marginal gains.</p><nav class="footer-research-nav" aria-label="Research resources"><a href="https://github.com/BokaiHe/ocean-carbon-sampling">Explore the repository <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a><a href="#related-work">Sources &amp; credits <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a></nav></div>
-      <div class="contact-glass"><p class="eyebrow">Research &amp; conversation</p><p class="contact-name">Bokai He</p><p>Columbia EEE<br />Independent course-project extension</p><a class="contact-email" href="mailto:bh2954@columbia.edu"><span>bh2954@columbia.edu</span><span aria-hidden="true"><svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></span></a></div>
-    </div>
-    <div class="footer-bottom"><p>Ocean Carbon Sampling · Frozen results.<br />No browser-side model fitting.</p><div class="footer-links"><a href="data/site-data.json">Results JSON <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a><a href="data/chart-data.json">Chart JSON <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg></a><a href="#top">Back to top ↑</a></div></div>
-  </div></footer>
-  <noscript>This page requires JavaScript to draw the frozen-data charts. The source tables remain available through the repository and JSON links.</noscript>
+  <footer class="site-foot"><p data-i18n="foot">Bokai He · Columbia University, Earth and Environmental Engineering · 2026</p><p><a href="mailto:bh2954@columbia.edu">bh2954@columbia.edu</a></p></footer>
+  <noscript><p class="noscript">Interactive charts need JavaScript. The source tables are in the GitHub repository.</p></noscript>
 </body>
 </html>

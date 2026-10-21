@@ -6,7 +6,7 @@ SITE = Path(__file__).resolve().parents[1] / "site"
 
 def test_hero_uses_requested_video_and_retains_source_record():
     html = (SITE / "index.html").read_text(encoding="utf-8")
-    assert 'href="hero.css?' in html
+    assert 'href="hero.css"' in html
     assert 'src="/src/main.jsx"' in html
     assert 'id="hero-motion"' not in html
     header = html.split("</header>", 1)[0]
@@ -56,7 +56,7 @@ def test_react_hero_build_keeps_research_assets_and_pages_subpath():
     assert "renderToString" in renderer
     assert "vite-ignore" in renderer  # Preserve the poster URL through hydration.
     assert "base:'./'" in config
-    for name in ("assets", "data", "vendor", "app.js", "globe.js", "observations.js"):
+    for name in ("assets", "data", "vendor", "i18n.js", "globes.js", "story.js"):
         assert f"'{name}'" in config
     assert 'id="hero-root"' in html
     assert 'href="mailto:bh2954@columbia.edu"' in html

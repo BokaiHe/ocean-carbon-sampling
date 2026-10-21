@@ -16,73 +16,64 @@ surface-ocean pCO2 reconstruction error under a specified learner and domain?
    estimate, not a new discovery that real-world ocean sampling is uneven.
 2. **Test the limits of broader coverage.** Coverage does not improve every
    error measure; its effects depend on sample count and evaluation.
-3. **Ask where to add observations next.** That is a future experiment on an
-   existing network, not a question answered by these replacement rules.
+3. **Ask where to add observations next.** A separate 2005 pilot keeps the real
+   SOCAT network and adds 1,000 cells at random or in historical gaps; see
+   [Adding to the existing network](#adding-to-the-existing-network-2005-pilot).
 
-The website reads frozen JSON and pre-rendered maps. It does not fit models,
-optimize ship routes or estimate deployment benefits in the browser.
+The website reads frozen JSON only. It does not fit models, optimize ship
+routes or estimate deployment benefits in the browser.
 
-The reading order is **background/question → observed CO₂ globe → method →
-experimental maps → results → limitations and sources**. The introductory globe
-colours observed 1° SOCAT grid cells by surface-water **fCO₂ (µatm)**, not dissolved
-concentration, sampling counts or model error. It retains the 2005, 2010 and 2014
-monthly per-cruise-weighted means from the existing local SOCAT v2025 gridded CSV.
-The default 2014 all-month view has 7,784 grid cells. All-month values equally
-average only available monthly means, **not a complete annual mean**. The year
-and month selectors use one fixed 200–600 µatm colour scale; only colours clip,
-while inspection and downloads retain actual values, including extremes.
+## Interactive brief
 
-Source: [SOCAT v2025](https://doi.org/10.25921/648f-fv35), with the data providers,
-quality controllers and methods credited beside the globe. These are observed
-grid-cell centres, not exact ship positions or reconstructed routes. This view is
-separate from the 1990–2004 density weights and from all frozen OSSE scores.
-Rebuild `site/data/observed-co2.json` using `python scripts/export_site_observations.py`
-with the original local monthly CSV. Missing cells are not filled; white land is
-only a visual overlay. No new model fitting or raw-data download is required.
+A bilingual (English / 中文) single page: video opening, then
+**introduction → background → method → three findings → robustness →
+conclusion → limits → sources**. Text is kept short; method details and every
+table live in `docs/` and the notebooks.
 
-The earlier Polarstern PS103 navigation source and exporter remain archived in the
-repository, with their PANGAEA attribution, but are no longer loaded by the page.
+- **Background:** a globe of observed SOCAT v2025 surface-water **fCO₂ (µatm)**
+  for 2005, 2010 and 2014, by year and month. Dots are observed 1° grid-cell
+  centres, not ship positions; all-month values average available months only.
+- **Method:** the five-step OSSE, a per-block heatmap and samples-per-block
+  histogram for each sampling rule, the design of the augmentation pilot, and a
+  globe of the 2005 full-domain sampling and error fields (a pre-mask supporting
+  view, labelled as such).
+- **Findings:** paired MAE by year and by whole-block unit (connected-ocean
+  mask); coverage minus random under the three ocean masks; the augmentation
+  pilot (open-ocean mask) with an addition map, RMSE by region and per-seed
+  effects.
+- **Conclusion** links each claim back to its finding.
 
-The presentation combines an ocean-image opening and field photography with
-interactive evidence charts. NASA Earth Observatory / Michala Garrison and
-NOAA Ocean Exploration photographs are credited at their point of use and
-identified as context, not experiment outputs. The chapter navigation and large
-globe layout draw visual inspiration from [Seasats](https://www.seasats.com/),
-without copying its assets, fonts, code or vessel tracks.
-
-The interactive globe reads the existing 2005 full-domain sampling and error
-fields: drag or use arrow keys to rotate, use +/− to zoom, switch strategies and
-select sampling counts, local MAE, or MAE differences from random. It shows
-supporting results, **not the aligned-domain headline evaluation**. Sampling
-points are block centres, not ship positions; no real or simulated routes are
-displayed. Coastlines use public-domain Natural Earth data and locally vendored
-D3 7.9.0 (ISC). Data load only near the globe; original flat maps are retained.
-
-Rebuild its data from saved results (no model fitting):
-
-```powershell
-python scripts/export_site_globe_data.py
-```
-
-The exporter retains all locations and missing errors, rounding display values
-to four decimal places. The original Parquet/CSV outputs retain full precision.
-Frozen headline scores and experiment protocols remain unchanged.
+NASA Earth Observatory and NOAA Ocean Exploration photographs are credited at
+their point of use and are context, not experiment outputs. Coastlines are
+public-domain Natural Earth; D3 7.9.0 (ISC) is vendored locally. Fonts are Inter
+and Noto Sans SC.
 
 ## Two evaluations, two questions
 
 Both headline comparisons use **5,000 samples, spherical cell-area weighting,
-and candidates and evaluation jointly restricted to latitude <60°N**.
-The latitude cutoff is not a sea-ice or physical-accessibility mask.
+and candidates and evaluation jointly restricted to latitude <60°N and to the
+connected-ocean mask**. The latitude cutoff is not a sea-ice or
+physical-accessibility mask.
 
 | Evaluation | Random MAE | Historical-density MAE | Difference | Relative increase | Descriptive consistency |
 |---|---:|---:|---:|---:|---|
-| Primary: dispersed hidden cells | 9.508 | 11.975 | +2.466 | +25.94% | 3/3 year means worse |
-| Stress test: whole blocks | 11.836 | 13.691 | +1.855 | +15.67% | 15/15 year-fold means worse |
+| Primary: dispersed hidden cells | 9.226 | 11.746 | +2.520 | +27.32% | 3/3 year means worse |
+| Stress test: whole blocks | 11.363 | 13.404 | +2.041 | +17.96% | 15/15 year-fold means worse |
 
 Units: µatm. Differences are calculated before rounding. These magnitudes are
 **conditional on one IPSL-CM6A-LR simulation and one locked HistGradientBoosting
 learner**, not universal penalties for the real network.
-[Source table](results/public/osse_latitude_cap_overall.csv).
+[Source table](results/public/osse_ocean_mask_overall.csv).
+
+**Ocean-domain mask audit, 2026-10-21.** The model grid had placed the Caspian
+Sea, the Great Lakes and Lake Victoria (107 of 36,215 locations below 60°N) in
+the "ocean" pool. The primary connected-ocean mask (M1) removes them from both
+sampling and testing; a sensitivity mask (M2) also removes the Mediterranean
+and Black Sea, the Baltic, Hudson Bay and land-adjacent cells. Before the mask
+the headline was +25.94% (hidden) and +15.67% (whole blocks); under M2 it is
++27.91% and +20.00%, worse in 3/3 years and 15/15 units throughout.
+[Protocol](docs/osse_ocean_mask_protocol.md) ·
+[results](docs/osse_ocean_mask_results.md).
 
 - **Primary:** reserve approximately 20% of month-cells within each month
   before sampling. One fixed test set per year is shared by all strategies
@@ -94,7 +85,7 @@ learner**, not universal penalties for the real network.
 - The three years share one ESM run. Direction counts are descriptive,
   not independent-replicate significance tests. No formal whole-block
   significance test is claimed.
-  [Per-unit effects](results/public/osse_latitude_cap_paired.csv).
+  [Per-unit effects](results/public/osse_ocean_mask_paired.csv).
 
 **Presentation revision, 2026-09-23:** hidden-cell results now anchor the brief;
 whole-block results are a stress test. This is a post-analysis reframing of
@@ -104,17 +95,49 @@ documents retain their earlier whole-block-default narrative as provenance.
 
 ## What broader coverage does, and does not, show
 
-Under the primary aligned-domain evaluation, coverage changes MAE by
-**+0.186 µatm** (9.508 to 9.695), while lowering the tail-sensitive RMSE by
-**1.745 µatm** (20.766 to 19.021). Under the whole-block stress test, MAE is
-nearly unchanged (−0.007 µatm) and RMSE is lower (−2.201 µatm).
-Neither combination establishes overall superiority.
+Under the primary masked evaluation, coverage changes MAE by
+**+0.394 µatm** (9.226 to 9.620), while lowering the tail-sensitive RMSE by
+**1.008 µatm** (20.075 to 19.067). Under the whole-block stress test, MAE is
+nearly unchanged (+0.017 µatm) and RMSE is lower (−1.869 µatm).
+Neither combination establishes overall superiority. The RMSE advantage comes
+mostly from marginal seas and coastal cells: excluding them (M2) shrinks it to
+−0.250 µatm (hidden cells) and −0.178 µatm (whole blocks).
+The 12-variant evaluation table, sample-count sweep and error maps remain
+pre-mask supporting analyses in `docs/` and `results/public/`; the website's
+experiment globe is labelled as pre-mask.
 
-The sample-count line chart uses a **separate supporting analysis**: original
+The sample-count sweep is a **separate supporting analysis**: original
 full-domain, equal-cell hidden evaluation. At 500 samples, coverage raises
 median, p99 and RMSE; at higher counts, extreme-tail reductions coexist with
 higher median error. This is conditional on the fixed learner, not an isolated
 causal effect of geometry. [Claims audit](docs/osse_claims_audit.md).
+
+## Adding to the existing network (2005 pilot)
+
+A different design from the replacement rules above: keep every 2005 SOCAT
+month-cell that matches the model ocean (H), add **1,000** cells either at random
+or only at locations SOCAT never observed in 1990–2005 (equal monthly quotas),
+and score all arms on one shared hidden set with five paired acquisition seeds.
+
+Reported domain: **open-ocean interior (M2), latitude < 60°N.** Area-weighted
+RMSE, µatm, mean of five seeds:
+
+| Evaluation cells | H | H + random | H + gap | Gap − random advantage |
+|---|---:|---:|---:|---:|
+| All unobserved | 16.067 | 13.160 | 13.031 | 0.128 (5/5 seeds) |
+| Historical gaps | 17.538 | 13.920 | 13.415 | 0.505 (5/5) |
+| Previously observed | 14.751 | 12.502 | 12.708 | −0.206 (0/5) |
+
+Adding observations helps everywhere; aiming them at gaps adds a small,
+consistent extra inside the gaps at a cost where ships already go.
+
+**Order of analysis, stated plainly.** The pilot was first run globally without
+an ocean mask (gap advantage 0.462 µatm RMSE). The connected-ocean (M1) and
+open-ocean (M2) reruns were chosen **after** seeing that result, to match the
+headline study's domain; they are post hoc. Under M1 the advantage is 1.321 µatm,
+but about 80% of its squared-error reduction comes from Hudson Bay cells below
+60°N; the global figure was likewise driven by the Arctic and inland lakes. All
+three runs are kept: [study README](experiments/network_augmentation_2005/README.md).
 
 ## A methodological self-correction
 
@@ -196,9 +219,15 @@ are not evidence of formal significance in the present OSSE.
   regridding and area/domain audits:
   [temporal design](docs/osse_temporal_design.md),
   [regridding audit](docs/osse_regrid_audit_results.md).
-- Rerunnable [walkthrough](notebooks/published/osse_results_walkthrough.ipynb)
-  and [visual demo](notebooks/published/osse_visual_story_demo.ipynb).
-  These preserve the earlier presentation; use this README for current scope.
+- Ocean-domain mask audit (connected ocean and open-ocean sensitivity):
+  [protocol](docs/osse_ocean_mask_protocol.md),
+  [results](docs/osse_ocean_mask_results.md).
+- Existing-network augmentation pilot, global and domain-matched reruns:
+  [study](experiments/network_augmentation_2005/README.md).
+- Rerunnable [results walkthrough](notebooks/published/osse_results_walkthrough.ipynb),
+  updated with the ocean-mask audit and augmentation pilot, and the earlier
+  [visual demo](notebooks/published/osse_visual_story_demo.ipynb), which keeps
+  the pre-mask presentation.
 - Frozen web brief and [figure-data inventory](docs/osse_figure_data_inventory.md).
   Source tables remain preserved; no new numerical experiment accompanies this revision.
 
@@ -242,46 +271,32 @@ while the video loads, or when motion is reduced.
 Reduced motion and data-saving settings prevent automatic video playback. Neither
 background displays a pause button, as requested by the owner.
 
-The results-section background uses a user-supplied React Bits Pro Mosaic Waves
+The findings cover uses a user-supplied React Bits Pro Mosaic Waves
 component. Its source lives in ignored `site/licensed/MosaicWaves.tsx` and is not
 distributed in this public repository. Public clones build with a static fallback;
-all research data, charts and controls work without the paid component. A licensed
-developer may place their authorized copy at that local path to enable the effect.
-Local styling adaptations remove the Tailwind/helper requirement; the implementation
-still uses React Three Fiber and Three.js. Motion is paused or omitted when reduced
-motion, data saving, offscreen state or hidden tabs require it.
+all research data, charts and controls work without the paid component. Motion is
+paused or omitted when reduced motion, data saving, offscreen state or hidden
+tabs require it.
 
 Run `npm run publish:site` locally to build and publish only the compiled application
 to `site-build`. GitHub Pages deploys that branch through Actions. The command checks
 the remote and rejects TypeScript, JSX and source maps in the artifact; it never
 uploads `site/licensed`. The publisher dispatches the protected main-branch workflow,
 which deploys the compiled `site-build` artifact; pushing main alone does not rebuild it.
-The published bundle is the website application, not a downloadable source package.
 No model run or raw-data download is required to preview the checked-in site.
-The paired MAE chart foregrounds `area|both60|hidden`, alongside the whole-block
-stress test. The separate signed-bias dot chart uses whole-block results only.
-All four sample counts and all 12 evaluation variants are visible simultaneously;
-hover, tap or focus marks for values, or expand the accessible source tables.
 
-To regenerate site assets from curated outputs and required local inputs:
+Page code: `site/index.html` (structure, English text), `site/i18n.js` (Chinese
+text and language switch), `site/ocean.css` (styles and type scale),
+`site/story.js` (charts) and `site/globes.js` (both globes).
+
+To regenerate the page data from frozen outputs (no model fitting):
 
 ```bash
-python scripts/build_static_site_assets.py
-python scripts/export_site_chart_data.py
-python scripts/build_site_error_map.py
+python scripts/export_site_chart_data.py      # paired MAE units and mask audit
+python scripts/export_site_augmentation.py    # open-ocean augmentation run
+python scripts/export_site_globe_data.py      # experiment globe
+python scripts/export_site_observations.py    # SOCAT globe (needs the local CSV)
 ```
-
-The second command reads only frozen paired-unit and sampling-summary outputs;
-it does not train models. It exports `site/data/chart-data.json` for the 3 + 15
-paired rows and illustrative occupied-block bars. The other charts read the
-unchanged `site-data.json`. Scope notes remain directly below each chart.
-
-The supporting 2005 full-domain error map is now displayed, built by subtracting
-the saved per-cell mean absolute errors without fitting or new predictions.
-Its CSV retains missing values and values beyond the ±30 µatm colour scale;
-see [map contract and QA](docs/site_error_map_notes.md). Aligned-domain caches contain aggregate
-scores, not per-cell predictions. Clipping the old fields would not reproduce
-the aligned training pool, so no primary-scope penalty map is claimed.
 
 The repository excludes raw data, trained models, caches, working notebooks
 and uncurated outputs. For experiment reproduction, start with

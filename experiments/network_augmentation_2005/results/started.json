@@ -1,0 +1,91 @@
+{
+  "started_utc": "2026-09-24T23:06:55.786718+00:00",
+  "config": {
+    "study": "Existing-network augmentation pilot",
+    "year": 2005,
+    "historical_start_year": 1990,
+    "historical_end_year": 2005,
+    "added_month_cells": 1000,
+    "acquisition_seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "evaluation_seed": 20260924,
+    "evaluation_fraction": 0.2,
+    "model_seed": 20260924,
+    "threads": 4,
+    "truth_file": "data/processed/osse_pilot/IPSL-CM6A-LR_historical_2005_1deg.nc",
+    "socat_file": "data/raw/socat/SOCATv2025_tracks_gridded_monthly.csv",
+    "primary_metric": "area_weighted_rmse",
+    "primary_domain": "global_unobserved",
+    "secondary_domains": [
+      "historical_gap",
+      "previously_observed_locations"
+    ],
+    "secondary_metrics": [
+      "area_weighted_mae",
+      "area_weighted_bias"
+    ],
+    "latitude_restriction": null,
+    "monthly_addition_quotas": "Equal allocation; remainder assigned to months 1 onward",
+    "model_settings": {
+      "learning_rate": 0.07,
+      "max_iter": 150,
+      "max_leaf_nodes": 31,
+      "l2_regularization": 1.0,
+      "early_stopping": false
+    }
+  },
+  "source_inputs_sha256": {
+    "data/processed/osse_pilot/IPSL-CM6A-LR_historical_2005_1deg.nc": "8ff6c2b5ba288d1681e944b0b67b93f30749363b585232580182b47e0705e915",
+    "data/raw/socat/SOCATv2025_tracks_gridded_monthly.csv": "b1e0b5d696379f3cf25f191edda2803632498189fa8c01d50bee8bea638d0582",
+    "src/ocean_carbon_sampling/data.py": "2d82445cf48dcd05b9bc84c4d27bc3852bab9599dc1207ebf8eb141b42f45014",
+    "src/ocean_carbon_sampling/features.py": "37a85ea12d83b6c44202a4dea0d59a64c912d93d6e3077db5070ee87bbb63e88",
+    "src/ocean_carbon_sampling/experiment.py": "737446b6766566fe49eef787b5db99c0fd8318f62715f8450104e0cd2ea4ee36",
+    "src/ocean_carbon_sampling/sampling.py": "241359dbc69c1bb1c68a6d177d13659d5c0e90fb3259fd01a8c9c05a3e596784",
+    "src/ocean_carbon_sampling/osse_experiment.py": "8878e1e16f9b6dcf57e70d971003d193b27c6b45282bd081220f716d5be0bbb4"
+  },
+  "inventory": {
+    "socat_2005_valid_month_cells": 11961,
+    "matched_baseline_month_cells": 11676,
+    "unmatched_socat_month_cells": 285,
+    "history_unique_locations": 20399,
+    "complete_model_month_cells": 487488,
+    "evaluation_month_cells": 95156,
+    "historical_gap_evaluation_cells": 49344,
+    "candidate_addition_month_cells": 380656,
+    "baseline_count_by_month": {
+      "1": 930,
+      "2": 1055,
+      "3": 1053,
+      "4": 853,
+      "5": 735,
+      "6": 945,
+      "7": 1080,
+      "8": 1027,
+      "9": 779,
+      "10": 1225,
+      "11": 1210,
+      "12": 784
+    },
+    "latitude_min": -78.5,
+    "latitude_max": 89.5
+  },
+  "study_inputs_sha256": {
+    "config.json": "a300af7520b421214c8820f46f0741f88bb4253c131357b5625c9cfe037f12a1",
+    "PROTOCOL.md": "62d38d9de520918a3c0ceeca65229b894f80c05f65225990907c43943fed4fd2",
+    "augmentation.py": "3789f6b832149c1f6f22221e6c051c1f07b73ee700b1a367a7374b1998a597ca",
+    "test_augmentation.py": "e1323c0931a1ade7816121961cf69acc8c6bbe542ab8540097f4c8959e75e8e2"
+  },
+  "design_sha256": "ed0318fb1dfacacec7c69cafc6a27164dd810d4671dfbb5b5070be63f4a8c4b8",
+  "additions_sha256": "dd4384214ff1ebb5325f0421c41390e5e96265e5cafd2adad1626ba20989d54b",
+  "versions": {
+    "python": "3.12.14",
+    "numpy": "2.4.6",
+    "pandas": "3.0.5",
+    "sklearn": "1.9.0"
+  }
+}

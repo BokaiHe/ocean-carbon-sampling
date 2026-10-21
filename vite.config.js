@@ -22,7 +22,7 @@ export default defineConfig({
     name:'preserve-frozen-research-assets',
     apply:'build',
     async closeBundle(){
-      for(const name of ['assets','data','vendor','app.js','globe.js','observations.js','voyage.js','.nojekyll']){
+      for(const name of ['assets','data','vendor','i18n.js','globes.js','story.js','.nojekyll']){
         await cp(path.join(root,'site',name),path.join(root,'dist',name),{recursive:true});
       }
     }

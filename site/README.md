@@ -1,62 +1,52 @@
 # Interactive research brief
 
-React + Vite presentation of frozen results. The browser performs no model fitting.
+A bilingual (English / 中文) single page built with Vite. The React layer is only
+the video hero and the findings-cover background; everything else is static HTML
+plus two small scripts. The browser reads frozen JSON and fits no models.
 
 ## Reading order
 
-Contribution and primary result → optional result chapters → compact field context →
-optional SOCAT globe → workflow → experimental globe → methods and sources.
+Video hero → wave transition → introduction → background (SOCAT globe) →
+method (OSSE steps, sampling-rule heatmaps, augmentation design, experiment globe)
+→ three findings → robustness → conclusion → limits → sources.
 
-The results use a React-controlled four-chapter index with one large chart panel
-at a time. All scientific panels and their source links remain in the HTML;
-without the navigation enhancement they appear sequentially. Direct links and
-keyboard navigation select the appropriate chapter. The research footer closes
-with the next question, attribution and contact links. These are original
-implementations informed by the Showcase 7 and Footer 10 visual patterns, not
-redistributed licensed template source.
+## Files
 
-The observation globe is retained in an initially collapsed context panel and shows real SOCAT grid values, with a year selector and twelve
-visible month tiles above the globe. It does not invent ship routes. The experiment
-globe offers sampling, local MAE and difference-from-random views. Its error layers
-and the flat error map are explicitly labelled 2005 full-domain supporting analyses.
-Signed-bias sensitivity remains available in the collapsed Methods audit
-(`#estimand`); direct links open that audit automatically.
+| File | Role |
+|---|---|
+| `index.html` | Page structure and English text (`data-i18n` marks translatable nodes) |
+| `i18n.js` | Chinese text and the EN/中文 switch; remembers the choice per browser |
+| `ocean.css` | All page styles, colour tokens and the eight-step type scale |
+| `story.js` | Charts (D3), scroll chrome, depth gauge and reveals |
+| `globes.js` | SOCAT observation globe and 2005 experiment globe |
+| `src/` | React hero (`Hero.jsx` public fallback, `useLang.jsx`) and Mosaic backdrop |
+| `data/` | Frozen JSON exported from `results/public/` and the augmentation runs |
 
-The flat sampling maps, coverage-count chart and archived signed-bias map
-remain off the page. Their assets and exporters are retained. Both globes
-load lazily and retain white land with black coastlines above the data symbols.
-The PS103 illustration uses a fixed Southern Ocean view and a 32-second loop
-through original navigation records. It has no dragging, timeline or navigation
-controls. Offscreen/background animation pauses; reduced motion shows a still.
-It is not a CO₂ sampling mask. The NOAA CTD photo
-is contextual and is not from that voyage. No scientific scores were changed.
+English is the source text in the HTML; every `data-i18n` key must have a Chinese
+entry in `i18n.js` (checked by `tests/test_site.py`). Script-generated labels use
+`OCS.tr(english, chinese)`.
 
-All page text, controls and SVG labels use Arial, with a sans-serif fallback.
-The final typography stylesheet overrides legacy serif and italic rules; hierarchy
-uses size and weight rather than switching font families.
+## Data
 
-## Preview
+| JSON | Exporter (no model fitting) |
+|---|---|
+| `chart-data.json` | `scripts/export_site_chart_data.py` |
+| `augmentation.json` | `scripts/export_site_augmentation.py` |
+| `globe-data.json`, `globe-land.json` | `scripts/export_site_globe_data.py` |
+| `observed-co2.json` | `scripts/export_site_observations.py` (needs the local SOCAT CSV) |
 
-From the repository root:
+The experiment globe shows the 2005 full-domain run from before the ocean mask
+and says so on the page.
+
+## Preview and publish
 
 ```bash
 npm ci
 npm run dev
 ```
 
-For a production preview, run `npm run build` and then `npm run preview`; open the
-local URL printed by Vite. The private licensed visual components are optional
-for local builds; public clones use the supplied fallback.
-
-## Frozen assets and publication
-
-`python scripts/build_static_site_assets.py` rebuilds the original data contract
-and archived PNG maps. It is not needed for presentation-only changes.
-
-The configured `npm run publish:site` builds and publishes compiled output only.
-It requires the owner's local licensed components and GitHub access; never commit
-licensed source files or credentials.
-
-The visible domain-status note applies to all simulated results: ocean-only
-eligibility is unresolved, and corrected-mask effects on scores and rankings
-have not been measured. This presentation edit does not fix or rerun that audit.
+`npm run build` then `npm run preview` gives a production preview. The licensed
+components in `site/licensed/` are optional; public clones build the fallback.
+`npm run publish:site` publishes compiled output only and never uploads
+`site/licensed`. After editing hero text, run `npm run render:hero` to refresh
+the prerendered header in `index.html`.
