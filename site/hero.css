@@ -15,6 +15,11 @@ body { padding:0; }
 .cinematic-hero .nav-links a:hover { text-decoration:underline; text-underline-offset:6px; }
 .hero-contact { display:flex; align-items:center; justify-content:center; gap:28px; min-height:46px; padding:10px 23px; border:1px solid #ffffff80; border-radius:99px; background:#ffffff0d; backdrop-filter:blur(8px); color:white; text-decoration:none; font-size:var(--t-sm); white-space:nowrap; }
 .hero-contact:hover { background:#ffffff20; }
+.hero-contact { font-family:inherit; cursor:pointer; }
+.hero-contact:focus-visible { outline:2px solid white; outline-offset:4px; }
+.contact-copy-status { position:fixed; z-index:1000; bottom:24px; left:50%; transform:translateX(-50%); width:max-content; max-width:calc(100vw - 32px); padding:16px 24px; border:1px solid #779ba6; border-radius:12px; background:#173844; color:#fff; box-shadow:0 8px 28px #0004; font:400 16px/1.5 Arial,sans-serif; text-align:center; visibility:hidden; pointer-events:none; }
+.contact-copy-status.is-visible { visibility:visible; pointer-events:auto; }
+.contact-copy-address { display:block; font-weight:700; overflow-wrap:anywhere; user-select:text; }
 .cinematic-hero .publication-strip { display:flex; justify-content:space-between; gap:16px; padding:22px 0 0; border:0; color:#d8e7ec; font:400 var(--t-xs)/1.5 var(--f); letter-spacing:.05em; text-transform:uppercase; }
 .publication-strip i { display:inline-block; width:6px; height:6px; margin-right:10px; border-radius:50%; background:#a7d8db; vertical-align:middle; }
 .cinematic-hero .hero { display:flex; flex-direction:row; flex:1; align-items:center; justify-content:flex-start; min-height:0; padding:60px 0 48px; text-align:left; }

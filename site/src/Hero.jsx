@@ -2,6 +2,7 @@ import React,{useRef} from 'react';
 import {ArrowUpRight} from 'lucide-react';
 import useHeroVideo from './useHeroVideo.js';
 import useLang,{LangSwitch} from './useLang.jsx';
+import CopyEmail from './CopyEmail.jsx';
 
 function OceanMark(){return <svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15"/><path d="M4 17c5-6 9 6 14 0s9 6 14 0M5 23c5-6 8 6 13 0s8 6 13 0"/><path d="M18 3v5M3 18h5M28 18h5"/></svg>;}
 
@@ -14,7 +15,7 @@ export function HeroNavigation(){
   return <nav className="nav shell" aria-label="Primary navigation">
     <a className="brand" href="#top"><OceanMark/><span>OCEAN CARBON<span className="brand-subtitle">{lang==='zh'?'一个采样实验':'A sampling experiment'}</span></span></a>
     <div className="nav-links">{t.nav.map(([href,label])=><a key={href} href={href}>{label}</a>)}</div>
-    <a className="hero-contact" href="mailto:bh2954@columbia.edu">{t.contact} <ArrowUpRight className="ui-arrow" aria-hidden="true" /></a>
+    <CopyEmail lang={lang} label={t.contact}/>
     <LangSwitch lang={lang}/>
     <details className="mobile-navigation" id="mobile-navigation" onClick={event=>{if(event.target.closest('a'))event.currentTarget.open=false;}} onKeyDown={event=>{if(event.key==='Escape'){event.currentTarget.open=false;event.currentTarget.querySelector('summary').focus();}}}>
       <summary>{t.menu} <span aria-hidden="true">+</span></summary>
