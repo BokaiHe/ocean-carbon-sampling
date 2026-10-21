@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" />
-  <script  src="i18n.js?v=3"></script>
+  <script  src="i18n.js?v=4"></script>
   <script  src="vendor/d3-7.9.0.min.js" defer></script>
   <script  src="globes.js?v=1" defer></script>
   <script  src="story.js?v=10" defer></script>
@@ -89,19 +89,20 @@
       </div>
       <ol class="flow">
         <li><span class="flow-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></span><b data-i18n="step1.t">Truth</b><span data-i18n="step1.d">IPSL-CM6A-LR gives complete monthly surface pCO₂</span></li>
-        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 12h16M12 4v16"/><path d="M14 14h4v4h-4z" fill="currentColor"/></svg></span><b data-i18n="step2.t">Hide</b><span data-i18n="step2.d">Set aside 20% of cells as one shared test set</span></li>
+        <li><span class="flow-icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 12h16M12 4v16"/><path d="M14 14h4v4h-4z" fill="currentColor"/></svg></span><b data-i18n="step2.t">Hide</b><span data-i18n="step2.d">Set aside 20% of month-cells as one shared test set</span></li>
         <li><span class="flow-icon"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="1.6"/><circle cx="13" cy="5" r="1.6"/><circle cx="18" cy="11" r="1.6"/><circle cx="9" cy="14" r="1.6"/><circle cx="15" cy="18" r="1.6"/><circle cx="5" cy="19" r="1.6"/></svg></span><b data-i18n="step3.t">Sample</b><span data-i18n="step3.d">Pick 5,000 month-cells with one rule</span></li>
         <li><span class="flow-icon"><svg viewBox="0 0 24 24"><path d="M12 3v6M12 15v6M5 7l4 3M15 14l4 3M5 17l4-3M15 10l4-3"/><circle cx="12" cy="12" r="3"/></svg></span><b data-i18n="step4.t">Learn</b><span data-i18n="step4.d">One gradient-boosting model fills the map from SST, salinity, position and month</span></li>
         <li><span class="flow-icon"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b data-i18n="step5.t">Score</b><span data-i18n="step5.d">Compare with the hidden truth across 20 paired seeds</span></li>
       </ol>
 
+      <p class="chip" data-i18n="domain.chip">Main comparison: south of 60°N · connected ocean · area-weighted · 2005, 2010, 2014 · 20 paired seeds</p>
       <h3 class="block-title" data-i18n="rules.title">Three rules, the same 5,000 samples</h3>
+      <p class="caption" data-i18n="rules.note">Illustrative maps and block counts: 2005, seed 0, original full domain before the ocean mask. Not the main comparison above.</p>
       <div class="rule-grid">
         <article class="rule-card" data-rule="random"><canvas class="mini-map" data-strategy="random" aria-hidden="true"></canvas><h4><i class="dot random"></i><span data-i18n="rule.random">Random</span></h4><p data-i18n="rule.random.d">Every cell has an equal chance</p><div class="rule-hist"></div><p class="rule-meta"></p></article>
-        <article class="rule-card" data-rule="historical"><canvas class="mini-map" data-strategy="historical" aria-hidden="true"></canvas><h4><i class="dot historical"></i><span data-i18n="rule.historical">Historical-density</span></h4><p data-i18n="rule.historical.d">Weighted by 1990–2004 SOCAT density — mimics how real ship data cluster</p><div class="rule-hist"></div><p class="rule-meta"></p></article>
+        <article class="rule-card" data-rule="historical"><canvas class="mini-map" data-strategy="historical" aria-hidden="true"></canvas><h4><i class="dot historical"></i><span data-i18n="rule.historical">Historical-density</span></h4><p data-i18n="rule.historical.d">Weighted by 1990–2004 SOCAT density — not a replay of ship routes</p><div class="rule-hist"></div><p class="rule-meta"></p></article>
         <article class="rule-card" data-rule="coverage"><canvas class="mini-map" data-strategy="coverage" aria-hidden="true"></canvas><h4><i class="dot coverage"></i><span data-i18n="rule.coverage">Coverage</span></h4><p data-i18n="rule.coverage.d">Prioritises under-sampled places and months</p><div class="rule-hist"></div><p class="rule-meta"></p></article>
       </div>
-      <p class="chip" data-i18n="domain.chip">South of 60°N · connected ocean (inland lakes removed) · 2005, 2010, 2014 · 20 seeds</p>
 
       <h3 class="block-title" data-i18n="aug.title">A second experiment: add to the real network</h3>
       <ol class="flow flow-3">
@@ -137,7 +138,7 @@
 
     <section class="chapter finding" id="f-history">
       <div class="finding-head">
-        <div><p class="kicker" data-i18n="f1.label">Finding 1</p><h2 data-i18n="f1.title">Following past ship tracks<br/>raises error by <span class="hl-hist">27%</span>.</h2></div>
+        <div><p class="kicker" data-i18n="f1.label">Finding 1</p><h2 data-i18n="f1.title">Sampling by historical density<br/>produces <span class="hl-hist">higher error</span>.</h2></div>
         <div class="big-number hist"><b id="f1-number">+27.3%</b><span data-i18n="f1.unit">higher mean absolute error than random</span></div>
       </div>
       <div class="seg wide" role="group" aria-label="Evaluation"><button type="button" data-f1="hidden" aria-pressed="true" data-i18n="f1.hidden">Hidden cells · 3 years</button><button type="button" data-f1="block" aria-pressed="false" data-i18n="f1.block">Whole blocks · 15 units</button></div>
@@ -174,7 +175,7 @@
           <h4 data-i18n="f3.bars">RMSE by region (µatm)</h4>
           <div class="chart" id="f3-bars"></div>
           <div class="chart-legend"><span><i class="sq baseline"></i><b data-i18n="arm.baseline">Existing network</b></span><span><i class="sq random"></i><b data-i18n="arm.random">+ random</b></span><span><i class="sq gap"></i><b data-i18n="arm.gap">+ gaps</b></span></div>
-          <h4 data-i18n="f3.dots">Gap − random, per seed (µatm; positive favours gaps)</h4>
+          <h4 data-i18n="f3.dots">Random − gap RMSE, per seed (µatm; positive favours gaps)</h4>
           <div class="chart" id="f3-dots"></div>
         </div>
       </div>
@@ -197,14 +198,14 @@
     <section class="chapter" id="conclusion">
       <div class="chapter-head">
         <p class="kicker" data-i18n="concl.kicker">06 · Conclusion</p>
-        <h2 data-i18n="concl.title">Clustered sampling <span class="hl-hist">costs accuracy</span>.<br/>More observations <span class="hl-teal">pay off</span> anywhere.</h2>
+        <h2 data-i18n="concl.title">In these tests, historical-density sampling <span class="hl-hist">costs accuracy</span>.<br/>Both addition rules <span class="hl-teal">improve reconstruction</span>.</h2>
       </div>
       <div class="answer-grid">
-        <a class="answer" href="#f-history"><b class="hl-hist">+27%</b><h4 data-i18n="a1.t">Where we measure matters</h4><p data-i18n="a1.d">At the same 5,000 samples, copying the historical ship pattern gives clearly worse maps than sampling at random — in every year tested.</p></a>
+        <a class="answer" href="#f-history"><b class="hl-hist">+27%</b><h4 data-i18n="a1.t">Where we measure matters</h4><p data-i18n="a1.d">At the same 5,000 samples, allocating by historical observation density gives higher MAE than random sampling — in every year tested.</p></a>
         <a class="answer" href="#f-coverage"><b class="hl-cov">RMSE ↓</b><h4 data-i18n="a2.t">Spreading out is not a cure-all</h4><p data-i18n="a2.d">Even coverage trims the largest errors, mostly near coasts and in marginal seas, while typical error barely moves.</p></a>
-        <a class="answer" href="#f-augment"><b class="hl-teal">−2.9</b><h4 data-i18n="a3.t">Adding beats aiming</h4><p data-i18n="a3.d">1,000 extra open-ocean observations cut error far more than choosing where they go; aiming at gaps adds a small, consistent extra.</p></a>
+        <a class="answer" href="#f-augment"><b class="hl-teal">−2.9</b><h4 data-i18n="a3.t">Two ways to add observations</h4><p data-i18n="a3.d">In the 2005 open-ocean test, both rules for adding 1,000 observations reduce RMSE. Their gains over the existing network exceed the small difference between the two rules.</p></a>
       </div>
-      <p class="lede wide" data-i18n="concl.lede">For an observing network, the first lesson is to measure more and less predictably; filling known gaps is a refinement — and every number here holds for one simulated ocean and one model, not yet for the real network.</p>
+      <p class="lede wide" data-i18n="concl.lede">Sampling location matters, but these tests do not identify an optimal deployment. Every result is conditional on one simulated ocean and one learner; benefits for the real network remain unverified.</p>
     </section>
 
     <section class="chapter" id="limits">
