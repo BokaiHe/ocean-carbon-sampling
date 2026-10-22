@@ -18,7 +18,7 @@ def test_hero_uses_requested_video_and_retains_source_record():
     assert 'preload="none"' in html
     assert 'loop=""' in html
     assert 'data-src="https://videos.pexels.com/video-files/1409899/1409899-uhd_2560_1440_25fps.mp4"' in html
-    assert (SITE / "assets/context/ocean-waves.mp4").stat().st_size < 5_000_000
+    assert not (SITE / "assets/context/ocean-waves.mp4").exists()
     assert (SITE / "assets/context/ocean-waves-poster.jpg").is_file()
     assert (SITE / "assets/context/ocean-waves-source.md").is_file()
     assert (SITE / "assets/context/hero9-source.md").is_file()

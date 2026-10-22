@@ -117,7 +117,6 @@ try {
   await shot(c, '#f-coverage', 'finding2.png', {pad: 0});
   await shot(c, '#f-augment', 'finding3.png', {pad: 0});
   await shot(c, '#checks', 'robustness.png', {pad: 0});
-  await shot(c, '#conclusion', 'conclusion.png', {pad: 0});
 
   // Augmentation map: alternate the two addition rules.
   rmSync(FRAMES, {recursive: true, force: true}); mkdirSync(FRAMES, {recursive: true});

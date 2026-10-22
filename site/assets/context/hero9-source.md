@@ -14,4 +14,6 @@ buttons. Original component source stays in ignored `site/licensed/Hero9.tsx`.
 The externally hosted video is contextual imagery, not research observations
 or model output. The browser streams it directly; no new media files are
 redistributed in this repository. Its availability depends on its host.
-The previous local ocean-wave video and its provenance remain archived.
+The unused previous local ocean-wave video was removed on 2026-10-22.
+Its poster remains in use by the public fallback hero; provenance is retained
+in `ocean-waves-source.md`. The removed video remains recoverable in Git history.

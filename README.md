@@ -67,7 +67,7 @@ Regional benchmark, interpretability gate, cross-year global OSSE, area-weightin
 
 ```bash
 python -m venv .venv
-pip install -e ".[dev,model,osse,app,notebook]"
+pip install -e ".[dev,model,osse,notebook]"
 pytest
 ```
 

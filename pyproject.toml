@@ -24,10 +24,6 @@ model = [
   "ngboost",
   "shap",
 ]
-app = [
-  "plotly",
-  "streamlit",
-]
 osse = [
   "cftime",
   "h5netcdf",
