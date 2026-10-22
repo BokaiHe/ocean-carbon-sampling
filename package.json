@@ -11,7 +11,8 @@
     "dev": "npm run render:hero && vite --host 127.0.0.1",
     "build": "npm run render:hero && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "publish:site": "node scripts/publish_site.mjs"
+    "publish:site": "node scripts/publish_site.mjs",
+    "readme:media": "node scripts/readme_media.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.8.1",
