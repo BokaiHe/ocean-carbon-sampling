@@ -1,8 +1,9 @@
 """Design integrity tests, including observations that must remain untouched."""
 import unittest
+
 import numpy as np
 import pandas as pd
-from augmentation import network_masks, reserve_evaluation, select_additions, metrics
+from augmentation import metrics, network_masks, reserve_evaluation, select_additions
 
 
 class AugmentationTests(unittest.TestCase):

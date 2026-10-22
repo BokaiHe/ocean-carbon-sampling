@@ -1,10 +1,10 @@
 """Create and execute a read-only English notebook from completed augmentation outputs."""
-from pathlib import Path
-import json
 import sys
+from pathlib import Path
+
 import nbformat as nbf
-from nbclient import NotebookClient
 from jupyter_client import KernelManager
+from nbclient import NotebookClient
 
 HERE = Path(__file__).resolve().parent
 md, code = nbf.v4.new_markdown_cell, nbf.v4.new_code_cell

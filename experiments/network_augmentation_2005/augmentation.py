@@ -5,9 +5,9 @@ import argparse
 import hashlib
 import json
 import os
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 
 os.environ.setdefault("OMP_NUM_THREADS", "4")
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "4")
@@ -109,9 +109,10 @@ def main():
     sys.path.insert(0, str(project / "src"))
     import xarray as xr
     from threadpoolctl import threadpool_limits
+
     from ocean_carbon_sampling.data import read_socat_monthly
-    from ocean_carbon_sampling.features import build_features
     from ocean_carbon_sampling.experiment import make_model
+    from ocean_carbon_sampling.features import build_features
     from ocean_carbon_sampling.osse_experiment import spherical_cell_area_weights
 
     inputs = {cfg["truth_file"]: sha(project / cfg["truth_file"]),
@@ -165,7 +166,9 @@ def main():
                       "candidate_addition_month_cells": int((~h & ~evaluation).sum()),
                       "baseline_count_by_month": {str(m): int(((month == m) & h).sum()) for m in range(1, 13)},
                       "latitude_min": float(frame.latitude.min()), "latitude_max": float(frame.latitude.max())})
-    import platform, sklearn
+    import platform
+
+    import sklearn
     started = {"started_utc": pd.Timestamp.now(tz="UTC").isoformat(), "config": cfg,
                "source_inputs_sha256": inputs, "inventory": inventory,
                "study_inputs_sha256": {p: sha(study / p) for p in [args.config, "PROTOCOL.md", "augmentation.py", "test_augmentation.py"]},
